@@ -13,9 +13,18 @@ def clean_content(content):
     
     # Remove any environment file commands if they exist
     content = re.sub(r'file command \'env\'.*$', '', content, flags=re.MULTILINE)
+    content = re.sub(r'Error: Unable to process file.*$', '', content, flags=re.MULTILINE)
     
     # Remove any error messages about format
     content = re.sub(r'Error: Invalid format.*$', '', content, flags=re.MULTILINE)
+    
+    # Remove lines related to GitHub Actions environment variables
+    content = re.sub(r'GITHUB_ENV=.*$', '', content, flags=re.MULTILINE)
+    content = re.sub(r'>>.*GITHUB_ENV.*$', '', content, flags=re.MULTILINE)
+    content = re.sub(r'::set-output.*$', '', content, flags=re.MULTILINE)
+    
+    # Clean up any empty lines from removed content
+    content = re.sub(r'\n\s*\n+', '\n\n', content)
     
     # Ensure the content is under Twitter's character limit
     if len(content) > 280:
@@ -26,7 +35,7 @@ def clean_content(content):
 
 def extract_price_info(content):
     """Extract price information for logging purposes."""
-    price_pattern = r'Price: \$([0-9,]+)(?:\.\d+)? \(([+-]\d+\.\d+%)\)'
+    price_pattern = r'Price: \$([0-9,]+)(?:\.\d+)? \(([+-]\d+\.\d+%)(?: in 24h)?\)'
     match = re.search(price_pattern, content)
     
     if match:
@@ -35,6 +44,13 @@ def extract_price_info(content):
         print(f"Detected Bitcoin price: ${price} {change}")
     else:
         print("Could not detect price information in the content")
+        # Try alternative formats
+        alt_pattern = r'\$([0-9,]+)(?:\.\d+)?.*?([+-]\d+\.\d+%)'
+        alt_match = re.search(alt_pattern, content)
+        if alt_match:
+            price = alt_match.group(1)
+            change = alt_match.group(2)
+            print(f"Detected Bitcoin price (alternative format): ${price} {change}")
     
     return content
 

@@ -84,6 +84,25 @@ def get_fallback_bitcoin_data():
         "timestamp": TIMESTAMP
     }
 
+def clean_social_content(content):
+    """Clean social content before saving to remove any potential issues."""
+    # Strip any leading/trailing whitespace
+    content = content.strip()
+    
+    # Remove any lines with error messages
+    lines = content.split('\n')
+    cleaned_lines = [line for line in lines if not line.startswith('Error:')]
+    
+    # Rejoin the lines
+    content = '\n'.join(cleaned_lines)
+    
+    # Ensure it's under Twitter's character limit
+    if len(content) > 280:
+        print(f"Warning: Social content exceeds Twitter's 280 character limit ({len(content)} chars). Truncating...")
+        content = content[:277] + "..."
+    
+    return content
+
 def generate_content():
     """Generate Bitcoin report content using OpenAI"""
     
@@ -202,6 +221,9 @@ def generate_content():
         print(f"Error generating social content: {str(e)}")
         # Fallback social content if API fails
         social_content = f"#Bitcoin Update: Price: ${bitcoin_data['current_price']:,.2f} ({bitcoin_data['price_change_24h']:.2f}%). Monitor key catalysts: institutional adoption, regulatory news. Overall market sentiment: {('bearish' if bitcoin_data['price_change_24h'] < 0 else 'bullish')}. #BTC #Crypto"
+    
+    # Clean the social content
+    social_content = clean_social_content(social_content)
     
     # Save social content to a file for easier handling in GitHub Actions
     social_content_file = Path(".github") / "tmp" / "social_content.txt"

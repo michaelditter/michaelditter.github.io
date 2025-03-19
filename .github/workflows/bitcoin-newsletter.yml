@@ -199,14 +199,36 @@ jobs:
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+          SOCIAL_CONTENT: ${{ env.SOCIAL_CONTENT }}
         run: |
+          echo "Debug: Checking social content file..."
+          if [ -f .github/tmp/social_content.txt ]; then
+            echo "Social content file exists"
+            cat .github/tmp/social_content.txt
+          else
+            echo "Social content file does not exist"
+          fi
+          
+          echo "Debug: Environment variable SOCIAL_CONTENT value (truncated):"
+          if [ -n "$SOCIAL_CONTENT" ]; then
+            echo "${SOCIAL_CONTENT:0:100}..."
+          else
+            echo "SOCIAL_CONTENT environment variable is empty"
+          fi
+          
           if [ -n "$TWITTER_API_KEY" ] && [ -n "$TWITTER_API_SECRET" ] && [ -n "$TWITTER_ACCESS_TOKEN" ] && [ -n "$TWITTER_ACCESS_SECRET" ]; then
+            echo "Debug: Running Twitter posting script..."
             python .github/scripts/post_to_twitter.py
             echo "Posted Bitcoin update to Twitter/X"
           else
             echo "Twitter/X API keys not configured. Skipping social post."
-            echo "Would have posted:"
-            cat .github/tmp/social_content.txt
+            echo "Would have posted (from file):"
+            if [ -f .github/tmp/social_content.txt ]; then
+              # Clean up the content before displaying
+              cat .github/tmp/social_content.txt | grep -v "Error:" | grep -v "file command" | grep -v "GITHUB_ENV"
+            else
+              echo "No social content file found."
+            fi
           fi
       
       - name: Create Pull Request
