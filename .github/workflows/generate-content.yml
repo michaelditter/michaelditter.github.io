@@ -1,0 +1,204 @@
+name: Generate Content
+
+on:
+  workflow_dispatch:
+    inputs:
+      post_title:
+        description: 'Title of the post'
+        required: true
+      post_slug:
+        description: 'URL slug for the post'
+        required: true
+      post_content:
+        description: 'Content of the post (markdown format)'
+        required: true
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for potential commits
+      
+      - name: Install or upgrade Pillow
+        run: |
+          pip install --upgrade Pillow
+
+      - name: Generate image for post
+        run: |
+          python3 - <<EOF
+          import os
+          import random
+          import textwrap
+          from pathlib import Path
+          from PIL import Image, ImageDraw, ImageFont
+          
+          # Monkey patch for backward compatibility with older Pillow versions
+          if not hasattr(ImageDraw.ImageDraw, 'textsize'):
+              def textsize_polyfill(self, text, font=None, spacing=4, direction=None, features=None, language=None, stroke_width=0):
+                  """Polyfill for the deprecated textsize method."""
+                  if hasattr(self, 'textbbox'):
+                      left, top, right, bottom = self.textbbox((0, 0), text, font, spacing, direction, features, language, stroke_width)
+                      return right - left, bottom - top
+                  elif hasattr(font, 'getsize'):
+                      return font.getsize(text)
+                  else:
+                      # Last resort fallback
+                      return len(text) * 10, 20
+              ImageDraw.ImageDraw.textsize = textsize_polyfill
+              print("Added backward compatibility for textsize method")
+          
+          # Get the post title and slug from GitHub Actions
+          post_title = "${{ github.event.inputs.post_title }}"
+          post_slug = "${{ github.event.inputs.post_slug }}"
+          
+          # Create directories
+          img_dir = Path("img/blog")
+          os.makedirs(img_dir, exist_ok=True)
+          
+          # Image dimensions
+          width, height = 1200, 630
+          
+          # Background color (dark blue)
+          bg_color = (34, 66, 110)
+          
+          # Create a colored background image
+          image = Image.new('RGB', (width, height), bg_color)
+          draw = ImageDraw.Draw(image)
+          
+          # Add some abstract patterns for background
+          for i in range(20):
+              x = random.randint(0, width)
+              y = random.randint(0, height)
+              size = random.randint(50, 200)
+              color = (
+                  random.randint(40, 80),
+                  random.randint(80, 120),
+                  random.randint(120, 160),
+                  random.randint(30, 100)
+              )
+              draw.ellipse((x-size/2, y-size/2, x+size/2, y+size/2), fill=color)
+          
+          # Add a semi-transparent overlay for better text visibility
+          overlay = Image.new('RGBA', (width, height), (0, 0, 0, 150))
+          image.paste(Image.alpha_composite(Image.new('RGBA', image.size, (0, 0, 0, 0)), overlay).convert('RGB'), (0, 0))
+          
+          # Add title
+          draw = ImageDraw.Draw(image)
+          
+          # Use a default font path that's likely to exist on Ubuntu
+          try:
+              font_path = "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"
+              title_font = ImageFont.truetype(font_path, 60)
+              subtitle_font = ImageFont.truetype(font_path, 40)
+          except IOError:
+              # Fallback to default font
+              title_font = ImageFont.load_default()
+              subtitle_font = ImageFont.load_default()
+          
+          # Wrap text to fit the image width
+          margin = 100
+          wrapped_text = textwrap.wrap(post_title, width=30)
+          y_position = (height - len(wrapped_text) * 70) // 2
+          
+          for line in wrapped_text:
+              try:
+                  # Try the newer textlength method first
+                  text_width = draw.textlength(line, font=title_font)
+                  # For text height, we'll use a consistent line height
+                  text_height = 60
+              except AttributeError:
+                  try:
+                      # Try textbbox method (Pillow 9.0+)
+                      left, top, right, bottom = draw.textbbox((0, 0), line, font=title_font)
+                      text_width = right - left
+                      text_height = bottom - top
+                  except AttributeError:
+                      # Fall back to older methods
+                      try:
+                          # Try font getsize (older Pillow)
+                          text_width, text_height = title_font.getsize(line)
+                      except AttributeError:
+                          # Last resort fallback with estimated size
+                          text_width = len(line) * 35
+                          text_height = 60
+              
+              position = ((width - text_width) // 2, y_position)
+              # Draw a shadow
+              draw.text((position[0] + 2, position[1] + 2), line, font=title_font, fill=(0, 0, 0))
+              # Draw the text
+              draw.text(position, line, font=title_font, fill=(255, 255, 255))
+              y_position += text_height + 10
+          
+          # Add author name
+          author_text = "By Michael J Ditter"
+          try:
+              # Try the newer textlength method first
+              author_width = draw.textlength(author_text, font=subtitle_font)
+              author_height = 40
+          except AttributeError:
+              try:
+                  # Try textbbox method (Pillow 9.0+)
+                  left, top, right, bottom = draw.textbbox((0, 0), author_text, font=subtitle_font)
+                  author_width = right - left
+                  author_height = bottom - top
+              except AttributeError:
+                  # Fall back to older methods
+                  try:
+                      # Try font getsize (older Pillow)
+                      author_width, author_height = subtitle_font.getsize(author_text)
+                  except AttributeError:
+                      # Last resort fallback with estimated size
+                      author_width = len(author_text) * 20
+                      author_height = 40
+                      
+          author_position = ((width - author_width) // 2, y_position + 40)
+          draw.text(author_position, author_text, font=subtitle_font, fill=(220, 220, 220))
+          
+          # Save the image
+          image_path = img_dir / f"{post_slug}.jpg"
+          image.save(image_path)
+          
+          print(f"Created image: {image_path}")
+          EOF
+          
+      - name: Create blog post
+        run: |
+          # Create blog directory
+          mkdir -p blog/${{ github.event.inputs.post_slug }}
+          
+          # Create index.html for the blog post
+          cat > blog/${{ github.event.inputs.post_slug }}/index.html << 'EOL'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>${{ github.event.inputs.post_title }} | Michael J Ditter</title>
+              <link rel="stylesheet" href="/css/styles.css">
+              <link rel="stylesheet" href="/css/blog.css">
+          </head>
+          <body>
+              <article class="blog-post">
+                  <h1>${{ github.event.inputs.post_title }}</h1>
+                  <div class="blog-post-content">
+                  ${{ github.event.inputs.post_content }}
+                  </div>
+              </article>
+          </body>
+          </html>
+          EOL
+          
+          echo "Created blog post: blog/${{ github.event.inputs.post_slug }}/index.html"
+          
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add img/blog/${{ github.event.inputs.post_slug }}.jpg
+          git add blog/${{ github.event.inputs.post_slug }}/index.html
+          git commit -m "Add blog post: ${{ github.event.inputs.post_title }}"
+          git push 
