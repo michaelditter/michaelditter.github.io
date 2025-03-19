@@ -72,14 +72,12 @@ jobs:
       - name: Save social content to environment variable
         run: |
           if [ -f ".github/tmp/social_content.txt" ]; then
-            # Use a more unique delimiter with random component
-            DELIM="BITCOIN_CONTENT_DELIM_$$"
-            # Write with delimiter syntax
-            echo "SOCIAL_CONTENT<<$DELIM" >> $GITHUB_ENV
-            # Cat the file directly to preserve all formatting
+            # Use the proper heredoc syntax for GitHub env files
+            # The EOT delimiter must be at the start of the line with no leading whitespace
+            echo "SOCIAL_CONTENT<<EOT" >> $GITHUB_ENV
             cat .github/tmp/social_content.txt >> $GITHUB_ENV
-            echo "$DELIM" >> $GITHUB_ENV
-            echo "Social content saved to environment variable with $DELIM delimiter"
+            echo "EOT" >> $GITHUB_ENV
+            echo "Social content saved to environment variable with EOT delimiter"
           else
             echo "Warning: No social content file found"
           fi
@@ -227,6 +225,8 @@ jobs:
           echo "POST_TITLE: ${{ env.POST_TITLE }}"
           echo "GITHUB_REPOSITORY: ${{ github.repository }}"
           echo "GITHUB_ACTOR: ${{ github.actor }}"
+          # Print first line of SOCIAL_CONTENT to verify it's set (avoid printing the whole thing)
+          echo "SOCIAL_CONTENT (first line): $(echo '${{ env.SOCIAL_CONTENT }}' | head -n 1)"
           
       # Ensure all files are committed
       - name: Commit changes
