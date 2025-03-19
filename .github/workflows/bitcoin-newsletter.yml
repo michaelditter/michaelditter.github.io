@@ -257,31 +257,42 @@ jobs:
             # Commit the changes
             git commit -m "Add Bitcoin market report for ${{ env.POST_SLUG }}"
             echo "Changes committed successfully"
+            
+            # Push directly to main branch
+            git push origin HEAD:main
+            echo "Changes pushed to main branch"
+            
+            echo "::notice::Bitcoin market report for ${{ env.POST_SLUG }} has been committed directly to main branch"
+            echo "::notice::You can send the newsletter by:"
+            echo "::notice::1. Going to the Actions tab"
+            echo "::notice::2. Selecting the 'Send Newsletter' workflow"
+            echo "::notice::3. Running the workflow with the post slug: ${{ env.POST_SLUG }}"
           fi
       
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ github.token }}
-          commit-message: "Add Bitcoin market report for ${{ env.POST_SLUG }}"
-          title: "Weekly Bitcoin Market Report"
-          body: |
-            This PR contains this week's Bitcoin market report ready for review.
-            
-            Please review the content for accuracy and relevance before merging.
-            
-            Key points from the report:
-            - Generated Bitcoin market analysis for the week
-            - Created both a blog post and website Twitter-style card
-            - Added Bitcoin market data visualization
-            
-            After merging, you can send the newsletter by:
-            1. Going to the Actions tab
-            2. Selecting the "Send Newsletter" workflow
-            3. Running the workflow with the post slug: `${{ env.POST_SLUG }}`
-          branch: bitcoin-report-update
-          base: main
-          delete-branch: true
-          labels: |
-            bitcoin-report
-            content-review 
+      # Remove the PR creation step since we're directly committing to main
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v5
+      #   with:
+      #     token: ${{ github.token }}
+      #     commit-message: "Add Bitcoin market report for ${{ env.POST_SLUG }}"
+      #     title: "Weekly Bitcoin Market Report"
+      #     body: |
+      #       This PR contains this week's Bitcoin market report ready for review.
+      #       
+      #       Please review the content for accuracy and relevance before merging.
+      #       
+      #       Key points from the report:
+      #       - Generated Bitcoin market analysis for the week
+      #       - Created both a blog post and website Twitter-style card
+      #       - Added Bitcoin market data visualization
+      #       
+      #       After merging, you can send the newsletter by:
+      #       1. Going to the Actions tab
+      #       2. Selecting the "Send Newsletter" workflow
+      #       3. Running the workflow with the post slug: `${{ env.POST_SLUG }}`
+      #     branch: bitcoin-report-update
+      #     base: main
+      #     delete-branch: true
+      #     labels: |
+      #       bitcoin-report
+      #       content-review 
