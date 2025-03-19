@@ -1,0 +1,181 @@
+name: Bitcoin Weekly Newsletter
+
+on:
+  schedule:
+    # Run every Friday at 9:00 AM UTC
+    - cron: '0 9 * * 5'
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  generate-bitcoin-report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install openai requests pyyaml pillow requests-oauthlib
+      
+      - name: Generate Bitcoin report
+        id: generate-report
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python .github/scripts/generate_bitcoin_report.py
+      
+      - name: Generate Bitcoin report image
+        id: generate-image
+        run: |
+          python3 - <<EOF
+          import os
+          from PIL import Image, ImageDraw, ImageFont
+          from pathlib import Path
+          import textwrap
+          import random
+          
+          # Get the post slug from environment variable
+          post_slug = os.environ.get("POST_SLUG")
+          post_title = os.environ.get("POST_TITLE")
+          
+          if not post_slug or not post_title:
+              print("Missing required environment variables")
+              exit(1)
+          
+          # Create blog image directory if it doesn't exist
+          img_dir = Path("img/blog")
+          img_dir.mkdir(parents=True, exist_ok=True)
+          
+          # Define image dimensions
+          width, height = 1200, 630
+          
+          # Bitcoin color scheme
+          bg_color = (247, 147, 26)  # Bitcoin Orange
+          
+          # Create a colored background image
+          image = Image.new('RGB', (width, height), bg_color)
+          draw = ImageDraw.Draw(image)
+          
+          # Add Bitcoin symbol patterns
+          for i in range(15):
+              x = random.randint(0, width)
+              y = random.randint(0, height)
+              size = random.randint(30, 100)
+              
+              # Draw Bitcoin symbol (simplified)
+              draw.ellipse((x-size/2, y-size/2, x+size/2, y+size/2), 
+                          fill=(255, 255, 255, 50))
+              
+              # Draw vertical line through circle
+              draw.rectangle((x-2, y-size/2, x+2, y+size/2), 
+                            fill=(255, 255, 255, 50))
+              
+              # Draw horizontal lines
+              draw.rectangle((x-size/2, y-2, x+size/2, y+2), 
+                            fill=(255, 255, 255, 50))
+              draw.rectangle((x-size/2, y-size/4, x+size/2, y-size/4+4), 
+                            fill=(255, 255, 255, 50))
+              draw.rectangle((x-size/2, y+size/4-4, x+size/2, y+size/4), 
+                            fill=(255, 255, 255, 50))
+          
+          # Add a semi-transparent overlay for better text visibility
+          overlay = Image.new('RGBA', (width, height), (0, 0, 0, 120))
+          image.paste(Image.alpha_composite(Image.new('RGBA', image.size, (0, 0, 0, 0)), overlay).convert('RGB'), (0, 0))
+          
+          # Add title
+          draw = ImageDraw.Draw(image)
+          
+          # Use a default font path that's likely to exist on Ubuntu
+          try:
+              font_path = "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"
+              title_font = ImageFont.truetype(font_path, 60)
+              subtitle_font = ImageFont.truetype(font_path, 40)
+          except IOError:
+              # Fallback to default font
+              title_font = ImageFont.load_default()
+              subtitle_font = ImageFont.load_default()
+          
+          # Wrap text to fit the image width
+          margin = 100
+          wrapped_text = textwrap.wrap(post_title, width=30)
+          y_position = (height - len(wrapped_text) * 70) // 2
+          
+          for line in wrapped_text:
+              text_width = draw.textlength(line, font=title_font)
+              position = ((width - text_width) // 2, y_position)
+              # Draw a shadow
+              draw.text((position[0] + 2, position[1] + 2), line, font=title_font, fill=(0, 0, 0))
+              # Draw the text
+              draw.text(position, line, font=title_font, fill=(255, 255, 255))
+              y_position += 70
+          
+          # Add date
+          import datetime
+          today = datetime.datetime.now().strftime("%B %d, %Y")
+          date_text = f"Bitcoin Market Report | {today}"
+          date_width = draw.textlength(date_text, font=subtitle_font)
+          date_position = ((width - date_width) // 2, y_position + 40)
+          draw.text(date_position, date_text, font=subtitle_font, fill=(220, 220, 220))
+          
+          # Save the image
+          image_path = img_dir / f"{post_slug}.jpg"
+          image.save(image_path)
+          
+          print(f"Created Bitcoin report image: {image_path}")
+          EOF
+      
+      - name: Post to Twitter/X
+        if: ${{ github.event_name == 'workflow_dispatch' }} # Only post when manually triggered for now
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+        run: |
+          if [ -n "$TWITTER_API_KEY" ] && [ -n "$TWITTER_API_SECRET" ] && [ -n "$TWITTER_ACCESS_TOKEN" ] && [ -n "$TWITTER_ACCESS_SECRET" ]; then
+            python .github/scripts/post_to_twitter.py
+            echo "Posted Bitcoin update to Twitter/X"
+          else
+            echo "Twitter/X API keys not configured. Skipping social post."
+          fi
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "Add Bitcoin market report for ${{ env.POST_DATE }}"
+          title: "Weekly Bitcoin Market Report"
+          body: |
+            This PR contains this week's Bitcoin market report ready for review.
+            
+            Please review the content for accuracy and relevance before merging.
+            
+            Key points from the report:
+            - Generated Bitcoin market analysis for the week
+            - Created both a blog post and social media update
+            - Added Bitcoin market data visualization
+            
+            After merging, you can send the newsletter by:
+            1. Going to the Actions tab
+            2. Selecting the "Send Newsletter" workflow
+            3. Running the workflow with the post slug: `${{ env.POST_SLUG }}`
+            
+            Social content for X/Twitter:
+            ```
+            ${{ env.SOCIAL_CONTENT }}
+            ```
+          branch: bitcoin-report-update
+          delete-branch: true
+          labels: |
+            bitcoin-report
+            content-review 

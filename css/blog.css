@@ -730,4 +730,160 @@
   .featured-post-content h3 {
     font-size: 1.5rem;
   }
+}
+
+/* Bitcoin Report Specific Styles */
+.bitcoin-summary {
+    margin-bottom: 2rem;
+}
+
+.bitcoin-price-card {
+    background: linear-gradient(135deg, #1a1f2e, #2c3347);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    color: #fff;
+    margin-bottom: 2rem;
+}
+
+.price-header {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.update-time {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.price-main {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.current-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.price-change {
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    background-color: #e74c3c;
+    color: white;
+}
+
+.price-change.positive {
+    background-color: #2ecc71;
+}
+
+.price-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.3rem;
+}
+
+.detail-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Social Share Buttons */
+.social-share {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.social-share h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.social-share p {
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+.share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.share-button {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 1.2rem;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.share-button img {
+    margin-right: 8px;
+}
+
+.share-button.twitter {
+    background-color: #1da1f2;
+    color: white;
+}
+
+.share-button.linkedin {
+    background-color: #0077b5;
+    color: white;
+}
+
+.share-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments for Bitcoin card */
+@media (max-width: 768px) {
+    .price-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .price-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .share-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
 } 

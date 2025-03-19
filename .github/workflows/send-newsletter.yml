@@ -1,0 +1,150 @@
+name: Send Newsletter
+
+on:
+  # Run after content is merged to main
+  workflow_dispatch:
+    inputs:
+      post_slug:
+        description: 'Slug of the blog post to send as newsletter'
+        required: true
+      skip_review:
+        description: 'Skip review and send newsletter directly?'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: main  # Ensure we're using the latest merged content
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests markdown beautifulsoup4
+      
+      - name: Find blog post content
+        id: find-post
+        run: |
+          POST_SLUG="${{ github.event.inputs.post_slug }}"
+          POST_DIR="blog/${POST_SLUG}"
+          
+          if [ ! -d "$POST_DIR" ]; then
+            echo "::error::Blog post directory not found: $POST_DIR"
+            exit 1
+          fi
+          
+          # Create directory for temporary files
+          mkdir -p .github/tmp
+          
+          # Extract content from HTML file and prepare newsletter data
+          python3 - <<EOF
+          import os
+          import re
+          import json
+          from bs4 import BeautifulSoup
+          from pathlib import Path
+          
+          post_slug = "$POST_SLUG"
+          post_path = Path("blog") / post_slug / "index.html"
+          
+          # Read the HTML file
+          with open(post_path, 'r') as f:
+              content = f.read()
+          
+          # Parse with BeautifulSoup
+          soup = BeautifulSoup(content, 'html.parser')
+          
+          # Get title
+          title = soup.title.string.split('|')[0].strip()
+          
+          # Get meta description
+          meta_desc = soup.find('meta', attrs={'name': 'description'})
+          description = meta_desc['content'] if meta_desc else ""
+          
+          # Get category
+          category_elem = soup.select_one('.blog-category')
+          category = category_elem.text if category_elem else "AI Strategy"
+          
+          # Get tags from meta tags
+          tags = []
+          for tag_meta in soup.find_all('meta', attrs={'property': 'article:tag'}):
+              tags.append(tag_meta['content'])
+          
+          # Get main content
+          article_content = soup.select_one('.blog-content .container')
+          
+          # Extract the content as markdown-like text
+          # This is a simplification and might need refinement
+          markdown_content = []
+          
+          if article_content:
+              for elem in article_content.find_all(['h1', 'h2', 'h3', 'p', 'ul', 'ol', 'li', 'strong', 'em']):
+                  if elem.name == 'h1':
+                      markdown_content.append(f"# {elem.text.strip()}\n")
+                  elif elem.name == 'h2':
+                      markdown_content.append(f"## {elem.text.strip()}\n")
+                  elif elem.name == 'h3':
+                      markdown_content.append(f"### {elem.text.strip()}\n")
+                  elif elem.name == 'p':
+                      markdown_content.append(f"{elem.text.strip()}\n\n")
+                  elif elem.name == 'strong':
+                      markdown_content.append(f"**{elem.text.strip()}**")
+                  elif elem.name == 'em':
+                      markdown_content.append(f"*{elem.text.strip()}*")
+                  elif elem.name == 'li':
+                      if elem.parent.name == 'ol':
+                          markdown_content.append(f"1. {elem.text.strip()}\n")
+                      else:
+                          markdown_content.append(f"* {elem.text.strip()}\n")
+          
+          # Join as a markdown text
+          md_content = ''.join(markdown_content)
+          
+          # Create newsletter data
+          newsletter_data = {
+              "title": title,
+              "content": md_content,
+              "description": description,
+              "tags": tags,
+              "slug": post_slug,
+              "url": f"https://www.michaelditter.com/blog/{post_slug}/"
+          }
+          
+          # Save to JSON file
+          newsletter_file = Path(".github") / "tmp" / f"{post_slug}-newsletter-data.json"
+          with open(newsletter_file, 'w') as f:
+              json.dump(newsletter_data, f, indent=2)
+          
+          print(f"Newsletter data created for: {title}")
+          print(f"Saved to: {newsletter_file}")
+          EOF
+          
+          echo "NEWSLETTER_DATA_FILE=.github/tmp/${POST_SLUG}-newsletter-data.json" >> $GITHUB_ENV
+      
+      - name: Create Newsletter Draft
+        id: create-draft
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        run: |
+          python .github/scripts/send_buttondown_newsletter.py "${{ env.NEWSLETTER_DATA_FILE }}"
+      
+      - name: Send Newsletter or Request Approval
+        if: success()
+        run: |
+          if [[ "${{ github.event.inputs.skip_review }}" == "true" ]]; then
+            echo "Newsletter draft has been created. Since 'skip_review' is enabled, you should manually review and send it from the Buttondown dashboard."
+          else
+            echo "Newsletter draft has been created. Please review and send it from the Buttondown dashboard."
+            echo "Visit https://buttondown.email/emails to review and send."
+          fi 
