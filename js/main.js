@@ -59,7 +59,9 @@ function initNavigation() {
     let scrollPosition = window.scrollY;
     
     sections.forEach(section => {
-      const sectionTop = section.offsetTop - 100;
+      const headerHeight = document.querySelector('.site-header').offsetHeight;
+      const extraPadding = 20; // Match the extraPadding from scroll function
+      const sectionTop = section.offsetTop - headerHeight - extraPadding;
       const sectionHeight = section.offsetHeight;
       const sectionId = section.getAttribute('id');
       const correspondingNavLink = document.querySelector(`.nav-links a[href="#${sectionId}"]`);
@@ -99,9 +101,10 @@ function initScrollAnimations() {
       const targetElement = document.querySelector(targetId);
       
       if (targetElement) {
-        // Offset for fixed header
+        // Offset for fixed header - increase to prevent cutting off section headers
         const headerHeight = document.querySelector('.site-header').offsetHeight;
-        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+        const extraPadding = 20; // Additional padding to prevent text cutoff
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - extraPadding;
         
         window.scrollTo({
           top: targetPosition,

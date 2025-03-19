@@ -277,8 +277,10 @@ h6 {
   background-color: var(--color-white);
   box-shadow: var(--box-shadow-sm);
   padding: var(--space-sm) 0;
-  z-index: 100;
+  z-index: 1000;
   transition: all var(--transition-normal);
+  height: auto;
+  min-height: 70px;
 }
 
 .site-header.scrolled {
@@ -356,22 +358,32 @@ h6 {
 }
 
 /* Hero Section */
-.hero {
+.hero-section {
   padding: calc(var(--space-xxl) * 2) 0 var(--space-xxl);
   background-color: var(--color-light);
   position: relative;
   overflow: hidden;
+  /* Add padding to account for fixed header */
+  padding-top: calc(var(--space-xxl) * 2 + 80px);
+  margin-top: 0; /* Ensure no unexpected margin */
 }
 
-.hero .container {
+.hero-section .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-xl);
+  max-width: var(--container-max-width);
+  width: 100%;
 }
 
 .hero-content {
   flex: 1;
+  /* Ensure content is above the blue box */
+  position: relative;
+  z-index: 3;
+  /* Add some space to ensure text isn't cut off */
+  padding: var(--space-md);
 }
 
 .hero-image {
@@ -386,6 +398,8 @@ h6 {
   z-index: 2;
 }
 
+/* Remove the blue box that was causing issues */
+/* 
 .hero-image::after {
   content: '';
   position: absolute;
@@ -397,30 +411,73 @@ h6 {
   border-radius: var(--border-radius-lg);
   z-index: 1;
 }
+*/
 
-.hero h1 {
-  font-size: 3.5rem;
-  margin-bottom: var(--space-xs);
+.hero-section h1 {
+  font-size: 3.25rem;
+  margin-bottom: var(--space-lg);
   color: var(--color-secondary-dark);
+  /* Ensure wrapping for longer words */
+  word-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.2;
 }
 
-.hero h2 {
-  font-size: 1.5rem;
-  color: var(--color-primary);
-  margin-bottom: var(--space-md);
-  font-weight: 600;
-  font-family: var(--font-primary);
-}
-
-.hero .lead {
+.hero-subtitle {
   font-size: 1.25rem;
   margin-bottom: var(--space-lg);
+  color: var(--color-secondary);
+  line-height: 1.6;
+}
+
+.highlight {
+  color: var(--color-primary);
+  position: relative;
 }
 
 .hero-cta {
   display: flex;
   gap: var(--space-md);
   flex-wrap: wrap;
+}
+
+/* Additional responsive fixes */
+@media (max-width: 992px) {
+  .hero-section h1 {
+    font-size: 2.75rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding-top: calc(var(--space-xxl) + 60px);
+    text-align: center;
+  }
+  
+  .hero-section h1 {
+    font-size: 2.25rem;
+  }
+  
+  .hero-section .container {
+    flex-direction: column;
+  }
+  
+  .hero-content {
+    order: 2;
+  }
+  
+  .hero-image {
+    order: 1;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .hero-cta {
+    justify-content: center;
+  }
 }
 
 /* About Section */
@@ -1013,11 +1070,11 @@ h6 {
 
 /* ======= Responsive Design ======= */
 @media (max-width: 1024px) {
-  .hero h1 {
+  .hero-section h1 {
     font-size: 2.75rem;
   }
   
-  .hero h2 {
+  .hero-section h2 {
     font-size: 1.25rem;
   }
   
@@ -1031,7 +1088,7 @@ h6 {
 }
 
 @media (max-width: 768px) {
-  .hero .container,
+  .hero-section .container,
   .about-content,
   .speaking-content,
   .contact-content {
@@ -1110,11 +1167,11 @@ h6 {
     font-size: 14px;
   }
   
-  .hero {
+  .hero-section {
     padding-top: calc(var(--space-xxl) * 1.5);
   }
   
-  .hero h1 {
+  .hero-section h1 {
     font-size: 2.25rem;
   }
   
