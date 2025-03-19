@@ -625,10 +625,23 @@ def generate_content():
     print(f"Social media content: {social_content}")
     
     # Export the slug for use in other workflow steps
-    with open(os.environ["GITHUB_ENV"], "a") as env_file:
-        env_file.write(f"POST_SLUG={slug}\n")
-        env_file.write(f"POST_TITLE={title}\n")
-        env_file.write(f"SOCIAL_CONTENT={social_content}\n")
+    try:
+        if "GITHUB_ENV" in os.environ:
+            github_env = os.environ["GITHUB_ENV"]
+            with open(github_env, "a") as env_file:
+                env_file.write(f"POST_SLUG={slug}\n")
+                env_file.write(f"POST_TITLE={title}\n")
+                
+                # Use multi-line syntax for social content to avoid issues with special characters
+                env_file.write("SOCIAL_CONTENT<<EOF\n")
+                env_file.write(f"{social_content}\n")
+                env_file.write("EOF\n")
+            print("Successfully set workflow environment variables")
+        else:
+            print("GITHUB_ENV not found, skipping setting environment variables")
+    except Exception as e:
+        print(f"Warning: Failed to set GitHub environment variables: {str(e)}")
+        print("This won't affect report generation but might impact subsequent workflow steps")
     
     return True
 
