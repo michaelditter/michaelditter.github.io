@@ -1265,42 +1265,11 @@ h6 {
 .twitter-date {
   font-size: 14px;
   color: var(--color-gray);
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-light-gray);
-}
-
-.twitter-actions {
-  display: flex;
-  justify-content: space-between;
-  max-width: 425px;
-}
-
-.twitter-action {
-  display: flex;
-  align-items: center;
-  color: var(--color-gray);
-  font-size: 13px;
-}
-
-.twitter-action svg {
-  margin-right: 4px;
-}
-
-.twitter-action:hover {
-  color: #1DA1F2;
-}
-
-.twitter-action:hover svg {
-  fill: #1DA1F2;
+  padding-bottom: 0.5rem;
 }
 
 @media (max-width: 768px) {
   .twitter-card-container {
     width: 100%;
-  }
-  
-  .twitter-actions {
-    justify-content: space-around;
   }
 } 

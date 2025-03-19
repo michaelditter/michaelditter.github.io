@@ -1,17 +1,11 @@
 name: Bitcoin Weekly Newsletter
 
 # ===== IMPORTANT NOTES =====
-# 1. Twitter/X Integration: This workflow includes Twitter posting capabilities that are OPTIONAL.
-#    If Twitter API credentials are not provided in GitHub Secrets, the workflow will automatically
-#    skip the Twitter posting step and continue without errors.
+# 1. NOTE: Twitter/X posting capability has been disabled in this workflow.
+#    The content is only displayed in the Twitter-style card on the website.
 #
 # 2. Required API Keys:
 #    - OPENAI_API_KEY: Required for generating the Bitcoin report content
-#    - Twitter API Keys (all optional):
-#      * TWITTER_API_KEY
-#      * TWITTER_API_SECRET
-#      * TWITTER_ACCESS_TOKEN
-#      * TWITTER_ACCESS_SECRET
 # ===========================
 
 on:
@@ -46,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install openai requests pyyaml pillow requests-oauthlib
+          pip install openai requests pyyaml pillow
       
       - name: Create directories
         run: |
@@ -58,10 +52,10 @@ jobs:
         run: |
           echo "Running in test mode with sample data"
           echo "#Bitcoin Update:" > .github/tmp/social_content.txt
-          echo "Price: \$84,630 (+3.07%)" >> .github/tmp/social_content.txt
-          echo "1. Institutional adoption grows with MicroStrategy & Fidelity news." >> .github/tmp/social_content.txt
-          echo "2. Watch for SEC regulations & economic data next week." >> .github/tmp/social_content.txt
-          echo "Outlook: Resistance at \$90,000, support at \$80,000. Overall bullish sentiment. #BTC #Crypto" >> .github/tmp/social_content.txt
+          echo "Price: \$84,570 (+3.60%)" >> .github/tmp/social_content.txt
+          echo "1. Positive regulatory moves & pending SEC Bitcoin ETF decision" >> .github/tmp/social_content.txt
+          echo "2. Institutional adoption with Fidelity & BlackRock" >> .github/tmp/social_content.txt
+          echo "Outlook: Bullish with support at \$80K & resistance at \$100K. #BTC #Crypto" >> .github/tmp/social_content.txt
           
           POST_SLUG="bitcoin-market-report-$(date +%Y-%m-%d)"
           POST_TITLE="Bitcoin Surges Past $84K: Institutional Adoption Drives Growth"
@@ -206,44 +200,19 @@ jobs:
           print(f"Created Bitcoin report image: {image_path}")
           EOF
       
-      - name: Post to Twitter/X
-        if: ${{ github.event_name == 'workflow_dispatch' }} # Only post when manually triggered for now
-        env:
-          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
-          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
-          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
-          SOCIAL_CONTENT: ${{ env.SOCIAL_CONTENT }}
+      - name: Display Social Content (No Twitter Posting)
         run: |
-          echo "Debug: Checking social content file..."
+          echo "📈 Bitcoin Update Content (displayed on website only):"
+          echo "---------------------------------------------------------"
           if [ -f .github/tmp/social_content.txt ]; then
-            echo "Social content file exists"
-            cat .github/tmp/social_content.txt
+            # Clean up the content before displaying
+            cat .github/tmp/social_content.txt | grep -v "Error:" | grep -v "file command" | grep -v "GITHUB_ENV"
           else
-            echo "Social content file does not exist"
+            echo "No social content file found."
           fi
-          
-          echo "Debug: Environment variable SOCIAL_CONTENT value (truncated):"
-          if [ -n "$SOCIAL_CONTENT" ]; then
-            echo "${SOCIAL_CONTENT:0:100}..."
-          else
-            echo "SOCIAL_CONTENT environment variable is empty"
-          fi
-          
-          if [ -n "$TWITTER_API_KEY" ] && [ -n "$TWITTER_API_SECRET" ] && [ -n "$TWITTER_ACCESS_TOKEN" ] && [ -n "$TWITTER_ACCESS_SECRET" ]; then
-            echo "Debug: Running Twitter posting script..."
-            python .github/scripts/post_to_twitter.py
-            echo "Posted Bitcoin update to Twitter/X"
-          else
-            echo "Twitter/X API keys not configured. Skipping social post."
-            echo "Would have posted (from file):"
-            if [ -f .github/tmp/social_content.txt ]; then
-              # Clean up the content before displaying
-              cat .github/tmp/social_content.txt | grep -v "Error:" | grep -v "file command" | grep -v "GITHUB_ENV"
-            else
-              echo "No social content file found."
-            fi
-          fi
+          echo "---------------------------------------------------------"
+          echo "Note: This content is displayed in the Twitter-style card on the website."
+          echo "Twitter posting functionality has been disabled."
       
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
@@ -257,7 +226,7 @@ jobs:
             
             Key points from the report:
             - Generated Bitcoin market analysis for the week
-            - Created both a blog post and social media update
+            - Created both a blog post and website Twitter-style card
             - Added Bitcoin market data visualization
             
             After merging, you can send the newsletter by:
@@ -265,7 +234,7 @@ jobs:
             2. Selecting the "Send Newsletter" workflow
             3. Running the workflow with the post slug: `${{ env.POST_SLUG }}`
             
-            Social content for X/Twitter:
+            Social content (displayed on website):
             ```
             ${{ env.SOCIAL_CONTENT }}
             ```
