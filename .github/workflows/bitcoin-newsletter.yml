@@ -1,5 +1,19 @@
 name: Bitcoin Weekly Newsletter
 
+# ===== IMPORTANT NOTES =====
+# 1. Twitter/X Integration: This workflow includes Twitter posting capabilities that are OPTIONAL.
+#    If Twitter API credentials are not provided in GitHub Secrets, the workflow will automatically
+#    skip the Twitter posting step and continue without errors.
+#
+# 2. Required API Keys:
+#    - OPENAI_API_KEY: Required for generating the Bitcoin report content
+#    - Twitter API Keys (all optional):
+#      * TWITTER_API_KEY
+#      * TWITTER_API_SECRET
+#      * TWITTER_ACCESS_TOKEN
+#      * TWITTER_ACCESS_SECRET
+# ===========================
+
 on:
   schedule:
     # Run every Friday at 9:00 AM UTC
