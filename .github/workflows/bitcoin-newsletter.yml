@@ -71,11 +71,17 @@ jobs:
       
       - name: Save social content to environment variable
         run: |
-          if [ -f .github/tmp/social_content.txt ]; then
-            SOCIAL_CONTENT=$(cat .github/tmp/social_content.txt)
-            echo "SOCIAL_CONTENT<<EOL" >> $GITHUB_ENV
-            echo "$SOCIAL_CONTENT" >> $GITHUB_ENV
-            echo "EOL" >> $GITHUB_ENV
+          if [ -f ".github/tmp/social_content.txt" ]; then
+            # Use a more unique delimiter with random component
+            DELIM="BITCOIN_CONTENT_DELIM_$$"
+            # Write with delimiter syntax
+            echo "SOCIAL_CONTENT<<$DELIM" >> $GITHUB_ENV
+            # Cat the file directly to preserve all formatting
+            cat .github/tmp/social_content.txt >> $GITHUB_ENV
+            echo "$DELIM" >> $GITHUB_ENV
+            echo "Social content saved to environment variable with $DELIM delimiter"
+          else
+            echo "Warning: No social content file found"
           fi
       
       - name: Generate Bitcoin report image
