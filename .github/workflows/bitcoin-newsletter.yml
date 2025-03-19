@@ -229,8 +229,26 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
-          # Stage the generated files
-          git add blog/ img/blog/ .github/tmp/*.json
+          # Stage the generated files (safely handling potentially missing files)
+          if [ -d "blog/" ]; then
+            git add blog/ || true
+          fi
+          
+          if [ -d "img/blog/" ]; then
+            git add img/blog/ || true
+          fi
+          
+          # Add JSON files only if they exist
+          for json_file in .github/tmp/*.json; do
+            if [ -f "$json_file" ]; then
+              git add "$json_file"
+            fi
+          done
+          
+          # Add social content file if it exists
+          if [ -f ".github/tmp/social_content.txt" ]; then
+            git add .github/tmp/social_content.txt
+          fi
           
           # Check if there are changes to commit
           if git diff --staged --quiet; then
