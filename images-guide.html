@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Guide for Michael Ditter's Website</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .image-guide {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .tip {
+            background-color: #e1f5fe;
+            border-left: 4px solid #03a9f4;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Guide for Michael Ditter's Website</h1>
+    
+    <p>This guide helps you prepare and add the necessary images for your website. The website requires several types of images to be fully functional and visually appealing.</p>
+
+    <div class="image-guide">
+        <h2>1. Profile/Headshot Image</h2>
+        <p>Your profile/headshot image is used in the author bio section and about page.</p>
+        <ul>
+            <li><strong>Path:</strong> <code>/img/profile/michael-ditter-headshot.jpg</code></li>
+            <li><strong>Recommended size:</strong> 400px × 400px</li>
+            <li><strong>Format:</strong> JPG or PNG</li>
+        </ul>
+        <div class="tip">
+            <p><strong>Tip:</strong> Use a clear, professional headshot with good lighting and a neutral background.</p>
+        </div>
+    </div>
+
+    <div class="image-guide">
+        <h2>2. Blog Featured Images</h2>
+        <p>Each blog post should have a featured image. Bitcoin market reports automatically generate their own, but other posts need custom images.</p>
+        
+        <h3>Bitcoin Report Images (Auto-generated)</h3>
+        <ul>
+            <li><strong>Path:</strong> <code>/img/blog/bitcoin-market-report-YYYY-MM-DD.jpg</code></li>
+            <li><strong>Size:</strong> Generated automatically</li>
+        </ul>
+        
+        <h3>Custom Blog Post Images</h3>
+        <ul>
+            <li><strong>Path:</strong> <code>/img/blog/[post-slug].jpg</code></li>
+            <li><strong>Recommended size:</strong> 1200px × 630px</li>
+            <li><strong>Format:</strong> JPG or PNG</li>
+        </ul>
+        <div class="tip">
+            <p><strong>Tip:</strong> Use high-quality, relevant images that represent the content of your post.</p>
+        </div>
+    </div>
+
+    <div class="image-guide">
+        <h2>3. Favicon/Site Icons</h2>
+        <p>These icons appear in browser tabs, bookmarks, and when the site is added to home screens.</p>
+        <ul>
+            <li><strong>Primary favicon:</strong> <code>/img/icons/favicon.ico</code></li>
+            <li><strong>Apple Touch Icon:</strong> <code>/img/icons/apple-touch-icon.png</code> (180px × 180px)</li>
+            <li><strong>Android/General Icons:</strong>
+                <ul>
+                    <li><code>/img/icons/icon-192.png</code> (192px × 192px)</li>
+                    <li><code>/img/icons/icon-512.png</code> (512px × 512px)</li>
+                </ul>
+            </li>
+        </ul>
+        <div class="tip">
+            <p><strong>Tip:</strong> You can use online favicon generators like <a href="https://realfavicongenerator.net/" target="_blank">realfavicongenerator.net</a> to create a complete set of icons from a single image.</p>
+        </div>
+    </div>
+
+    <div class="image-guide">
+        <h2>4. Social Media Icons</h2>
+        <p>These are used in the footer and author bio sections.</p>
+        <p>The site is currently using Font Awesome icons, so you don't need to upload separate image files for these.</p>
+    </div>
+
+    <h2>How to Add Images to Your Site</h2>
+    
+    <h3>Option 1: Using GitHub Web Interface</h3>
+    <ol>
+        <li>Go to your GitHub repository</li>
+        <li>Navigate to the appropriate directory (e.g., <code>img/profile/</code>)</li>
+        <li>Click "Add file" → "Upload files"</li>
+        <li>Drag and drop your images or click to select them</li>
+        <li>Add a commit message (e.g., "Add profile headshot")</li>
+        <li>Click "Commit changes"</li>
+    </ol>
+
+    <h3>Option 2: Using Git Command Line</h3>
+    <pre>
+# Ensure you're in your repository directory
+cd /Users/michaelditter/Michael\ Ditter\ Branding
+
+# Add your image files to the appropriate directories
+# For example, to add your headshot:
+cp /path/to/your/headshot.jpg img/profile/michael-ditter-headshot.jpg
+
+# Add other images similarly
+cp /path/to/favicon.ico img/icons/favicon.ico
+cp /path/to/touch-icon.png img/icons/apple-touch-icon.png
+# etc.
+
+# Stage the files
+git add img/
+
+# Commit the changes
+git commit -m "Add website images"
+
+# Push to GitHub
+git push origin main
+</pre>
+
+    <h2>Image Specifications</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Image Type</th>
+                <th>Path</th>
+                <th>Dimensions</th>
+                <th>Format</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Profile Headshot</td>
+                <td><code>/img/profile/michael-ditter-headshot.jpg</code></td>
+                <td>400px × 400px</td>
+                <td>JPG/PNG</td>
+            </tr>
+            <tr>
+                <td>Blog Featured Image</td>
+                <td><code>/img/blog/[post-slug].jpg</code></td>
+                <td>1200px × 630px</td>
+                <td>JPG/PNG</td>
+            </tr>
+            <tr>
+                <td>Favicon</td>
+                <td><code>/img/icons/favicon.ico</code></td>
+                <td>16px × 16px and 32px × 32px</td>
+                <td>ICO</td>
+            </tr>
+            <tr>
+                <td>Apple Touch Icon</td>
+                <td><code>/img/icons/apple-touch-icon.png</code></td>
+                <td>180px × 180px</td>
+                <td>PNG</td>
+            </tr>
+            <tr>
+                <td>Android Icon (small)</td>
+                <td><code>/img/icons/icon-192.png</code></td>
+                <td>192px × 192px</td>
+                <td>PNG</td>
+            </tr>
+            <tr>
+                <td>Android Icon (large)</td>
+                <td><code>/img/icons/icon-512.png</code></td>
+                <td>512px × 512px</td>
+                <td>PNG</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tip">
+        <p><strong>Note:</strong> If you've already placed your headshot image in the repository, you can find it at <code>/img/profile/michael-ditter-headshot.jpg</code>.</p>
+    </div>
+</body>
+</html> 
