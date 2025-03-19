@@ -39,35 +39,35 @@ jobs:
           mkdir -p .github/tmp
           mkdir -p img/blog
       
-      - name: Generate Bitcoin report
-        id: generate-report
+      - name: Generate sample data if in test mode
+        if: ${{ github.event.inputs.test_mode == 'true' }}
+        run: |
+          echo "Running in test mode with sample data"
+          echo "#Bitcoin Update:" > .github/tmp/social_content.txt
+          echo "Price: \$84,630 (+3.07%)" >> .github/tmp/social_content.txt
+          echo "1. Institutional adoption grows with MicroStrategy & Fidelity news." >> .github/tmp/social_content.txt
+          echo "2. Watch for SEC regulations & economic data next week." >> .github/tmp/social_content.txt
+          echo "Outlook: Resistance at \$90,000, support at \$80,000. Overall bullish sentiment. #BTC #Crypto" >> .github/tmp/social_content.txt
+          
+          POST_SLUG="bitcoin-market-report-$(date +%Y-%m-%d)"
+          POST_TITLE="Bitcoin Surges Past $84K: Institutional Adoption Drives Growth"
+          echo "POST_SLUG=$POST_SLUG" >> $GITHUB_ENV
+          echo "POST_TITLE=$POST_TITLE" >> $GITHUB_ENV
+      
+      - name: Generate Bitcoin report with OpenAI
+        if: ${{ github.event.inputs.test_mode != 'true' }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          TEST_MODE: ${{ github.event.inputs.test_mode || 'false' }}
         run: |
-          if [ "$TEST_MODE" = "true" ]; then
-            echo "Running in test mode with sample data"
-            cat > .github/tmp/social_content.txt << 'EOF'
-            #Bitcoin Update:
-            Price: $84,630 (+3.07%)
-            1. Institutional adoption grows with MicroStrategy & Fidelity news.
-            2. Watch for SEC regulations & economic data next week.
-            Outlook: Resistance at $90,000, support at $80,000. Overall bullish sentiment. #BTC #Crypto
-            EOF
-            export POST_SLUG="bitcoin-market-report-$(date +%Y-%m-%d)"
-            export POST_TITLE="Bitcoin Surges Past $84K: Institutional Adoption Drives Growth"
-            echo "POST_SLUG=$POST_SLUG" >> $GITHUB_ENV
-            echo "POST_TITLE=$POST_TITLE" >> $GITHUB_ENV
-          else
-            python .github/scripts/generate_bitcoin_report.py
-          fi
-          
-          # Save the social content to an environment variable for later steps
+          python .github/scripts/generate_bitcoin_report.py
+      
+      - name: Save social content to environment variable
+        run: |
           if [ -f .github/tmp/social_content.txt ]; then
             SOCIAL_CONTENT=$(cat .github/tmp/social_content.txt)
-            echo "SOCIAL_CONTENT<<EOF" >> $GITHUB_ENV
+            echo "SOCIAL_CONTENT<<EOL" >> $GITHUB_ENV
             echo "$SOCIAL_CONTENT" >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
+            echo "EOL" >> $GITHUB_ENV
           fi
       
       - name: Generate Bitcoin report image
