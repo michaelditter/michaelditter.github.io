@@ -36,18 +36,20 @@ jobs:
           from pathlib import Path
           from PIL import Image, ImageDraw, ImageFont
           
-          # Monkey patch for backward compatibility with older Pillow versions
+          # Add backward compatibility for textsize method
+          def textsize_polyfill(self, text, font=None, spacing=4, direction=None, features=None, language=None, stroke_width=0):
+              """Polyfill for the deprecated textsize method."""
+              if hasattr(self, 'textbbox'):
+                  left, top, right, bottom = self.textbbox((0, 0), text, font, spacing, direction, features, language, stroke_width)
+                  return right - left, bottom - top
+              elif font is not None and hasattr(font, 'getsize'):
+                  return font.getsize(text)
+              else:
+                  # Last resort fallback
+                  return len(text) * (font.size if hasattr(font, 'size') else 10), (font.size if hasattr(font, 'size') else 20)
+                  
+          # Monkey patch the ImageDraw class if textsize is missing
           if not hasattr(ImageDraw.ImageDraw, 'textsize'):
-              def textsize_polyfill(self, text, font=None, spacing=4, direction=None, features=None, language=None, stroke_width=0):
-                  """Polyfill for the deprecated textsize method."""
-                  if hasattr(self, 'textbbox'):
-                      left, top, right, bottom = self.textbbox((0, 0), text, font, spacing, direction, features, language, stroke_width)
-                      return right - left, bottom - top
-                  elif hasattr(font, 'getsize'):
-                      return font.getsize(text)
-                  else:
-                      # Last resort fallback
-                      return len(text) * 10, 20
               ImageDraw.ImageDraw.textsize = textsize_polyfill
               print("Added backward compatibility for textsize method")
           
@@ -135,6 +137,7 @@ jobs:
           
           # Add author name
           author_text = "By Michael J Ditter"
+          # Wrap in a try block to catch any AttributeError from textsize
           try:
               # Try the newer textlength method first
               author_width = draw.textlength(author_text, font=subtitle_font)
