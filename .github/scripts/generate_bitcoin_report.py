@@ -135,60 +135,114 @@ def generate_content():
         print(f"Error generating title: {str(e)}")
         title = f"Bitcoin Market Analysis: ${bitcoin_data['current_price']:,.2f} on {FORMATTED_DATE}"
     
-    # Generate the main report content
+    # Generate the main report content with improved formatting instructions
     content_prompt = f"""
-    Create a comprehensive weekly Bitcoin market analysis report for {FORMATTED_DATE}. The report should monitor key triggers that could lead to Bitcoin price movements, following this structure:
+    Create a comprehensive weekly Bitcoin market analysis report for {FORMATTED_DATE}. The report should monitor key triggers that could lead to Bitcoin price movements.
 
-    1. Begin with a brief executive summary of the current Bitcoin market situation
-       - Current price: ${bitcoin_data['current_price']}
-       - 24-hour change: {bitcoin_data['price_change_24h']:.2f}%
-       - Key takeaways from this week's developments
+    IMPORTANT: Format the content with proper spacing, clear headings, and well-organized sections. Use HTML formatting for proper display on the web.
 
-    2. Analyze the following key trigger categories in detail:
+    Follow this structure:
 
-       a) Regulatory Moves
-       - Recent or pending regulatory developments (ETF updates, legislation, etc.)
-       - How these regulations might impact Bitcoin's price
-       - Which countries or agencies to watch in the coming week
+    <h2>Executive Summary</h2>
+    <p>
+    Begin with a concise summary of the current Bitcoin market situation.
+    - Current price: ${bitcoin_data['current_price']}
+    - 24-hour change: {bitcoin_data['price_change_24h']:.2f}%
+    - Key takeaways from this week's developments
+    </p>
 
-       b) Macroeconomic Factors
-       - Recent Federal Reserve decisions or statements
-       - Latest inflation data and trends
-       - Global economic conditions affecting Bitcoin
-       - Liquidity and monetary policy developments
+    <h2>1. Regulatory Moves</h2>
+    <p>
+    Analyze recent or pending regulatory developments (ETF updates, legislation, etc.)
+    </p>
+    <h3>Key Regulatory Developments:</h3>
+    <ul>
+    <li>First important regulatory development</li>
+    <li>Second important regulatory development</li>
+    <li>Third important regulatory development</li>
+    </ul>
+    <p>
+    Provide analysis of how these regulations might impact Bitcoin's price and which countries or agencies to watch in the coming week.
+    </p>
 
-       c) Institutional Adoption
-       - Recent investments by corporations or funds
-       - New institutional products or services
-       - Changes in institutional sentiment toward Bitcoin
-       - Notable statements from financial leaders
+    <h2>2. Macroeconomic Factors</h2>
+    <p>
+    Analyze recent Federal Reserve decisions, inflation data, and global economic conditions affecting Bitcoin.
+    </p>
+    <h3>Key Macroeconomic Indicators:</h3>
+    <ul>
+    <li>Recent Federal Reserve decisions or statements</li>
+    <li>Latest inflation data and trends</li>
+    <li>Global economic conditions affecting Bitcoin</li>
+    </ul>
+    <p>
+    Detailed analysis of how these macro factors are influencing Bitcoin prices.
+    </p>
 
-       d) Market Sentiment Analysis
-       - Current Fear & Greed Index reading and what it suggests
-       - Whale accumulation or distribution patterns
-       - Social media and search trends related to Bitcoin
-       - Overall market psychology assessment
+    <h2>3. Institutional Adoption</h2>
+    <p>
+    Analyze recent investments by corporations or funds and institutional products or services.
+    </p>
+    <h3>Notable Institutional Developments:</h3>
+    <ul>
+    <li>Recent investments by major corporations or funds</li>
+    <li>New institutional products or services</li>
+    <li>Statements from financial leaders</li>
+    </ul>
+    <p>
+    Analysis of changing institutional sentiment toward Bitcoin.
+    </p>
 
-       e) Technical Indicators
-       - Analysis of key price levels ($100K, $80K, etc.)
-       - RSI, moving averages, and other relevant indicators
-       - Chart patterns and potential breakout/breakdown points
-       - Volume analysis and what it signals
+    <h2>4. Market Sentiment Analysis</h2>
+    <p>
+    Analyze current Fear & Greed Index, whale activity, and market psychology.
+    </p>
+    <h3>Key Sentiment Indicators:</h3>
+    <ul>
+    <li>Current Fear & Greed Index reading and what it suggests</li>
+    <li>Whale accumulation or distribution patterns</li>
+    <li>Social media and search trends related to Bitcoin</li>
+    </ul>
+    <p>
+    Analysis of overall market psychology and what it suggests for price movement.
+    </p>
 
-    3. Conclude with a forward-looking analysis:
-       - Key events to watch in the coming week
-       - Potential price targets and support/resistance levels
-       - Overall market thesis for the near term
+    <h2>5. Technical Indicators</h2>
+    <p>
+    Analyze key price levels, technical indicators, and chart patterns.
+    </p>
+    <h3>Key Technical Signals:</h3>
+    <ul>
+    <li>Analysis of key price levels (e.g., $100K, $80K)</li>
+    <li>RSI, moving averages, and other relevant indicators</li>
+    <li>Volume analysis and what it signals</li>
+    </ul>
+    <p>
+    Analysis of potential breakout/breakdown points and price targets.
+    </p>
+
+    <h2>Forward-Looking Analysis</h2>
+    <p>
+    Conclude with analysis of key events to watch, potential price targets, and overall market thesis.
+    </p>
+    <ul>
+    <li>Key events to watch in the coming week</li>
+    <li>Potential price targets and support/resistance levels</li>
+    <li>Overall market thesis for the near term</li>
+    </ul>
+    <p>
+    <em>Not investment advice. Bitcoin investments carry financial risk. Please conduct thorough research or consult a professional before making financial decisions.</em>
+    </p>
 
     Use a professional but accessible tone. Include specific data points and references where possible. Avoid making definitive price predictions, instead focusing on analysis of key factors and potential scenarios.
 
-    Format the content with clear Markdown headings, bullet points, and occasional emphasis. The total length should be approximately 1500-2000 words.
+    The total length should be approximately 1500-2000 words. Remember to maintain proper HTML formatting with appropriate paragraph tags, heading tags, unordered lists, and occasional emphasis.
     """
     
     content_response = client.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": "You are a professional cryptocurrency analyst with expertise in Bitcoin markets. You create detailed, data-driven market analysis reports."},
+            {"role": "system", "content": "You are a professional cryptocurrency analyst with expertise in Bitcoin markets. You create detailed, data-driven market analysis reports with clear, well-structured HTML formatting."},
             {"role": "user", "content": content_prompt}
         ]
     )
@@ -458,8 +512,10 @@ def generate_content():
                 </div>
             </div>
             
-            <!-- Convert Markdown to HTML -->
-            {post_content}
+            <!-- Main content with improved formatting -->
+            <div class="blog-sections">
+                {post_content}
+            </div>
             
             <!-- Social Share -->
             <div class="social-share">
@@ -619,7 +675,7 @@ def generate_content():
     placeholder_dir = Path("img") / "blog"
     placeholder_dir.mkdir(parents=True, exist_ok=True)
     
-    print(f"Generated Bitcoin report: {title}")
+    print(f"Generated Bitcoin report: \"{title}\"")
     print(f"Report saved to: {post_file}")
     print(f"Newsletter data saved to: {newsletter_file}")
     print(f"Social media content: {social_content}")
