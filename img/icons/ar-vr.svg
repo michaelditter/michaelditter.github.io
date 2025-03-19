@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>AR/VR Innovation</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="arVrGradient">
+            <stop stop-color="#6A3093" offset="0%"></stop>
+            <stop stop-color="#A044FF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- VR Headset main body -->
+        <path d="M12,22 L48,22 C50.209,22 52,23.791 52,26 L52,36 C52,38.209 50.209,40 48,40 L36,40 L24,40 L12,40 C9.791,40 8,38.209 8,36 L8,26 C8,23.791 9.791,22 12,22 Z" fill="url(#arVrGradient)" fill-rule="nonzero"></path>
+        
+        <!-- Left Eye Lens -->
+        <circle fill="#FFFFFF" fill-opacity="0.3" cx="21" cy="31" r="6"></circle>
+        
+        <!-- Right Eye Lens -->
+        <circle fill="#FFFFFF" fill-opacity="0.3" cx="39" cy="31" r="6"></circle>
+        
+        <!-- Nose Cut-out -->
+        <path d="M30,40 L30,37 C30,35.343 31.343,34 33,34 L27,34 C28.657,34 30,35.343 30,37 L30,40 Z" fill="#FFFFFF" fill-opacity="0.1"></path>
+        
+        <!-- Head Strap -->
+        <path d="M48,26 C51.314,26 54,27.791 54,30 C54,32.209 51.314,34 48,34" stroke="url(#arVrGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M12,26 C8.686,26 6,27.791 6,30 C6,32.209 8.686,34 12,34" stroke="url(#arVrGradient)" stroke-width="2" stroke-linecap="round"></path>
+        
+        <!-- AR Elements - floating UI -->
+        <rect fill="#FFFFFF" fill-opacity="0.3" x="16" cy="23" width="10" height="2" rx="1"></rect>
+        <rect fill="#FFFFFF" fill-opacity="0.3" x="34" cy="23" width="10" height="2" rx="1"></rect>
+        
+        <!-- Controller -->
+        <path d="M25,44 L35,44 C36.105,44 37,44.895 37,46 L37,46 C37,47.105 36.105,48 35,48 L25,48 C23.895,48 23,47.105 23,46 L23,46 C23,44.895 23.895,44 25,44 Z" fill="url(#arVrGradient)" fill-opacity="0.7"></path>
+        <circle fill="#FFFFFF" fill-opacity="0.5" cx="30" cy="46" r="1"></circle>
+    </g>
+</svg> 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Go to Market Strategy</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="goToMarketGradient">
+            <stop stop-color="#FF512F" offset="0%"></stop>
+            <stop stop-color="#F09819" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Ascending graph -->
+        <polyline points="14,46 22,38 30,40 38,32 46,25" stroke="url(#goToMarketGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        
+        <!-- Graph dots -->
+        <circle fill="url(#goToMarketGradient)" cx="14" cy="46" r="2"></circle>
+        <circle fill="url(#goToMarketGradient)" cx="22" cy="38" r="2"></circle>
+        <circle fill="url(#goToMarketGradient)" cx="30" cy="40" r="2"></circle>
+        <circle fill="url(#goToMarketGradient)" cx="38" cy="32" r="2"></circle>
+        <circle fill="url(#goToMarketGradient)" cx="46" cy="25" r="2"></circle>
+        
+        <!-- Rocket body -->
+        <path d="M38,12 L35,21 L42,28 L51,25 L38,12 Z" fill="url(#goToMarketGradient)" fill-rule="nonzero"></path>
+        
+        <!-- Rocket window -->
+        <circle fill="#FFFFFF" fill-opacity="0.5" cx="42" cy="18" r="2"></circle>
+        
+        <!-- Rocket flames -->
+        <path d="M35,21 L32,24 L35,27 L38,24 L35,21 Z" fill="url(#goToMarketGradient)" fill-opacity="0.7"></path>
+        
+        <!-- Target market -->
+        <circle stroke="url(#goToMarketGradient)" stroke-width="2" cx="22" cy="30" r="8" stroke-dasharray="2,2"></circle>
+        <circle fill="url(#goToMarketGradient)" cx="22" cy="30" r="4"></circle>
+        <circle fill="#FFFFFF" fill-opacity="0.5" cx="22" cy="30" r="2"></circle>
+
+        <!-- Connecting line from rocket to market -->
+        <path d="M35,21 C30,24 26,27 22,30" stroke="url(#goToMarketGradient)" stroke-width="1.5" stroke-dasharray="3,3" stroke-linecap="round"></path>
+    </g>
+</svg> 

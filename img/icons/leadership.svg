@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Leadership</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="leadershipGradient">
+            <stop stop-color="#1D976C" offset="0%"></stop>
+            <stop stop-color="#93F9B9" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Leader figure -->
+        <circle fill="url(#leadershipGradient)" cx="20" cy="12" r="5"></circle>
+        <path d="M15,32 C15,26 25,26 25,32" stroke="url(#leadershipGradient)" stroke-width="1.5" stroke-linecap="round"></path>
+        <rect fill="url(#leadershipGradient)" x="18" y="17" width="4" height="11" rx="1"></rect>
+        
+        <!-- Team figures -->
+        <circle fill="url(#leadershipGradient)" fill-opacity="0.7" cx="10" cy="22" r="3"></circle>
+        <path d="M7,32 C7,29 13,29 13,32" stroke="url(#leadershipGradient)" stroke-width="1.5" stroke-linecap="round"></path>
+        <rect fill="url(#leadershipGradient)" fill-opacity="0.7" x="9" y="25" width="2" height="5" rx="1"></rect>
+        
+        <circle fill="url(#leadershipGradient)" fill-opacity="0.7" cx="30" cy="22" r="3"></circle>
+        <path d="M27,32 C27,29 33,29 33,32" stroke="url(#leadershipGradient)" stroke-width="1.5" stroke-linecap="round"></path>
+        <rect fill="url(#leadershipGradient)" fill-opacity="0.7" x="29" y="25" width="2" height="5" rx="1"></rect>
+        
+        <!-- Direction arrow -->
+        <path d="M20,6 L20,2" stroke="url(#leadershipGradient)" stroke-width="1.5" stroke-linecap="round"></path>
+        <path d="M16,4 L20,2 L24,4" stroke="url(#leadershipGradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        
+        <!-- Connection lines -->
+        <path d="M14,18 L10,19" stroke="url(#leadershipGradient)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="1,1"></path>
+        <path d="M26,18 L30,19" stroke="url(#leadershipGradient)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="1,1"></path>
+        
+        <!-- Crown element for leadership -->
+        <path d="M16,8 L20,6 L24,8 L22,12 L18,12 Z" stroke="url(#leadershipGradient)" stroke-width="1" fill="url(#leadershipGradient)" fill-opacity="0.3"></path>
+    </g>
+</svg> 

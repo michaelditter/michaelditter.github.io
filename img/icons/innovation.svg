@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Innovation Leadership</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="innovationGradient">
+            <stop stop-color="#FFD200" offset="0%"></stop>
+            <stop stop-color="#F7971E" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Light bulb body -->
+        <path d="M30,10 C37.732,10 44,16.268 44,24 C44,28.483 42.105,32.548 39,35.361 L39,38 C39,39.105 38.105,40 37,40 L23,40 C21.895,40 21,39.105 21,38 L21,35.361 C17.895,32.548 16,28.483 16,24 C16,16.268 22.268,10 30,10 Z" fill="url(#innovationGradient)" fill-rule="nonzero"></path>
+        
+        <!-- Light bulb base -->
+        <rect fill="url(#innovationGradient)" x="25" y="40" width="10" height="2" rx="1"></rect>
+        <rect fill="url(#innovationGradient)" x="26" y="42" width="8" height="2" rx="1"></rect>
+        <rect fill="url(#innovationGradient)" x="27" y="44" width="6" height="2" rx="1"></rect>
+        
+        <!-- Light bulb highlights -->
+        <path d="M30,14 C35.523,14 40,18.477 40,24 C40,26.125 39.374,28.078 38.302,29.702" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.5"></path>
+        <circle fill="#FFFFFF" fill-opacity="0.5" cx="26" cy="20" r="2"></circle>
+        
+        <!-- Sparks/Stars -->
+        <path d="M14,20 L16,22 L14,24 L12,22 Z" fill="url(#innovationGradient)" transform="translate(14, 22) rotate(45) translate(-14, -22)"></path>
+        <path d="M46,20 L48,22 L46,24 L44,22 Z" fill="url(#innovationGradient)" transform="translate(46, 22) rotate(45) translate(-46, -22)"></path>
+        <path d="M22,8 L24,10 L22,12 L20,10 Z" fill="url(#innovationGradient)" transform="translate(22, 10) rotate(45) translate(-22, -10)"></path>
+        <path d="M38,8 L40,10 L38,12 L36,10 Z" fill="url(#innovationGradient)" transform="translate(38, 10) rotate(45) translate(-38, -10)"></path>
+        
+        <!-- Crown element for leadership -->
+        <path d="M24,15 L30,12 L36,15 L33,20 L27,20 Z" stroke="url(#innovationGradient)" stroke-width="1.5" fill="url(#innovationGradient)" fill-opacity="0.3"></path>
+    </g>
+</svg> 

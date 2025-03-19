@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Consumer Experience Design</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="consumerExpGradient">
+            <stop stop-color="#8E2DE2" offset="0%"></stop>
+            <stop stop-color="#4A00E0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Screen/Device -->
+        <rect stroke="url(#consumerExpGradient)" stroke-width="2" x="12" y="12" width="36" height="28" rx="2"></rect>
+        <rect fill="url(#consumerExpGradient)" fill-opacity="0.1" x="12" y="12" width="36" height="28" rx="2"></rect>
+        
+        <!-- UI Elements -->
+        <rect fill="url(#consumerExpGradient)" x="16" y="16" width="28" height="4" rx="1"></rect>
+        <circle fill="url(#consumerExpGradient)" cx="20" cy="26" r="2"></circle>
+        <rect fill="url(#consumerExpGradient)" x="24" y="24" width="20" height="2" rx="1"></rect>
+        <rect fill="url(#consumerExpGradient)" x="24" y="28" width="16" height="2" rx="1"></rect>
+        <circle fill="url(#consumerExpGradient)" cx="20" cy="32" r="2"></circle>
+        <rect fill="url(#consumerExpGradient)" x="24" y="30" width="20" height="2" rx="1"></rect>
+        <rect fill="url(#consumerExpGradient)" x="24" y="34" width="12" height="2" rx="1"></rect>
+        
+        <!-- Device Base -->
+        <path d="M24,40 L36,40 L38,44 L22,44 L24,40 Z" fill="url(#consumerExpGradient)"></path>
+        
+        <!-- User icon -->
+        <circle fill="url(#consumerExpGradient)" cx="42" cy="44" r="4"></circle>
+        <path d="M42,48 C38.5,48 36,51 36,54 L48,54 C48,51 45.5,48 42,48 Z" fill="url(#consumerExpGradient)"></path>
+        
+        <!-- Hand interacting with screen -->
+        <path d="M36,36 C33,36 28,38 28,44" stroke="url(#consumerExpGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <circle fill="url(#consumerExpGradient)" cx="36" cy="36" r="2"></circle>
+        
+        <!-- Rating/Feedback elements -->
+        <path d="M14,50 L16,46 L18,50 L14,50 Z" fill="url(#consumerExpGradient)"></path>
+        <path d="M20,48 L22,52 L24,48 L20,48 Z" fill="url(#consumerExpGradient)"></path>
+    </g>
+</svg> 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Emerging Technology</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="emergingTechGradient">
+            <stop stop-color="#2C3E50" offset="0%"></stop>
+            <stop stop-color="#3498DB" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Central node -->
+        <circle fill="url(#emergingTechGradient)" cx="30" cy="30" r="5"></circle>
+        
+        <!-- Surrounding nodes -->
+        <circle fill="url(#emergingTechGradient)" cx="17" cy="17" r="3"></circle>
+        <circle fill="url(#emergingTechGradient)" cx="43" cy="17" r="3"></circle>
+        <circle fill="url(#emergingTechGradient)" cx="17" cy="43" r="3"></circle>
+        <circle fill="url(#emergingTechGradient)" cx="43" cy="43" r="3"></circle>
+        <circle fill="url(#emergingTechGradient)" cx="12" cy="30" r="3"></circle>
+        <circle fill="url(#emergingTechGradient)" cx="48" cy="30" r="3"></circle>
+        <circle fill="url(#emergingTechGradient)" cx="30" cy="12" r="3"></circle>
+        <circle fill="url(#emergingTechGradient)" cx="30" cy="48" r="3"></circle>
+        
+        <!-- Connections -->
+        <path d="M17,17 L30,30" stroke="url(#emergingTechGradient)" stroke-width="1.5" stroke-dasharray="2,2"></path>
+        <path d="M43,17 L30,30" stroke="url(#emergingTechGradient)" stroke-width="1.5"></path>
+        <path d="M17,43 L30,30" stroke="url(#emergingTechGradient)" stroke-width="1.5"></path>
+        <path d="M43,43 L30,30" stroke="url(#emergingTechGradient)" stroke-width="1.5" stroke-dasharray="2,2"></path>
+        <path d="M12,30 L25,30" stroke="url(#emergingTechGradient)" stroke-width="1.5"></path>
+        <path d="M35,30 L48,30" stroke="url(#emergingTechGradient)" stroke-width="1.5" stroke-dasharray="2,2"></path>
+        <path d="M30,12 L30,25" stroke="url(#emergingTechGradient)" stroke-width="1.5"></path>
+        <path d="M30,35 L30,48" stroke="url(#emergingTechGradient)" stroke-width="1.5" stroke-dasharray="2,2"></path>
+        
+        <!-- Circuit elements -->
+        <circle fill="#FFFFFF" cx="17" cy="17" r="1"></circle>
+        <circle fill="#FFFFFF" cx="43" cy="17" r="1"></circle>
+        <circle fill="#FFFFFF" cx="17" cy="43" r="1"></circle>
+        <circle fill="#FFFFFF" cx="43" cy="43" r="1"></circle>
+        <circle fill="#FFFFFF" cx="12" cy="30" r="1"></circle>
+        <circle fill="#FFFFFF" cx="48" cy="30" r="1"></circle>
+        <circle fill="#FFFFFF" cx="30" cy="12" r="1"></circle>
+        <circle fill="#FFFFFF" cx="30" cy="48" r="1"></circle>
+        <circle fill="#FFFFFF" cx="30" cy="30" r="2"></circle>
+    </g>
+</svg> 

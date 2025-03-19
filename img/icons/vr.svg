@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>VR</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="vrGradient">
+            <stop stop-color="#6A3093" offset="0%"></stop>
+            <stop stop-color="#A044FF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- VR Headset main body -->
+        <path d="M8,14 L32,14 C34.209,14 36,15.791 36,18 L36,25 C36,27.209 34.209,29 32,29 L24,29 L16,29 L8,29 C5.791,29 4,27.209 4,25 L4,18 C4,15.791 5.791,14 8,14 Z" fill="url(#vrGradient)" fill-rule="nonzero"></path>
+        
+        <!-- Left Eye Lens -->
+        <circle fill="#FFFFFF" fill-opacity="0.3" cx="14" cy="21" r="5"></circle>
+        <circle fill="#000000" fill-opacity="0.1" cx="14" cy="21" r="2"></circle>
+        
+        <!-- Right Eye Lens -->
+        <circle fill="#FFFFFF" fill-opacity="0.3" cx="26" cy="21" r="5"></circle>
+        <circle fill="#000000" fill-opacity="0.1" cx="26" cy="21" r="2"></circle>
+        
+        <!-- Nose Cut-out -->
+        <path d="M20,29 L20,27 C20,25.895 21.343,25 23,25 L17,25 C18.657,25 20,25.895 20,27 L20,29 Z" fill="#FFFFFF" fill-opacity="0.1"></path>
+        
+        <!-- Head Strap -->
+        <path d="M36,18 C38,18 40,19 40,21 C40,23 38,24 36,24" stroke="url(#vrGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M4,18 C2,18 0,19 0,21 C0,23 2,24 4,24" stroke="url(#vrGradient)" stroke-width="2" stroke-linecap="round"></path>
+        
+        <!-- Virtual elements - 3D objects -->
+        <rect stroke="url(#vrGradient)" stroke-width="1.5" x="12" y="8" width="4" height="4" rx="1" transform="translate(14, 10) rotate(30) translate(-14, -10)"></rect>
+        <circle stroke="url(#vrGradient)" stroke-width="1.5" cx="26" cy="10" r="2" stroke-dasharray="3,2"></circle>
+        
+        <!-- Virtual world element -->
+        <path d="M14,32 L16,34 L20,34 L24,34 L26,32" stroke="url(#vrGradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M14,32 L16,30 L20,30 L24,30 L26,32" stroke="url(#vrGradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        
+        <!-- Controller -->
+        <path d="M16,36 L24,36 C25.105,36 26,36.895 26,38 L26,38 C26,39.105 25.105,40 24,40 L16,40 C14.895,40 14,39.105 14,38 L14,38 C14,36.895 14.895,36 16,36 Z" fill="url(#vrGradient)" fill-opacity="0.7"></path>
+        <circle fill="#FFFFFF" fill-opacity="0.5" cx="20" cy="38" r="1"></circle>
+    </g>
+</svg> 
