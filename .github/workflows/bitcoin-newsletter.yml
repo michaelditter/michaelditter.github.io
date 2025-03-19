@@ -58,7 +58,7 @@ jobs:
           echo "Outlook: Bullish with support at \$80K & resistance at \$100K. #BTC #Crypto" >> .github/tmp/social_content.txt
           
           POST_SLUG="bitcoin-market-report-$(date +%Y-%m-%d)"
-          POST_TITLE="Bitcoin Surges Past $84K: Institutional Adoption Drives Growth"
+          POST_TITLE="Bitcoin Surges Past \$84K: Institutional Adoption Drives Growth"
           echo "POST_SLUG=$POST_SLUG" >> $GITHUB_ENV
           echo "POST_TITLE=$POST_TITLE" >> $GITHUB_ENV
       
