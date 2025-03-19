@@ -3,7 +3,40 @@ import os
 import sys
 import requests
 import json
+import re
 from requests_oauthlib import OAuth1
+
+def clean_content(content):
+    """Clean and validate the content before posting to Twitter/X."""
+    # Strip any leading/trailing whitespace
+    content = content.strip()
+    
+    # Remove any environment file commands if they exist
+    content = re.sub(r'file command \'env\'.*$', '', content, flags=re.MULTILINE)
+    
+    # Remove any error messages about format
+    content = re.sub(r'Error: Invalid format.*$', '', content, flags=re.MULTILINE)
+    
+    # Ensure the content is under Twitter's character limit
+    if len(content) > 280:
+        print(f"Warning: Content exceeds Twitter's 280 character limit ({len(content)} chars). Truncating...")
+        content = content[:277] + "..."
+    
+    return content
+
+def extract_price_info(content):
+    """Extract price information for logging purposes."""
+    price_pattern = r'Price: \$([0-9,]+)(?:\.\d+)? \(([+-]\d+\.\d+%)\)'
+    match = re.search(price_pattern, content)
+    
+    if match:
+        price = match.group(1)
+        change = match.group(2)
+        print(f"Detected Bitcoin price: ${price} {change}")
+    else:
+        print("Could not detect price information in the content")
+    
+    return content
 
 def post_to_twitter(content):
     """Post content to Twitter/X using API v1.1"""
@@ -58,18 +91,32 @@ if __name__ == "__main__":
     # Read content from environment variable or command line
     content = os.environ.get("SOCIAL_CONTENT")
     
-    if len(sys.argv) > 1:
+    # If not found in environment, try command line argument
+    if not content and len(sys.argv) > 1:
         content = sys.argv[1]
+    
+    # If still no content, check for a file with the content
+    if not content and os.path.exists(".github/tmp/social_content.txt"):
+        try:
+            with open(".github/tmp/social_content.txt", "r") as f:
+                content = f.read().strip()
+        except Exception as e:
+            print(f"Error reading from social content file: {str(e)}")
     
     if not content:
         print("Error: No content provided for Twitter/X post.")
         print("Usage: python post_to_twitter.py 'Your tweet content' OR set SOCIAL_CONTENT env var")
         sys.exit(1)
     
-    # Enforce Twitter character limit
-    if len(content) > 280:
-        print(f"Warning: Content exceeds Twitter's 280 character limit ({len(content)} chars). Truncating...")
-        content = content[:277] + "..."
+    # Clean and process the content
+    content = clean_content(content)
+    content = extract_price_info(content)
+    
+    print("Prepared content for posting:")
+    print("=" * 40)
+    print(content)
+    print("=" * 40)
+    print(f"Character count: {len(content)}/280")
     
     # Post to Twitter
     success = post_to_twitter(content)

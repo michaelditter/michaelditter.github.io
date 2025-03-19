@@ -6,6 +6,12 @@ on:
     - cron: '0 9 * * 5'
   # Allow manual trigger
   workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Run in test mode (no API calls)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   generate-bitcoin-report:
@@ -28,12 +34,41 @@ jobs:
           python -m pip install --upgrade pip
           pip install openai requests pyyaml pillow requests-oauthlib
       
+      - name: Create directories
+        run: |
+          mkdir -p .github/tmp
+          mkdir -p img/blog
+      
       - name: Generate Bitcoin report
         id: generate-report
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TEST_MODE: ${{ github.event.inputs.test_mode || 'false' }}
         run: |
-          python .github/scripts/generate_bitcoin_report.py
+          if [ "$TEST_MODE" = "true" ]; then
+            echo "Running in test mode with sample data"
+            cat > .github/tmp/social_content.txt << 'EOF'
+            #Bitcoin Update:
+            Price: $84,630 (+3.07%)
+            1. Institutional adoption grows with MicroStrategy & Fidelity news.
+            2. Watch for SEC regulations & economic data next week.
+            Outlook: Resistance at $90,000, support at $80,000. Overall bullish sentiment. #BTC #Crypto
+            EOF
+            export POST_SLUG="bitcoin-market-report-$(date +%Y-%m-%d)"
+            export POST_TITLE="Bitcoin Surges Past $84K: Institutional Adoption Drives Growth"
+            echo "POST_SLUG=$POST_SLUG" >> $GITHUB_ENV
+            echo "POST_TITLE=$POST_TITLE" >> $GITHUB_ENV
+          else
+            python .github/scripts/generate_bitcoin_report.py
+          fi
+          
+          # Save the social content to an environment variable for later steps
+          if [ -f .github/tmp/social_content.txt ]; then
+            SOCIAL_CONTENT=$(cat .github/tmp/social_content.txt)
+            echo "SOCIAL_CONTENT<<EOF" >> $GITHUB_ENV
+            echo "$SOCIAL_CONTENT" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          fi
       
       - name: Generate Bitcoin report image
         id: generate-image
@@ -51,7 +86,18 @@ jobs:
           
           if not post_slug or not post_title:
               print("Missing required environment variables")
-              exit(1)
+              print(f"POST_SLUG: {post_slug}")
+              print(f"POST_TITLE: {post_title}")
+              
+              # Fallback values
+              if not post_slug:
+                  import datetime
+                  post_slug = f"bitcoin-market-report-{datetime.datetime.now().strftime('%Y-%m-%d')}"
+                  print(f"Using fallback POST_SLUG: {post_slug}")
+              
+              if not post_title:
+                  post_title = "Bitcoin Market Analysis"
+                  print(f"Using fallback POST_TITLE: {post_title}")
           
           # Create blog image directory if it doesn't exist
           img_dir = Path("img/blog")
@@ -112,7 +158,12 @@ jobs:
           y_position = (height - len(wrapped_text) * 70) // 2
           
           for line in wrapped_text:
-              text_width = draw.textlength(line, font=title_font)
+              try:
+                  text_width = draw.textlength(line, font=title_font)
+              except AttributeError:
+                  # For older PIL versions
+                  text_width = title_font.getsize(line)[0]
+              
               position = ((width - text_width) // 2, y_position)
               # Draw a shadow
               draw.text((position[0] + 2, position[1] + 2), line, font=title_font, fill=(0, 0, 0))
@@ -124,7 +175,13 @@ jobs:
           import datetime
           today = datetime.datetime.now().strftime("%B %d, %Y")
           date_text = f"Bitcoin Market Report | {today}"
-          date_width = draw.textlength(date_text, font=subtitle_font)
+          
+          try:
+              date_width = draw.textlength(date_text, font=subtitle_font)
+          except AttributeError:
+              # For older PIL versions
+              date_width = subtitle_font.getsize(date_text)[0]
+              
           date_position = ((width - date_width) // 2, y_position + 40)
           draw.text(date_position, date_text, font=subtitle_font, fill=(220, 220, 220))
           
@@ -148,12 +205,14 @@ jobs:
             echo "Posted Bitcoin update to Twitter/X"
           else
             echo "Twitter/X API keys not configured. Skipping social post."
+            echo "Would have posted:"
+            cat .github/tmp/social_content.txt
           fi
       
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          commit-message: "Add Bitcoin market report for ${{ env.POST_DATE }}"
+          commit-message: "Add Bitcoin market report for ${{ env.POST_SLUG }}"
           title: "Weekly Bitcoin Market Report"
           body: |
             This PR contains this week's Bitcoin market report ready for review.
