@@ -69,15 +69,17 @@ jobs:
         run: |
           python .github/scripts/generate_bitcoin_report.py
       
-      - name: Save social content to environment variable
+      - name: Save social content to environment variable (Base64 encoded)
         run: |
           if [ -f ".github/tmp/social_content.txt" ]; then
-            # Use the proper heredoc syntax for GitHub env files
-            # The EOT delimiter must be at the start of the line with no leading whitespace
-            echo "SOCIAL_CONTENT<<EOT" >> $GITHUB_ENV
-            cat .github/tmp/social_content.txt >> $GITHUB_ENV
-            echo "EOT" >> $GITHUB_ENV
-            echo "Social content saved to environment variable with EOT delimiter"
+            # This approach converts the multiline content to a single-line base64 string
+            # This avoids any issues with delimiters or multiline environment variables
+            ENCODED_CONTENT=$(base64 -w 0 .github/tmp/social_content.txt)
+            echo "SOCIAL_CONTENT_B64=$ENCODED_CONTENT" >> $GITHUB_ENV
+            echo "Social content saved as base64-encoded environment variable"
+            
+            # For display purposes, create a plaintext version too
+            cp .github/tmp/social_content.txt .github/tmp/social_content_display.txt
           else
             echo "Warning: No social content file found"
           fi
@@ -208,7 +210,10 @@ jobs:
         run: |
           echo "📈 Bitcoin Update Content (displayed on website only):"
           echo "---------------------------------------------------------"
-          if [ -f .github/tmp/social_content.txt ]; then
+          if [ -f .github/tmp/social_content_display.txt ]; then
+            # Clean up the content before displaying
+            cat .github/tmp/social_content_display.txt | grep -v "Error:" | grep -v "file command" | grep -v "GITHUB_ENV"
+          elif [ -f .github/tmp/social_content.txt ]; then
             # Clean up the content before displaying
             cat .github/tmp/social_content.txt | grep -v "Error:" | grep -v "file command" | grep -v "GITHUB_ENV"
           else
@@ -225,8 +230,17 @@ jobs:
           echo "POST_TITLE: ${{ env.POST_TITLE }}"
           echo "GITHUB_REPOSITORY: ${{ github.repository }}"
           echo "GITHUB_ACTOR: ${{ github.actor }}"
-          # Print first line of SOCIAL_CONTENT to verify it's set (avoid printing the whole thing)
-          echo "SOCIAL_CONTENT (first line): $(echo '${{ env.SOCIAL_CONTENT }}' | head -n 1)"
+          
+          # Check if base64 encoded social content exists
+          if [[ -n "${{ env.SOCIAL_CONTENT_B64 }}" ]]; then
+            echo "SOCIAL_CONTENT_B64 is set (showing first 30 chars): ${SOCIAL_CONTENT_B64:0:30}..."
+            
+            # Decode a portion for verification
+            DECODED=$(echo "${{ env.SOCIAL_CONTENT_B64 }}" | base64 --decode 2>/dev/null | head -n 1)
+            echo "First line decoded: $DECODED"
+          else
+            echo "SOCIAL_CONTENT_B64 is not set"
+          fi
           
       # Ensure all files are committed
       - name: Commit changes
@@ -251,9 +265,13 @@ jobs:
             fi
           done
           
-          # Add social content file if it exists
+          # Add social content files if they exist
           if [ -f ".github/tmp/social_content.txt" ]; then
             git add .github/tmp/social_content.txt
+          fi
+          
+          if [ -f ".github/tmp/social_content_display.txt" ]; then
+            git add .github/tmp/social_content_display.txt
           fi
           
           # Check if there are changes to commit
