@@ -214,9 +214,37 @@ jobs:
           echo "Note: This content is displayed in the Twitter-style card on the website."
           echo "Twitter posting functionality has been disabled."
       
+      # Debug environment variables
+      - name: Debug environment variables
+        run: |
+          echo "POST_SLUG: ${{ env.POST_SLUG }}"
+          echo "POST_TITLE: ${{ env.POST_TITLE }}"
+          echo "GITHUB_REPOSITORY: ${{ github.repository }}"
+          echo "GITHUB_ACTOR: ${{ github.actor }}"
+          
+      # Ensure all files are committed
+      - name: Commit changes
+        run: |
+          # Configure git
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Stage the generated files
+          git add blog/ img/blog/ .github/tmp/*.json
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            # Commit the changes
+            git commit -m "Add Bitcoin market report for ${{ env.POST_SLUG }}"
+            echo "Changes committed successfully"
+          fi
+      
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
+          token: ${{ github.token }}
           commit-message: "Add Bitcoin market report for ${{ env.POST_SLUG }}"
           title: "Weekly Bitcoin Market Report"
           body: |
@@ -233,12 +261,8 @@ jobs:
             1. Going to the Actions tab
             2. Selecting the "Send Newsletter" workflow
             3. Running the workflow with the post slug: `${{ env.POST_SLUG }}`
-            
-            Social content (displayed on website):
-            ```
-            ${{ env.SOCIAL_CONTENT }}
-            ```
           branch: bitcoin-report-update
+          base: main
           delete-branch: true
           labels: |
             bitcoin-report
