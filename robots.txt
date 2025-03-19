@@ -1,0 +1,27 @@
+# robots.txt for michaelditter.com
+# This file provides instructions to search engine crawlers about which areas of the site to crawl and index
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.michaelditter.com/sitemap.xml
+
+# Disallow admin areas or temporary content if needed
+# Disallow: /admin/
+# Disallow: /temp/
+
+# Allow AI crawlers specifically to ensure content is properly indexed for AI models
+User-agent: GPTBot
+Allow: /
+User-agent: Bingbot
+Allow: /
+User-agent: Googlebot
+Allow: /
+
+# Disallow duplicate content (if any)
+# Disallow: /content/print-versions/
+
+# Crawl delay for specific crawlers if needed
+# User-agent: SomeSpecificBot
+# Crawl-delay: 10 

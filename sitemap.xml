@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.michaelditter.com/</loc>
+    <lastmod>2023-07-01T12:00:00+00:00</lastmod>
+    <priority>1.0</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- About Page -->
+  <url>
+    <loc>https://www.michaelditter.com/about/</loc>
+    <lastmod>2023-06-15T10:30:00+00:00</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Services Pages -->
+  <url>
+    <loc>https://www.michaelditter.com/services/</loc>
+    <lastmod>2023-06-20T09:15:00+00:00</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/services/consulting/</loc>
+    <lastmod>2023-06-20T09:15:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/services/solution-design/</loc>
+    <lastmod>2023-06-20T09:15:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/services/training/</loc>
+    <lastmod>2023-06-20T09:15:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/services/implementation/</loc>
+    <lastmod>2023-06-20T09:15:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Speaking Page -->
+  <url>
+    <loc>https://www.michaelditter.com/speaking/</loc>
+    <lastmod>2023-06-25T14:45:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Blog Main Page -->
+  <url>
+    <loc>https://www.michaelditter.com/blog/</loc>
+    <lastmod>2023-07-01T10:00:00+00:00</lastmod>
+    <priority>0.8</priority>
+    <changefreq>daily</changefreq>
+  </url>
+
+  <!-- Blog Category Pages -->
+  <url>
+    <loc>https://www.michaelditter.com/blog/category/ai-strategy/</loc>
+    <lastmod>2023-07-01T10:00:00+00:00</lastmod>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/blog/category/machine-learning/</loc>
+    <lastmod>2023-07-01T10:00:00+00:00</lastmod>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/blog/category/ai-ethics/</loc>
+    <lastmod>2023-07-01T10:00:00+00:00</lastmod>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/blog/category/case-studies/</loc>
+    <lastmod>2023-07-01T10:00:00+00:00</lastmod>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Blog Articles -->
+  <url>
+    <loc>https://www.michaelditter.com/blog/ai-optimization-techniques/</loc>
+    <lastmod>2023-06-15T08:30:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>yearly</changefreq>
+    <image:image>
+      <image:loc>https://www.michaelditter.com/img/blog/ai-optimization.jpg</image:loc>
+      <image:title>AI Optimization Techniques</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/blog/ethical-ai-frameworks/</loc>
+    <lastmod>2023-05-22T11:45:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>yearly</changefreq>
+    <image:image>
+      <image:loc>https://www.michaelditter.com/img/blog/ethical-ai.jpg</image:loc>
+      <image:title>Ethical AI Frameworks</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/blog/ai-strategy-c-suite/</loc>
+    <lastmod>2023-04-10T09:20:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>yearly</changefreq>
+    <image:image>
+      <image:loc>https://www.michaelditter.com/img/blog/ai-strategy.jpg</image:loc>
+      <image:title>AI Strategy for C-Suite</image:title>
+    </image:image>
+  </url>
+
+  <!-- Resources Pages -->
+  <url>
+    <loc>https://www.michaelditter.com/resources/white-papers/</loc>
+    <lastmod>2023-06-18T16:30:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/resources/webinars/</loc>
+    <lastmod>2023-06-22T13:15:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Legal Pages -->
+  <url>
+    <loc>https://www.michaelditter.com/terms/</loc>
+    <lastmod>2023-01-15T10:00:00+00:00</lastmod>
+    <priority>0.3</priority>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/privacy/</loc>
+    <lastmod>2023-01-15T10:00:00+00:00</lastmod>
+    <priority>0.3</priority>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.michaelditter.com/cookie-policy/</loc>
+    <lastmod>2023-01-15T10:00:00+00:00</lastmod>
+    <priority>0.3</priority>
+    <changefreq>yearly</changefreq>
+  </url>
+
+</urlset> 
