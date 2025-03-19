@@ -1187,4 +1187,120 @@ h6 {
 /* Add these classes via JavaScript when elements come into view */
 .animated {
   animation: fadeIn 0.6s ease forwards;
+}
+
+/* Twitter Card Styles */
+.twitter-card-container {
+  max-width: 550px;
+  margin: 0 auto 2rem;
+}
+
+.twitter-card {
+  display: block;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-light-gray);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  transition: background-color var(--transition-fast);
+  text-decoration: none;
+  color: var(--color-dark);
+  box-shadow: var(--box-shadow-sm);
+}
+
+.twitter-card:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.twitter-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.twitter-profile {
+  display: flex;
+  align-items: center;
+}
+
+.twitter-profile img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.twitter-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.twitter-fullname {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-dark);
+}
+
+.twitter-username {
+  font-size: 14px;
+  color: var(--color-gray);
+}
+
+.twitter-logo {
+  color: #1DA1F2;
+}
+
+.twitter-content {
+  margin: 0.5rem 0 1rem;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.twitter-content p {
+  margin: 0;
+}
+
+.twitter-date {
+  font-size: 14px;
+  color: var(--color-gray);
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-light-gray);
+}
+
+.twitter-actions {
+  display: flex;
+  justify-content: space-between;
+  max-width: 425px;
+}
+
+.twitter-action {
+  display: flex;
+  align-items: center;
+  color: var(--color-gray);
+  font-size: 13px;
+}
+
+.twitter-action svg {
+  margin-right: 4px;
+}
+
+.twitter-action:hover {
+  color: #1DA1F2;
+}
+
+.twitter-action:hover svg {
+  fill: #1DA1F2;
+}
+
+@media (max-width: 768px) {
+  .twitter-card-container {
+    width: 100%;
+  }
+  
+  .twitter-actions {
+    justify-content: space-around;
+  }
 } 
