@@ -19,15 +19,5 @@
     },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/$1" }
-  ],
-  "env": {
-    "BUTTONDOWN_API_KEY": "@buttondown_api_key",
-    "SMTP_HOST": "@smtp_host",
-    "SMTP_PORT": "@smtp_port",
-    "SMTP_SECURE": "@smtp_secure",
-    "SMTP_USER": "@smtp_user",
-    "SMTP_PASS": "@smtp_pass",
-    "EMAIL_FROM_NAME": "@email_from_name",
-    "NODE_ENV": "production"
-  }
+  ]
 } 
