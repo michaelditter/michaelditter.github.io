@@ -433,7 +433,7 @@ function initNewsletterForm() {
         submitButton.textContent = 'Sending...';
         
         // Send POST request to the API
-        fetch('https://api-only-pjgyq1p84-michael-ditters-projects.vercel.app/api/subscribe', {
+        fetch('https://api-only-pq88ssbko-michael-ditters-projects.vercel.app/api/subscribe?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
