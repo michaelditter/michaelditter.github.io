@@ -426,37 +426,262 @@ for epoch in range(100):
             
             <!-- Technique 4: Feature Engineering -->
             <div id="feature-engineering" class="blog-section">
+                <h2>4. Feature Engineering and Selection</h2>
                 
+                <p>
+                    <strong>Feature engineering transforms raw data into meaningful inputs that enhance model performance and interpretability.</strong> While deep learning has reduced the need for manual feature engineering in some domains, thoughtfully designed features remain crucial for many applications.
+                </p>
+                
+                <h3>Why feature engineering matters</h3>
+                <p>
+                    Good features encode domain knowledge, highlight relevant patterns, and simplify the learning task. They can make the difference between a mediocre model and an exceptional one, especially with limited training data.
+                </p>
+                
+                <h3>Advanced feature engineering techniques</h3>
+                <ul>
+                    <li><strong>Automated Feature Engineering</strong>: Tools like Featuretools and tsfresh that automatically generate and select features</li>
+                    <li><strong>Feature Crossing</strong>: Creating interactions between features to capture non-linear relationships</li>
+                    <li><strong>Embedding Techniques</strong>: Using embeddings from pre-trained models or learning embeddings for categorical variables</li>
+                    <li><strong>Time-based Features</strong>: Extracting temporal patterns using lagged variables, rolling statistics, and periodicity features</li>
+                </ul>
+                
+                <h3>Feature selection strategies</h3>
+                <p>
+                    Not all features contribute equally to model performance. Feature selection helps identify the most relevant inputs, reducing dimensionality and improving efficiency:
+                </p>
+                <ul>
+                    <li><strong>Filter Methods</strong>: Statistical measures like correlation, mutual information, and ANOVA</li>
+                    <li><strong>Wrapper Methods</strong>: Recursive feature elimination and forward selection</li>
+                    <li><strong>Embedded Methods</strong>: Lasso regularization, tree-based importance, and attention mechanisms</li>
+                </ul>
+                
+                <p>
+                    In a recent retail demand forecasting project, adding domain-specific features related to holidays, promotions, and weather patterns improved prediction accuracy by 23% compared to using only historical sales data.
+                </p>
             </div>
             
             <!-- Technique 5: Ensemble Methods -->
             <div id="ensemble-methods" class="blog-section">
-            
+                <h2>5. Ensemble Methods for Improved Accuracy</h2>
+                
+                <p>
+                    <strong>Ensemble methods combine multiple models to produce more accurate and robust predictions than any individual model.</strong> By leveraging the strengths of different approaches, ensembles reduce variance, bias, and the risk of overfitting.
+                </p>
+                
+                <h3>Classical ensemble techniques</h3>
+                <ul>
+                    <li><strong>Bagging</strong>: Training models on random subsets of data (e.g., Random Forests)</li>
+                    <li><strong>Boosting</strong>: Sequential training with emphasis on previously misclassified examples (e.g., XGBoost, LightGBM)</li>
+                    <li><strong>Stacking</strong>: Using predictions from multiple models as inputs to a meta-learner</li>
+                    <li><strong>Voting</strong>: Simple majority voting for classification or averaging for regression</li>
+                </ul>
+                
+                <h3>Advanced ensemble strategies</h3>
+                <p>
+                    Beyond the classics, several advanced ensemble techniques have emerged:
+                </p>
+                <ul>
+                    <li><strong>Snapshot Ensembles</strong>: Collecting model snapshots at different stages of training with cyclic learning rates</li>
+                    <li><strong>Super Learners</strong>: Using cross-validation to optimize the weighted combination of base models</li>
+                    <li><strong>Multi-objective Ensembles</strong>: Combining models optimized for different objectives (e.g., accuracy, fairness, efficiency)</li>
+                </ul>
+                
+                <div class="info-box">
+                    <h4>Case Study: Ensemble Impact</h4>
+                    <p>
+                        In a financial fraud detection system, an ensemble of five diverse models (logistic regression, random forest, gradient boosting, neural network, and SVM) achieved 97.2% accuracy, compared to 94.5% for the best individual model. The ensemble also reduced false positives by 38%, significantly decreasing the manual review workload.
+                    </p>
+                </div>
+                
+                <h3>Implementation considerations</h3>
+                <p>
+                    While powerful, ensembles come with tradeoffs:
+                </p>
+                <ul>
+                    <li>Increased computational cost during training and inference</li>
+                    <li>Greater system complexity and maintenance requirements</li>
+                    <li>Potential diminishing returns as more models are added</li>
+                </ul>
+                
+                <p>
+                    The most effective ensembles typically combine diverse models that make different types of errors, rather than simply using many variations of the same algorithm.
+                </p>
             </div>
             
             <!-- Technique 6: Model Pruning -->
             <div id="model-pruning" class="blog-section">
-            
+                <h2>6. Model Pruning and Quantization</h2>
+                
+                <p>
+                    <strong>Model pruning and quantization reduce model size and computational requirements without significantly sacrificing performance.</strong> These techniques are crucial for deploying AI models on resource-constrained devices like mobile phones, IoT devices, and edge computing platforms.
+                </p>
+                
+                <h3>Pruning strategies</h3>
+                <p>
+                    Pruning removes redundant or less important parameters from a model:
+                </p>
+                <ul>
+                    <li><strong>Magnitude-based Pruning</strong>: Removing weights with small absolute values</li>
+                    <li><strong>Structured Pruning</strong>: Removing entire channels, filters, or neurons</li>
+                    <li><strong>Dynamic Pruning</strong>: Selectively activating parts of the network based on the input</li>
+                    <li><strong>Lottery Ticket Hypothesis</strong>: Finding and training sparse "winning ticket" subnetworks</li>
+                </ul>
+                
+                <h3>Quantization techniques</h3>
+                <p>
+                    Quantization reduces the precision of model parameters and computations:
+                </p>
+                <ul>
+                    <li><strong>Post-Training Quantization</strong>: Converting a trained FP32 model to INT8 or lower precision</li>
+                    <li><strong>Quantization-Aware Training</strong>: Incorporating quantization effects during training</li>
+                    <li><strong>Mixed-Precision Training</strong>: Using different precisions for different layers or operations</li>
+                </ul>
+                
+                <p>
+                    A recent image classification model on a mobile device achieved 5x faster inference and 75% smaller model size through a combination of structured pruning and INT8 quantization, with only a 1.2% decrease in accuracy.
+                </p>
             </div>
             
             <!-- Technique 7: Knowledge Distillation -->
             <div id="knowledge-distillation" class="blog-section">
-            
+                <h2>7. Knowledge Distillation</h2>
+                
+                <p>
+                    <strong>Knowledge distillation transfers knowledge from a large, complex model (the teacher) to a smaller, more efficient model (the student).</strong> This approach allows organizations to deploy compact models that maintain much of the performance of larger models.
+                </p>
+                
+                <h3>How knowledge distillation works</h3>
+                <p>
+                    The core idea is to train the student model not just on the ground truth labels, but also on the soft outputs (probabilities) of the teacher model. This provides more information than hard labels alone, capturing the relationships between classes that the teacher has learned.
+                </p>
+                
+                <h3>Advanced distillation approaches</h3>
+                <ul>
+                    <li><strong>Feature Distillation</strong>: Transferring intermediate layer representations, not just final outputs</li>
+                    <li><strong>Attention Distillation</strong>: Teaching the student to mimic the attention patterns of the teacher</li>
+                    <li><strong>Multi-teacher Distillation</strong>: Learning from multiple teacher models with different architectures or specializations</li>
+                    <li><strong>Self-Distillation</strong>: Using earlier checkpoints of the same model as teachers</li>
+                </ul>
+                
+                <p>
+                    In a production NLP application, we distilled a 680M parameter BERT model into a 60M parameter MobileBERT that achieved 96% of the original performance while running 4.3x faster on mobile devices.
+                </p>
             </div>
             
             <!-- Technique 8: Batch Normalization -->
             <div id="batch-normalization" class="blog-section">
-            
+                <h2>8. Batch Normalization and Layer Normalization</h2>
+                
+                <p>
+                    <strong>Normalization techniques improve training stability, accelerate convergence, and enhance generalization by controlling the distribution of layer inputs.</strong> These methods have become standard components in modern neural network architectures.
+                </p>
+                
+                <h3>Types of normalization</h3>
+                <ul>
+                    <li><strong>Batch Normalization</strong>: Normalizes across the batch dimension, widely used in CNNs</li>
+                    <li><strong>Layer Normalization</strong>: Normalizes across features, popular in RNNs and Transformers</li>
+                    <li><strong>Instance Normalization</strong>: Normalizes each sample independently, useful for style transfer</li>
+                    <li><strong>Group Normalization</strong>: Middle ground between layer and instance normalization</li>
+                </ul>
+                
+                <h3>Implementation considerations</h3>
+                <p>
+                    When applying normalization techniques:
+                </p>
+                <ul>
+                    <li>Consider the appropriate normalization for your architecture and task</li>
+                    <li>Be aware of the impact on batch size sensitivity</li>
+                    <li>Properly handle normalization statistics during inference</li>
+                    <li>Consider the interaction with activation functions</li>
+                </ul>
+                
+                <p>
+                    Adding appropriate normalization layers to a deep CNN reduced training time by 47% and improved accuracy by 2.3 percentage points, while making the model less sensitive to learning rate and weight initialization choices.
+                </p>
             </div>
             
             <!-- Technique 9: Transfer Learning -->
             <div id="transfer-learning" class="blog-section">
-            
+                <h2>9. Transfer Learning and Fine-Tuning</h2>
+                
+                <p>
+                    <strong>Transfer learning leverages knowledge from pre-trained models to improve performance on new tasks, especially with limited data.</strong> This approach has revolutionized many domains, allowing for rapid development of high-performing models.
+                </p>
+                
+                <h3>Effective transfer learning strategies</h3>
+                <ul>
+                    <li><strong>Feature Extraction</strong>: Using pre-trained models as fixed feature extractors</li>
+                    <li><strong>Fine-Tuning</strong>: Selectively updating parts of a pre-trained model for the target task</li>
+                    <li><strong>Progressive Unfreezing</strong>: Gradually unfreezing layers from top to bottom during fine-tuning</li>
+                    <li><strong>Domain Adaptation</strong>: Adapting pre-trained models to new data distributions</li>
+                </ul>
+                
+                <div class="chart-container">
+                    <img src="/img/blog/transfer-learning.jpg" alt="Transfer learning performance comparison" width="600" height="400">
+                    <p class="caption">Performance comparison of training from scratch vs. transfer learning with various amounts of target data</p>
+                </div>
+                
+                <h3>Choosing the right pre-trained model</h3>
+                <p>
+                    Consider these factors when selecting a base model for transfer learning:
+                </p>
+                <ul>
+                    <li>Similarity between source and target domains</li>
+                    <li>Model architecture and size constraints</li>
+                    <li>Available compute resources</li>
+                    <li>Licensing and deployment requirements</li>
+                </ul>
+                
+                <p>
+                    For a specialized medical imaging classification task with only 200 labeled examples, transfer learning from an ImageNet pre-trained model achieved 89% accuracy, compared to 62% when training from scratch.
+                </p>
             </div>
             
             <!-- Technique 10: Deployment Optimization -->
             <div id="deployment-optimization" class="blog-section">
-            
+                <h2>10. Deployment Optimization Strategies</h2>
+                
+                <p>
+                    <strong>Deployment optimization ensures AI models perform efficiently, reliably, and cost-effectively in production environments.</strong> Even the most accurate model provides little value if it can't be deployed successfully.
+                </p>
+                
+                <h3>Key deployment considerations</h3>
+                <ul>
+                    <li><strong>Hardware Acceleration</strong>: Leveraging GPUs, TPUs, FPGAs, or specialized AI hardware</li>
+                    <li><strong>Model Serving Frameworks</strong>: TensorFlow Serving, ONNX Runtime, Triton Inference Server</li>
+                    <li><strong>Containerization</strong>: Packaging models with Docker for consistent environments</li>
+                    <li><strong>Scaling Strategies</strong>: Horizontal vs. vertical scaling for handling variable load</li>
+                </ul>
+                
+                <h3>Advanced deployment techniques</h3>
+                <ul>
+                    <li><strong>Model Caching</strong>: Storing frequently requested predictions</li>
+                    <li><strong>Batching</strong>: Processing multiple requests together for better throughput</li>
+                    <li><strong>Dynamic Model Loading</strong>: Swapping models in/out of memory based on demand</li>
+                    <li><strong>Edge-Cloud Coordination</strong>: Distributing inference between edge devices and cloud</li>
+                </ul>
+                
+                <div class="info-box">
+                    <h4>Case Study: API Optimization</h4>
+                    <p>
+                        A recommendation API serving 1.2 million requests per day reduced average latency from 220ms to 48ms by implementing optimized model serving with ONNX Runtime, request batching, and strategic caching of frequent items. This optimization also reduced cloud computing costs by 62%.
+                    </p>
+                </div>
+                
+                <h3>Monitoring and maintenance</h3>
+                <p>
+                    Successful deployment includes ongoing operations:
+                </p>
+                <ul>
+                    <li>Performance monitoring and alerting</li>
+                    <li>Data drift detection</li>
+                    <li>A/B testing infrastructure</li>
+                    <li>Seamless model updates</li>
+                </ul>
+                
+                <p>
+                    Investing in deployment optimization often provides better returns than marginal improvements in model accuracy, especially for customer-facing applications where latency and reliability directly impact business outcomes.
+                </p>
             </div>
             
             <!-- Conclusion -->
