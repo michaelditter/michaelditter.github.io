@@ -941,6 +941,8 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({ email }),
+                        mode: 'cors',
+                        credentials: 'same-origin'
                     });
                     
                     console.log('Response status:', response.status);

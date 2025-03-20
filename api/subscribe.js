@@ -114,15 +114,28 @@ async function sendEmailWithPdf(to, pdfBuffer) {
 
 // Export handler function
 export default async function handler(req, res) {
-  // Set CORS headers - IMPORTANT: Allow requests from GitHub Pages domain
+  // Get the origin from the request
+  const origin = req.headers.origin;
+  const allowedOrigins = ['https://michaelditter.github.io', 'https://michaelditter.com', 'https://www.michaelditter.com'];
+  
+  // Set CORS headers - Allow requests from both GitHub Pages and custom domain
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', 'https://michaelditter.github.io');
+  
+  // Check if the request origin is in our allowed list
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    // For development/testing, log but still set a default
+    log(`Received request from non-allowed origin: ${origin}`);
+    res.setHeader('Access-Control-Allow-Origin', 'https://michaelditter.com');
+  }
+  
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   // Log request details
   log(`Incoming request: ${req.method} ${req.url || ''}`);
-  log(`Origin: ${req.headers.origin || 'unknown'}`);
+  log(`Origin: ${origin || 'unknown'}`);
   log(`Headers: ${JSON.stringify(req.headers)}`);
   
   if (req.method === 'OPTIONS') {
