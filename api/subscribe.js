@@ -12,10 +12,19 @@ import { promisify } from 'util';
 const readFile = promisify(fs.readFile);
 const access = promisify(fs.access);
 
-// Logging helper
+// Enhanced logging helper with timestamps
 const log = (message) => {
-  console.log(`[${new Date().toISOString()}] ${message}`);
+  console.log(`[${new Date().toISOString()}] [subscribe] ${message}`);
 };
+
+// Log environment variables presence (without exposing values)
+log(`Environment variables available: ${Object.keys(process.env).filter(key => 
+  key.includes('BUTTONDOWN') || 
+  key.includes('SMTP') || 
+  key.includes('EMAIL')
+).join(', ')}`);
+log(`BUTTONDOWN_API_KEY present? ${!!process.env.BUTTONDOWN_API_KEY}`);
+log(`SMTP configuration present? ${!!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)}`);
 
 // Configure email transporter
 let transporter = null;
@@ -34,7 +43,7 @@ if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
       rejectUnauthorized: false
     }
   });
-  log(`Email transporter configured with host: ${process.env.SMTP_HOST}, port: ${process.env.SMTP_PORT}`);
+  log(`Email transporter configured with host: ${process.env.SMTP_HOST}, port: ${process.env.SMTP_PORT || 587}`);
 } else {
   log('Email transporter not configured - missing environment variables');
 }
@@ -56,20 +65,23 @@ async function generatePdf(markdownPath) {
     
     // Convert markdown to PDF
     return new Promise((resolve, reject) => {
+      log('Starting PDF generation from markdown');
       markdownpdf()
         .from.string(markdownContent)
         .to.buffer((err, buffer) => {
           if (err) {
             log(`Error generating PDF: ${err.message}`);
+            console.error('[subscribe] PDF generation error:', err.stack || err);
             reject(err);
           } else {
-            log(`Generated PDF (${buffer.length} bytes)`);
+            log(`Generated PDF successfully (${buffer.length} bytes)`);
             resolve(buffer);
           }
         });
     });
   } catch (error) {
     log(`Error in generatePdf: ${error.message}`);
+    console.error('[subscribe] Generate PDF error stack:', error.stack || error);
     throw error;
   }
 }
@@ -81,39 +93,51 @@ async function generatePdf(markdownPath) {
  * @returns {Promise<object>} - Email send result
  */
 async function sendEmailWithPdf(to, pdfBuffer) {
-  if (!transporter) {
-    log('Email transporter not configured. Skipping email send.');
-    return { skipped: true, reason: 'Email transporter not configured' };
+  try {
+    if (!transporter) {
+      log('Email transporter not configured. Skipping email send.');
+      return { skipped: true, reason: 'Email transporter not configured' };
+    }
+    
+    const mailOptions = {
+      from: `"${process.env.EMAIL_FROM_NAME || 'Michael J Ditter'}" <${process.env.SMTP_USER}>`,
+      to,
+      subject: 'Your AI Marketing FAQ PDF',
+      text: 'Thank you for subscribing to my newsletter! Please find attached the AI Marketing FAQ PDF guide.',
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2>Thank you for subscribing!</h2>
+          <p>I'm excited to share insights on AI, emerging technologies, and digital innovation with you.</p>
+          <p>As promised, here's your <strong>AI Marketing FAQ</strong> guide (attached as a PDF).</p>
+          <p>You'll start receiving my newsletter with the latest content and updates.</p>
+          <p>Best regards,<br>Michael J Ditter</p>
+        </div>
+      `,
+      attachments: [
+        {
+          filename: 'AI-Marketing-FAQ.pdf',
+          content: pdfBuffer
+        }
+      ]
+    };
+    
+    log(`Sending email to ${to} with attachment (${pdfBuffer.length} bytes)`);
+    const result = await transporter.sendMail(mailOptions);
+    log(`Email sent successfully - messageId: ${result.messageId}`);
+    return result;
+  } catch (emailError) {
+    log(`Error sending email: ${emailError.message}`);
+    console.error('[subscribe] Email sending error:', emailError.stack || emailError);
+    throw emailError;
   }
-  
-  const mailOptions = {
-    from: `"${process.env.EMAIL_FROM_NAME || 'Michael J Ditter'}" <${process.env.SMTP_USER}>`,
-    to,
-    subject: 'Your AI Marketing FAQ PDF',
-    text: 'Thank you for subscribing to my newsletter! Please find attached the AI Marketing FAQ PDF guide.',
-    html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>Thank you for subscribing!</h2>
-        <p>I'm excited to share insights on AI, emerging technologies, and digital innovation with you.</p>
-        <p>As promised, here's your <strong>AI Marketing FAQ</strong> guide (attached as a PDF).</p>
-        <p>You'll start receiving my newsletter with the latest content and updates.</p>
-        <p>Best regards,<br>Michael J Ditter</p>
-      </div>
-    `,
-    attachments: [
-      {
-        filename: 'AI-Marketing-FAQ.pdf',
-        content: pdfBuffer
-      }
-    ]
-  };
-  
-  log(`Sending email to ${to}`);
-  return transporter.sendMail(mailOptions);
 }
 
 // Export handler function
 export default async function handler(req, res) {
+  log('=============== Function invoked ===============');
+  log(`Request method: ${req.method}`);
+  log(`Request URL: ${req.url}`);
+  
   // ============ CORS HANDLING - ENHANCED VERSION ============
   // Get the origin from the request
   const origin = req.headers.origin;
@@ -149,9 +173,10 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
   
-  // Log request details
-  log(`Processing ${req.method} request to ${req.url || ''}`);
-  log(`Headers: ${JSON.stringify(req.headers)}`);
+  // Log request headers (safely)
+  const safeHeaders = { ...req.headers };
+  if (safeHeaders.authorization) safeHeaders.authorization = '[REDACTED]';
+  log(`Headers: ${JSON.stringify(safeHeaders)}`);
   
   // ============ END CORS HANDLING ============
 
@@ -163,8 +188,9 @@ export default async function handler(req, res) {
 
   try {
     // Get email from request body
-    log(`Request body: ${JSON.stringify(req.body || {})}`);
-    const { email } = req.body || {};
+    const bodyData = req.body || {};
+    log(`Request body: ${JSON.stringify(bodyData)}`);
+    const { email } = bodyData;
 
     // Validate email
     if (!email || !email.includes('@')) {
@@ -183,33 +209,50 @@ export default async function handler(req, res) {
 
     // Call Buttondown API to add subscriber
     log('Calling Buttondown API');
-    const response = await fetch('https://api.buttondown.email/v1/subscribers', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Token ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email }),
-    });
+    try {
+      const response = await fetch('https://api.buttondown.email/v1/subscribers', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Token ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
 
-    // Parse response
-    const data = await response.json();
-    log(`Buttondown API response status: ${response.status}`);
-    log(`Buttondown API response data: ${JSON.stringify(data)}`);
-
-    // Check for errors
-    if (!response.ok) {
-      // If the email is already subscribed, return a more friendly message
-      if (response.status === 400 && data.email && data.email[0] === 'This email address is already subscribed.') {
-        log('Email already subscribed');
-        return res.status(400).json({ 
-          error: 'Already subscribed', 
-          message: 'This email is already subscribed to the newsletter. Thank you for your interest!' 
-        });
+      log(`Buttondown API response status: ${response.status}`);
+      
+      // Get response text first for logging
+      const responseText = await response.text();
+      log(`Buttondown API response text: ${responseText}`);
+      
+      // Parse JSON if possible
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        log(`Buttondown API parsed response: ${JSON.stringify(data)}`);
+      } catch (parseError) {
+        log(`Could not parse Buttondown response as JSON: ${parseError.message}`);
+        data = { error: 'Invalid response format' };
       }
 
-      log(`Buttondown API error: ${JSON.stringify(data)}`);
-      throw new Error(data.error || 'Failed to subscribe');
+      // Check for errors
+      if (!response.ok) {
+        // If the email is already subscribed, return a more friendly message
+        if (response.status === 400 && data.email && data.email[0] === 'This email address is already subscribed.') {
+          log('Email already subscribed');
+          return res.status(400).json({ 
+            error: 'Already subscribed', 
+            message: 'This email is already subscribed to the newsletter. Thank you for your interest!' 
+          });
+        }
+
+        log(`Buttondown API error: ${JSON.stringify(data)}`);
+        throw new Error(data.error || `Failed to subscribe (Status: ${response.status})`);
+      }
+    } catch (apiError) {
+      log(`Error calling Buttondown API: ${apiError.message}`);
+      console.error('[subscribe] Buttondown API error:', apiError.stack || apiError);
+      throw apiError;
     }
     
     // Generate PDF from markdown
@@ -231,7 +274,7 @@ export default async function handler(req, res) {
       log(`Email sent result: ${JSON.stringify(emailResult)}`);
     } catch (pdfError) {
       log(`Error with PDF or email: ${pdfError.message}`);
-      log(`Full error: ${pdfError.stack || pdfError}`);
+      console.error('[subscribe] PDF/Email error stack:', pdfError.stack || pdfError);
       // Continue with the flow even if PDF generation or email fails
     }
 
@@ -244,10 +287,13 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     log(`Subscription error: ${error.message}`);
-    log(`Full error stack: ${error.stack || error}`);
+    console.error('[subscribe] Full error stack:', error.stack || error);
     return res.status(500).json({ 
       error: 'Subscription failed', 
-      message: 'There was an issue subscribing to the newsletter. Please try again later.' 
+      message: 'There was an issue subscribing to the newsletter. Please try again later.',
+      details: error.message
     });
+  } finally {
+    log('=============== Function completed ===============');
   }
 } 
