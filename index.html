@@ -159,14 +159,17 @@
                 <!-- Newsletter Signup (Above the Fold) -->
                 <div class="hero-newsletter">
                     <h2>Subscribe to My Newsletter</h2>
-                    <p>Get the latest insights on AI, emerging technologies, and digital innovation delivered to your inbox.</p>
+                    <p>Get the latest insights on AI, emerging technologies, and digital innovation delivered to your inbox. <strong>Plus, receive my comprehensive "AI Marketing FAQ Guide"</strong> — answering the 25 most critical questions marketers ask about implementing AI.</p>
                     
-                    <iframe
-                        scrolling="no"
-                        style="width:100%!important;height:220px;border:1px #ccc solid !important"
-                        src="https://buttondown.com/ditter?as_embed=true"
-                    ></iframe>
+                    <div class="newsletter-iframe-container">
+                        <iframe
+                            scrolling="no"
+                            style="width:100%!important;height:220px;border:none !important;background:transparent;"
+                            src="https://buttondown.com/ditter?as_embed=true"
+                        ></iframe>
+                    </div>
                     
+                    <p class="newsletter-bonus"><span class="checkmark">✓</span> Free instant access to AI Marketing FAQ Guide</p>
                     <p class="newsletter-privacy">Your privacy is respected. Unsubscribe at any time.</p>
                 </div>
             </div>
@@ -922,35 +925,76 @@
         /* Hero newsletter form styles */
         .hero-newsletter {
             margin-top: 2rem;
-            padding: 1.5rem;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.8rem;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
         
         .hero-newsletter h2 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
             color: #000000;
+            font-weight: 600;
         }
         
         .hero-newsletter p {
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.95rem;
             color: #000000;
+            line-height: 1.5;
+        }
+        
+        .hero-newsletter p strong {
+            color: #0066cc;
+            font-weight: 600;
+        }
+        
+        .newsletter-iframe-container {
+            margin: 1rem 0;
+            overflow: hidden;
+            border-radius: 8px;
+            background-color: transparent;
         }
         
         .hero-newsletter iframe {
             width: 100%;
             min-height: 220px;
-            border: 1px solid #ccc !important;
+            border: none !important;
+            background: transparent;
+            margin-bottom: -5px; /* Remove any gap at the bottom */
+            margin-top: -5px; /* Remove any gap at the top */
+        }
+        
+        .newsletter-bonus {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: #333;
+            margin-top: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .checkmark {
+            background-color: #0066cc;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 0.8rem;
         }
         
         .newsletter-privacy {
             font-style: italic;
-            margin-top: 1rem;
-            color: #555;
+            margin-top: 0.75rem;
+            color: #666;
+            font-size: 0.85rem;
         }
     </style>
 </body>
