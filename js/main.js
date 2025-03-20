@@ -433,7 +433,7 @@ function initNewsletterForm() {
         submitButton.textContent = 'Sending...';
         
         // Send POST request to the API
-        fetch('https://api-only-xxxxxxxxxxxx.vercel.app/api/subscribe', {  // Replace with your new API URL
+        fetch('https://api-only-zeta.vercel.app/api/subscribe', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
