@@ -219,7 +219,7 @@ export default async function handler(req, res) {
           'Authorization': `Token ${apiKey}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email_address: email }),
       });
 
       log(`Buttondown API response status: ${response.status}`);
@@ -241,7 +241,9 @@ export default async function handler(req, res) {
       // Check for errors
       if (!response.ok) {
         // If the email is already subscribed, return a more friendly message
-        if (response.status === 400 && data.email && data.email[0] === 'This email address is already subscribed.') {
+        if (response.status === 400 && data.email_address && 
+            Array.isArray(data.email_address) && 
+            data.email_address[0].includes("already subscribed")) {
           log('Email already subscribed');
           return res.status(400).json({ 
             error: 'Already subscribed', 
