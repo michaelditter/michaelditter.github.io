@@ -410,7 +410,7 @@ function measurePerformance() {
  * Newsletter form handling
  */
 function initNewsletterForm() {
-  const newsletterForms = document.querySelectorAll('form[action="/api/subscribe"]');
+  const newsletterForms = document.querySelectorAll('form[action*="api/subscribe"]');
   
   if (newsletterForms.length) {
     newsletterForms.forEach(form => {
@@ -433,7 +433,7 @@ function initNewsletterForm() {
         submitButton.textContent = 'Sending...';
         
         // Send POST request to the API
-        fetch('/api/subscribe', {
+        fetch('https://michael-ditter-branding.vercel.app/api/subscribe', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
