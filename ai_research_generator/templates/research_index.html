@@ -66,6 +66,35 @@
     }
     </script>
     
+    <!-- Schema.org structured data for Collection Page -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "{{ canonical_url }}#webpage",
+        "url": "{{ canonical_url }}",
+        "name": "AI Research Updates | Michael J Ditter",
+        "description": "Latest updates in AI research: model breakthroughs, hardware advancements, robotics, enterprise AI, regulations, and future trends.",
+        "isPartOf": {
+            "@type": "WebSite",
+            "@id": "https://www.michaelditter.com/#website",
+            "url": "https://www.michaelditter.com/",
+            "name": "Michael J Ditter | AI Strategy & Emerging Technology Leader"
+        },
+        "inLanguage": "en-US",
+        "datePublished": "{{ generated_date }}",
+        "dateModified": "{{ generated_date }}"
+    }
+    </script>
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-MP9VXW8V');</script>
+    <!-- End Google Tag Manager -->
+    
     <style>
         /* Research index specific styles */
         .research-container {
@@ -250,6 +279,11 @@
     </style>
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MP9VXW8V"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
     <!-- Header with Navigation -->
     <header class="site-header">
         <div class="container">
