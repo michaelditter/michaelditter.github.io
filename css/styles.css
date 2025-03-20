@@ -1336,23 +1336,26 @@ img {
   display: block;
 }
 
-/* Make profile images larger */
+/* Make profile images larger and with a prominent border */
 .blog-author img {
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: auto;
   border-radius: 50%;
+  border: 3px solid var(--color-primary);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .author-bio img {
-  width: 180px !important;
-  height: 180px !important;
+  width: 220px !important;
+  height: auto !important;
   border-radius: 50%;
-  border: 3px solid var(--color-primary-light);
+  border: 5px solid var(--color-primary);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 768px) {
   .author-bio img {
-    width: 140px !important;
-    height: 140px !important;
+    width: 180px !important;
+    height: auto !important;
   }
 } 

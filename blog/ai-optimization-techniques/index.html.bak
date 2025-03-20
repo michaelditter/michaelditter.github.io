@@ -821,7 +821,7 @@ for epoch in range(100):
                             <li><a href="/blog/category/ai-ethics">AI Ethics</a></li>
                             <li><a href="/blog/category/case-studies">Case Studies</a></li>
                             <li><a href="/resources/white-papers">White Papers</a></li>
-                            <li><a href="/resources/webinars">Webinars</a></li>
+                            <!-- <li><a href="/resources/webinars">Webinars</a></li> -->
                         </ul>
                     </div>
                     <div class="footer-legal">
