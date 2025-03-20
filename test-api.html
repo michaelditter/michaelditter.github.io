@@ -95,6 +95,7 @@
         </div>
         <button id="testButton">Test Regular API</button>
         <button id="testAltButton">Test Alternative API</button>
+        <button id="pingButton">Test Ping API</button>
         <div id="result" class="result"></div>
     </div>
     
@@ -106,6 +107,7 @@
         const emailInput = document.getElementById('email');
         const testButton = document.getElementById('testButton');
         const testAltButton = document.getElementById('testAltButton');
+        const pingButton = document.getElementById('pingButton');
         const resultDiv = document.getElementById('result');
         const logDiv = document.getElementById('log');
         
@@ -235,6 +237,62 @@
             } finally {
                 testAltButton.disabled = false;
                 testAltButton.textContent = 'Test Alternative API';
+            }
+        });
+        
+        // Test ping API
+        pingButton.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            
+            if (!email || !email.includes('@')) {
+                resultDiv.textContent = 'Please enter a valid email address';
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            pingButton.disabled = true;
+            pingButton.textContent = 'Testing...';
+            
+            resultDiv.style.display = 'none';
+            
+            try {
+                logMessage('Testing ping API endpoint');
+                
+                const response = await fetch('https://michael-ditter-branding.vercel.app/api/ping', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': 'https://michaelditter.com'
+                    },
+                    body: JSON.stringify({ email }),
+                    mode: 'cors',
+                    credentials: 'omit'
+                });
+                
+                logMessage(`Response status: ${response.status}`);
+                
+                // Parse the response
+                let data;
+                try {
+                    data = await response.json();
+                    logMessage('Response data:', data);
+                } catch (jsonError) {
+                    logMessage('Error parsing JSON response:', jsonError);
+                    throw new Error('Invalid response from server');
+                }
+                
+                resultDiv.textContent = data.message || 'Test successful!';
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                logMessage('Error:', error);
+                resultDiv.textContent = 'Error: ' + error.message;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            } finally {
+                pingButton.disabled = false;
+                pingButton.textContent = 'Test Ping API';
             }
         });
         
