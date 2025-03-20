@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>AI Marketing FAQ Guide</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .pdf-container {
+            margin-top: 1.5rem;
+            width: 100%;
+            height: 800px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+        .protection-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.97);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .protection-overlay.hidden {
+            display: none;
+        }
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #0055aa;
+        }
+    </style>
+</head>
+<body>
+    <div class="protection-overlay" id="protectionOverlay">
+        <div class="form-container">
+            <h2>AI Marketing FAQ Guide</h2>
+            <p>Enter your email to access this exclusive guide:</p>
+            <input type="email" id="emailInput" placeholder="Your email address">
+            <button onclick="validateAccess()">Access Guide</button>
+            <p style="font-size: 0.8rem; margin-top: 1rem;">This resource is exclusively for newsletter subscribers.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">Michael J Ditter</div>
+            <h1>AI Marketing FAQ Guide</h1>
+        </div>
+        
+        <div class="content">
+            <p>This comprehensive guide answers the 25 most critical questions marketers ask about implementing AI in their organizations. Use these insights to develop effective AI strategies and drive innovation in your marketing efforts.</p>
+            
+            <!-- PDF Embed -->
+            <div class="pdf-container">
+                <!-- Replace marketing-ai-faqs.pdf with your actual filename once uploaded -->
+                <iframe src="marketing-ai-faqs.pdf" width="100%" height="100%" style="border: none;"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        &copy; <span id="year"></span> Michael J Ditter. All rights reserved.
+    </div>
+
+    <script>
+        // Set current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Simple access validation
+        function validateAccess() {
+            const email = document.getElementById('emailInput').value.trim();
+            
+            // Basic email validation
+            if (email && email.includes('@') && email.includes('.')) {
+                // Store in session storage to avoid asking again in this session
+                sessionStorage.setItem('accessGranted', 'true');
+                
+                // Hide the overlay
+                document.getElementById('protectionOverlay').classList.add('hidden');
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+        
+        // Check if access was already granted in this session
+        window.onload = function() {
+            if (sessionStorage.getItem('accessGranted') === 'true') {
+                document.getElementById('protectionOverlay').classList.add('hidden');
+            }
+            
+            // Check if coming from newsletter (URL parameter)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('source') === 'newsletter') {
+                document.getElementById('protectionOverlay').classList.add('hidden');
+            }
+        };
+    </script>
+</body>
+</html> 
