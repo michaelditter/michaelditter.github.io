@@ -149,7 +149,7 @@
             try {
                 logMessage('Testing regular subscribe API endpoint');
                 
-                const response = await fetch('https://api-only-pq88ssbko-michael-ditters-projects.vercel.app/api/subscribe?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
+                const response = await fetch('https://api-only-8sq3z3h6p-michael-ditters-projects.vercel.app/api/subscribe?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -205,7 +205,7 @@
             try {
                 logMessage('Testing alternative test-subscribe API endpoint');
                 
-                const response = await fetch('https://api-only-pq88ssbko-michael-ditters-projects.vercel.app/api/test-subscribe?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
+                const response = await fetch('https://api-only-8sq3z3h6p-michael-ditters-projects.vercel.app/api/test-subscribe?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -261,7 +261,7 @@
             try {
                 logMessage('Testing ping API endpoint');
                 
-                const response = await fetch('https://api-only-pq88ssbko-michael-ditters-projects.vercel.app/api/ping?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
+                const response = await fetch('https://api-only-8sq3z3h6p-michael-ditters-projects.vercel.app/api/ping?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -317,13 +317,12 @@
             try {
                 logMessage('Testing simple ping API endpoint');
                 
-                const response = await fetch('https://api-only-pq88ssbko-michael-ditters-projects.vercel.app/api/ping?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN&email=' + encodeURIComponent(email), {
-                    method: 'GET',
+                const response = await fetch('https://api-only-pq88ssbko-michael-ditters-projects.vercel.app/api/subscribe?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
+                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Origin': 'https://michaelditter.com'
+                        'Content-Type': 'application/json'
                     },
-                    mode: 'cors',
+                    body: JSON.stringify({ email_address: email }),
                     credentials: 'omit'
                 });
                 

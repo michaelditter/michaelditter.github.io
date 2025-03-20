@@ -439,7 +439,7 @@ function initNewsletterForm() {
             'Content-Type': 'application/json',
             'Origin': 'https://michaelditter.com'
           },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email_address: email }),
           mode: 'cors',
           credentials: 'omit'
         })
