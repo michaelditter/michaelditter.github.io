@@ -433,7 +433,7 @@ function initNewsletterForm() {
         submitButton.textContent = 'Sending...';
         
         // Send POST request to the API
-        fetch('https://michael-ditter-branding.vercel.app/api/subscribe', {
+        fetch('https://api-only-xxxxxxxxxxxx.vercel.app/api/subscribe', {  // Replace with your new API URL
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -441,7 +441,7 @@ function initNewsletterForm() {
           },
           body: JSON.stringify({ email }),
           mode: 'cors',
-          credentials: 'omit' // Changed from default to omit for CORS
+          credentials: 'omit'
         })
         .then(response => {
           if (response.ok) {
