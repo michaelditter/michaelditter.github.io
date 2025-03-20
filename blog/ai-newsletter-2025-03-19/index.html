@@ -45,6 +45,7 @@
         .research-header {
             text-align: center;
             margin-bottom: 3rem;
+            padding-top: 2rem;
         }
         
         .research-header h1 {
@@ -196,6 +197,22 @@
             color: #777;
         }
         
+        .research-summary {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .research-summary p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin: 0;
+            color: #333;
+        }
+        
         @media (max-width: 768px) {
             .research-card-container {
                 grid-template-columns: 1fr;
@@ -204,6 +221,18 @@
             .research-header h1 {
                 font-size: 2rem;
             }
+            .research-header {
+                padding-top: 4rem;
+            }
+        }
+        
+        /* Fix for site header */
+        .site-header {
+            position: relative;
+            width: 100%;
+            z-index: 100;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
     </style>
     
@@ -262,6 +291,11 @@
         
         <section id="ai-model-updates" class="research-section">
             <h2>AI Model Updates</h2>
+            
+            <div class="research-summary">
+                <p>🔥 <strong>Michael's Take:</strong> The AI model race is intensifying! 🚀 Claude 3.5 Sonnet's leap in reasoning capabilities signals a shift in the competitive landscape, while Meta's push into multimodal with Llama 4 democratizes access to these advanced capabilities. 🧠 DeepMind's AlphaCode 2 represents a significant step toward AI systems that can solve complex programming challenges autonomously. Watch how these advancements reshape both consumer AI experiences and enterprise applications in coming months! ⚡</p>
+            </div>
+            
             <div class="research-card-container">
                 
                 <a href="https://www.anthropic.com/research/claude-3-5-sonnet" class="research-card" target="_blank" rel="noopener">
@@ -283,7 +317,7 @@
                     </div>
                     
                     
-                    <img src="https://www.michaelditter.com/img/ai-research/claude-3-5-sonnet.jpg" alt="Claude 3.5 Sonnet Released: Outperforms GPT-4o in Reasoning Tasks" class="research-image">
+                    <img src="/img/ai-research/claude-3-5-sonnet.jpg" alt="Claude 3.5 Sonnet Released: Outperforms GPT-4o in Reasoning Tasks" class="research-image">
                     
                     
                     <div class="research-content">
@@ -342,7 +376,7 @@
                     </div>
                     
                     
-                    <img src="https://www.michaelditter.com/img/ai-research/llama-4.jpg" alt="Meta's Llama 4 Brings Multimodal Capabilities to Open Source Models" class="research-image">
+                    <img src="/img/ai-research/llama-4.jpg" alt="Meta's Llama 4 Brings Multimodal Capabilities to Open Source Models" class="research-image">
                     
                     
                     <div class="research-content">
@@ -430,6 +464,11 @@
         
         <section id="hardware-advancements" class="research-section">
             <h2>Hardware Advancements</h2>
+            
+            <div class="research-summary">
+                <p>⚡ <strong>Michael's Take:</strong> Hardware innovation remains the foundation of AI progress. 💪 NVIDIA continues to dominate with the H300, but Intel's aggressive pricing with Gaudi4 suggests we may finally see meaningful competition in the AI accelerator space. 💰 These advances will dramatically reduce training costs for frontier models while enabling deployment of more capable AI systems at the edge. 🔮 Expect a wave of new AI applications as these chips become widely available to researchers and developers!</p>
+            </div>
+            
             <div class="research-card-container">
                 
                 <a href="https://nvidia.com/h300-announcement" class="research-card" target="_blank" rel="noopener">
@@ -451,7 +490,7 @@
                     </div>
                     
                     
-                    <img src="https://www.michaelditter.com/img/ai-research/nvidia-h300.jpg" alt="NVIDIA Unveils H300 Tensor Chip: 5x Performance Leap for AI Training" class="research-image">
+                    <img src="/img/ai-research/nvidia-h300.jpg" alt="NVIDIA Unveils H300 Tensor Chip: 5x Performance Leap for AI Training" class="research-image">
                     
                     
                     <div class="research-content">
@@ -548,6 +587,11 @@
         
         <section id="robotics" class="research-section">
             <h2>Robotics</h2>
+            
+            <div class="research-summary">
+                <p>🤖 <strong>Michael's Take:</strong> Humanoid robots are transitioning from research curiosities to commercial reality! 🏭 Boston Dynamics' Atlas commercial release and Tesla's Optimus deployment represent watershed moments for physical AI. 📈 The impact on manufacturing, logistics, and dangerous work environments will accelerate through 2025-2026. 👀 Keep an eye on how regulations evolve to manage safety, privacy, and labor market disruptions as these technologies scale.</p>
+            </div>
+            
             <div class="research-card-container">
                 
                 <a href="https://bostondynamics.com/atlas-commercial" class="research-card" target="_blank" rel="noopener">
@@ -569,7 +613,7 @@
                     </div>
                     
                     
-                    <img src="https://www.michaelditter.com/img/ai-research/boston-dynamics-atlas.jpg" alt="Boston Dynamics' Atlas Humanoid Robot Enters Commercial Production" class="research-image">
+                    <img src="/img/ai-research/boston-dynamics-atlas.jpg" alt="Boston Dynamics' Atlas Humanoid Robot Enters Commercial Production" class="research-image">
                     
                     
                     <div class="research-content">
@@ -665,6 +709,11 @@
         
         <section id="enterprise-ai" class="research-section">
             <h2>Enterprise AI</h2>
+            
+            <div class="research-summary">
+                <p>💼 <strong>Michael's Take:</strong> Enterprise AI adoption is reaching an inflection point! 📊 The McKinsey study validates what many of us have observed - strategic AI implementation delivers measurable productivity gains. 🤝 Microsoft and Salesforce's partnership signals consolidation in the enterprise AI space, with integrated experiences becoming the norm. 💡 Organizations that fail to develop cohesive AI strategies risk falling behind as competitors transform operations and customer experiences.</p>
+            </div>
+            
             <div class="research-card-container">
                 
                 <a href="https://mckinsey.com/finance-ai-productivity-2025" class="research-card" target="_blank" rel="noopener">
@@ -735,7 +784,7 @@
                     </div>
                     
                     
-                    <img src="https://www.michaelditter.com/img/ai-research/microsoft-salesforce.jpg" alt="Microsoft and Salesforce Partner on AI-Powered Business Applications" class="research-image">
+                    <img src="/img/ai-research/microsoft-salesforce.jpg" alt="Microsoft and Salesforce Partner on AI-Powered Business Applications" class="research-image">
                     
                     
                     <div class="research-content">
@@ -783,6 +832,11 @@
         
         <section id="regulatory-news" class="research-section">
             <h2>Regulatory News</h2>
+            
+            <div class="research-summary">
+                <p>⚖️ <strong>Michael's Take:</strong> The regulatory landscape for AI is crystallizing rapidly! 🇪🇺 The EU's implementation timeline provides needed clarity for businesses, while 🇺🇸 California's comprehensive framework signals that US regulation won't be limited to federal action. 🌐 The divergence between regulatory approaches creates compliance challenges for global organizations. 📝 Now is the time to establish robust AI governance frameworks that can adapt to evolving requirements across jurisdictions.</p>
+            </div>
+            
             <div class="research-card-container">
                 
                 <a href="https://digital-strategy.ec.europa.eu/ai-act-enforcement" class="research-card" target="_blank" rel="noopener">
@@ -853,7 +907,7 @@
                     </div>
                     
                     
-                    <img src="https://www.michaelditter.com/img/ai-research/california-ai-regulation.jpg" alt="California Passes Comprehensive AI Regulation Framework" class="research-image">
+                    <img src="/img/ai-research/california-ai-regulation.jpg" alt="California Passes Comprehensive AI Regulation Framework" class="research-image">
                     
                     
                     <div class="research-content">
@@ -902,6 +956,11 @@
         
         <section id="research" class="research-section">
             <h2>Research</h2>
+            
+            <div class="research-summary">
+                <p>🔬 <strong>Michael's Take:</strong> Academic research continues to address AI's most pressing challenges! 🎯 MIT's alignment measurement framework provides much-needed rigor to safety discussions, while 🧠 Stanford's self-correction techniques offer a promising path to reducing hallucinations without expensive retraining. 📚 The gap between research breakthroughs and commercial implementation continues to narrow, with techniques moving from papers to products in months rather than years.</p>
+            </div>
+            
             <div class="research-card-container">
                 
                 <a href="https://mit.edu/csail/ai-alignment-measurement" class="research-card" target="_blank" rel="noopener">
@@ -972,7 +1031,7 @@
                     </div>
                     
                     
-                    <img src="https://www.michaelditter.com/img/ai-research/stanford-hallucinations.jpg" alt="Stanford Study Shows Language Models Can Self-Correct Hallucinations" class="research-image">
+                    <img src="/img/ai-research/stanford-hallucinations.jpg" alt="Stanford Study Shows Language Models Can Self-Correct Hallucinations" class="research-image">
                     
                     
                     <div class="research-content">
@@ -1020,6 +1079,11 @@
         
         <section id="future-trends" class="research-section">
             <h2>Future Trends</h2>
+            
+            <div class="research-summary">
+                <p>🔮 <strong>Michael's Take:</strong> The future of AI is multimodal and deeply integrated with human work! 🌊 Gartner's prediction aligns with my observations - organizations are rapidly moving beyond text-only AI to systems that understand and generate multiple data types. 👥 The WEF's nuanced analysis of AI's employment impact provides a valuable counterpoint to both techno-optimist and alarmist perspectives. 🚀 Successful adaptation will require unprecedented coordination between education, industry, and policy makers.</p>
+            </div>
+            
             <div class="research-card-container">
                 
                 <a href="https://gartner.com/ai-predictions-2027" class="research-card" target="_blank" rel="noopener">
@@ -1090,7 +1154,7 @@
                     </div>
                     
                     
-                    <img src="https://www.michaelditter.com/img/ai-research/ai-jobs-2030.jpg" alt="AI-Human Collaboration Will Create 97 Million Jobs by 2030, Despite Automation" class="research-image">
+                    <img src="/img/ai-research/ai-jobs-2030.jpg" alt="AI-Human Collaboration Will Create 97 Million Jobs by 2030, Despite Automation" class="research-image">
                     
                     
                     <div class="research-content">
