@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
   initContactForm();
   initIntersectionObserver();
   updateCopyrightYear();
+  initFAQToggles();
+  initNewsletterForm();
 });
 
 /**
@@ -295,6 +297,32 @@ function updateCopyrightYear() {
 }
 
 /**
+ * Initialize FAQ toggles
+ */
+function initFAQToggles() {
+  const faqToggles = document.querySelectorAll('.faq-toggle');
+  
+  faqToggles.forEach(toggle => {
+    toggle.addEventListener('click', function() {
+      const faqItem = this.closest('.faq-item');
+      const answer = faqItem.querySelector('.faq-answer');
+      
+      // Toggle the active class on the item
+      faqItem.classList.toggle('active');
+      
+      // Toggle the display of the answer
+      if (faqItem.classList.contains('active')) {
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        this.innerHTML = '<img src="img/icons/minus.svg" alt="Collapse" width="24" height="24">';
+      } else {
+        answer.style.maxHeight = '0';
+        this.innerHTML = '<img src="img/icons/plus.svg" alt="Expand" width="24" height="24">';
+      }
+    });
+  });
+}
+
+/**
  * Analytics helper function (can be expanded as needed)
  * This is a placeholder for implementing analytics tracking
  */
@@ -375,5 +403,92 @@ function measurePerformance() {
         console.log(`Critical content loaded in: ${Math.round(entry.duration)}ms`);
       }
     });
+  }
+}
+
+/**
+ * Newsletter form handling
+ */
+function initNewsletterForm() {
+  const newsletterForms = document.querySelectorAll('.newsletter-form');
+  
+  if (newsletterForms.length) {
+    newsletterForms.forEach(form => {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const emailInput = form.querySelector('input[type="email"]');
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+        
+        // Simple validation
+        if (!emailInput.value.trim() || !isValidEmail(emailInput.value)) {
+          showFormMessage(form, 'Please enter a valid email address', 'error');
+          return;
+        }
+        
+        // Show loading state
+        submitButton.disabled = true;
+        submitButton.textContent = 'Subscribing...';
+        
+        try {
+          // Send the form data to the API
+          const response = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: emailInput.value }),
+          });
+          
+          const data = await response.json();
+          
+          if (response.ok) {
+            // Success
+            showFormMessage(form, data.message || 'Successfully subscribed! Thank you for joining.', 'success');
+            form.reset();
+          } else {
+            // API error
+            const errorMessage = data.message || 'Failed to subscribe. Please try again.';
+            showFormMessage(form, errorMessage, 'error');
+          }
+        } catch (error) {
+          // Network or other error
+          console.error('Newsletter subscription error:', error);
+          showFormMessage(form, 'Unable to connect to the subscription service. Please try again later.', 'error');
+        } finally {
+          // Reset button state
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+        }
+      });
+    });
+  }
+}
+
+/**
+ * Display a message after form submission
+ */
+function showFormMessage(form, message, type) {
+  // Remove any existing message
+  const existingMessage = form.querySelector('.form-message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+  
+  // Create new message element
+  const messageElement = document.createElement('div');
+  messageElement.className = `form-message ${type}`;
+  messageElement.textContent = message;
+  
+  // Insert after the form
+  form.insertAdjacentElement('afterend', messageElement);
+  
+  // Auto-remove after 5 seconds for success messages
+  if (type === 'success') {
+    setTimeout(() => {
+      messageElement.classList.add('fade-out');
+      setTimeout(() => messageElement.remove(), 500);
+    }, 5000);
   }
 } 
