@@ -1381,4 +1381,16 @@ img {
 .form-message.fade-out {
   opacity: 0;
   transition: opacity 0.5s ease-out;
+}
+
+/* ======= Research Newsletter Styles ======= */
+/* Add this to fix the header overlap issue on newsletter pages */
+.research-container {
+  padding-top: 120px; /* Add padding to account for fixed header */
+}
+
+@media (max-width: 768px) {
+  .research-container {
+    padding-top: 100px; /* Less padding on mobile */
+  }
 } 

@@ -3,8 +3,8 @@
 AI Research Index Page Generator
 
 This script fetches the latest AI research data from either an API or local JSON file,
-processes it, and generates a static HTML page that presents AI research updates across
-multiple categories.
+processes it, generates AI commentary for each section, and produces a static HTML page 
+that presents AI research updates across multiple categories.
 
 The script can be scheduled via cron to automatically update the index page at regular intervals.
 """
@@ -16,6 +16,15 @@ import datetime
 from pathlib import Path
 from markdown import markdown
 from jinja2 import Environment, FileSystemLoader
+import time
+
+# Import the AI commentary generator
+try:
+    from ai_commentary import generate_commentary
+    COMMENTARY_AVAILABLE = True
+except ImportError:
+    print("AI Commentary module not found. Running without AI commentary.")
+    COMMENTARY_AVAILABLE = False
 
 # Try to load environment variables from .env file if available
 try:
@@ -44,6 +53,11 @@ CONFIG = {
     "template": {
         "dir": get_env_var("TEMPLATE_DIR", "ai_research_generator/templates"),
         "file": get_env_var("TEMPLATE_FILE", "research_index.html")
+    },
+    "ai_commentary": {
+        "enabled": get_env_var("ENABLE_AI_COMMENTARY", "true").lower() == "true",
+        "cache_dir": get_env_var("COMMENTARY_CACHE_DIR", "ai_research_generator/cache"),
+        "cache_ttl": int(get_env_var("COMMENTARY_CACHE_TTL", "86400"))  # 24 hours default
     }
 }
 
@@ -106,9 +120,60 @@ def fetch_data():
                 return fetch_data()
             raise
 
+def get_commentary_cache_path(category):
+    """Get the path for cached commentary for a specific category"""
+    cache_dir = Path(CONFIG["ai_commentary"]["cache_dir"])
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create a filename based on the category (sanitized for filesystem)
+    sanitized_category = "".join(c if c.isalnum() else "_" for c in category)
+    return cache_dir / f"{sanitized_category}_commentary.json"
+
+def load_cached_commentary(category):
+    """Load cached commentary if it exists and is not expired"""
+    cache_path = get_commentary_cache_path(category)
+    
+    if not cache_path.exists():
+        return None
+    
+    try:
+        with open(cache_path, 'r', encoding='utf-8') as f:
+            cache_data = json.load(f)
+        
+        # Check if cache is expired
+        cache_time = cache_data.get("timestamp", 0)
+        now = time.time()
+        
+        if now - cache_time > CONFIG["ai_commentary"]["cache_ttl"]:
+            print(f"Cache for {category} is expired")
+            return None
+        
+        return cache_data.get("commentary")
+    
+    except (json.JSONDecodeError, KeyError) as e:
+        print(f"Error reading cache for {category}: {str(e)}")
+        return None
+
+def save_commentary_to_cache(category, commentary):
+    """Save commentary to cache"""
+    cache_path = get_commentary_cache_path(category)
+    
+    try:
+        cache_data = {
+            "timestamp": time.time(),
+            "commentary": commentary
+        }
+        
+        with open(cache_path, 'w', encoding='utf-8') as f:
+            json.dump(cache_data, f, indent=2)
+    
+    except Exception as e:
+        print(f"Error saving cache for {category}: {str(e)}")
+
 def process_data(data):
     """
-    Process the raw data, converting any Markdown to HTML and adding any computed fields.
+    Process the raw data, converting any Markdown to HTML, adding AI commentary,
+    and adding any computed fields.
     
     Args:
         data (dict): The raw AI research data
@@ -136,11 +201,31 @@ def process_data(data):
     
     # Process each section
     for section in expected_sections:
-        processed_data[section] = []
+        processed_data[section] = {
+            "items": [],
+            "commentary": ""
+        }
         
         if section not in data:
             continue
+        
+        # Generate or load AI commentary for this section if enabled
+        if CONFIG["ai_commentary"]["enabled"] and COMMENTARY_AVAILABLE and data[section]:
+            # Try to get from cache first
+            cached_commentary = load_cached_commentary(section)
             
+            if cached_commentary:
+                print(f"Using cached commentary for {section}")
+                processed_data[section]["commentary"] = cached_commentary
+            else:
+                print(f"Generating AI commentary for {section}...")
+                commentary = generate_commentary(section, data[section])
+                processed_data[section]["commentary"] = commentary
+                
+                # Save to cache for future use
+                save_commentary_to_cache(section, commentary)
+        
+        # Process each article/item
         for item in data[section]:
             # Clone the item to avoid modifying the original
             processed_item = dict(item)
@@ -159,7 +244,7 @@ def process_data(data):
                     # If date parsing fails, keep the original
                     processed_item['formatted_date'] = processed_item['date']
             
-            processed_data[section].append(processed_item)
+            processed_data[section]["items"].append(processed_item)
     
     return processed_data
 
@@ -226,7 +311,7 @@ def main():
         # Step 1: Fetch the data
         raw_data = fetch_data()
         
-        # Step 2: Process the data
+        # Step 2: Process the data, adding AI commentary
         processed_data = process_data(raw_data)
         
         # Step 3: Render the HTML

@@ -133,4 +133,11 @@ if __name__ == "__main__":
         "blog-twitter.jpg", 
         bg_color=(44, 62, 80),  # Dark slate for the blog main image
         size=(1200, 600)  # Standard Twitter card size
+    )
+
+    # Model Context Protocol image
+    create_blog_image(
+        "Model Context Protocol (MCP) – Technical Breakdown", 
+        "model-context-protocol-mcp.jpg", 
+        bg_color=(41, 128, 185)  # Blue for technical content
     ) 

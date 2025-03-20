@@ -2,9 +2,8 @@
 // Deploy to Vercel or similar serverless platform
 
 // Import needed packages (for local testing, run: npm install axios node-cache)
-// Uncomment for local development:
-// const axios = require('axios');
-// const NodeCache = require('node-cache');
+const axios = require('axios');
+const NodeCache = require('node-cache');
 
 // In-memory cache with 1 hour TTL
 let cachedData = null;
@@ -19,10 +18,101 @@ const ipRequests = new Map();
 // API data sources
 const SOURCES = {
   ARXIV: 'https://export.arxiv.org/api/query?search_query=cat:cs.AI+OR+cat:cs.LG&sortBy=submittedDate&sortOrder=descending&max_results=10',
-  NEWS_API: 'https://newsapi.org/v2/everything?q=artificial+intelligence&language=en&sortBy=publishedAt',
+  NEWS_API: process.env.NEWS_API_KEY ? `https://newsapi.org/v2/everything?q=artificial+intelligence&language=en&sortBy=publishedAt&apiKey=${process.env.NEWS_API_KEY}` : null,
   TECH_CRUNCH: 'https://techcrunch.com/wp-json/wp/v2/posts?categories=424613,17396,576603445&per_page=5',
-  // Add more sources as needed
 };
+
+/**
+ * Format a date to ISO string (YYYY-MM-DD)
+ */
+function formatDate(date) {
+  const d = new Date(date);
+  return d.toISOString().split('T')[0];
+}
+
+/**
+ * Fetch articles from arXiv
+ */
+async function fetchArxivArticles() {
+  try {
+    const response = await axios.get(SOURCES.ARXIV);
+    const parser = new (require('xml2js')).Parser();
+    const result = await parser.parseStringPromise(response.data);
+    
+    const entries = result.feed.entry || [];
+    return entries.map(entry => ({
+      title: entry.title[0],
+      summary: entry.summary[0].substring(0, 200) + '...',
+      link: entry.id[0],
+      date: formatDate(entry.published[0]),
+      tags: entry.category.map(cat => cat.$.term).filter(term => term.startsWith('cs.')),
+    })).slice(0, 5);
+  } catch (error) {
+    console.error('Error fetching from arXiv:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch articles from News API
+ */
+async function fetchNewsApiArticles(category) {
+  if (!SOURCES.NEWS_API) {
+    console.log('NEWS_API_KEY not configured, skipping News API');
+    return [];
+  }
+  
+  try {
+    let query = 'artificial+intelligence';
+    
+    // Customize query based on category
+    if (category === 'AI Model Updates') {
+      query += '+AND+(GPT+OR+Claude+OR+LLM+OR+model)';
+    } else if (category === 'Hardware Advancements') {
+      query += '+AND+(chip+OR+hardware+OR+GPU+OR+TPU)';
+    } else if (category === 'Robotics') {
+      query += '+AND+(robot+OR+robotics+OR+automation)';
+    } else if (category === 'Enterprise AI') {
+      query += '+AND+(business+OR+enterprise+OR+company+OR+industry)';
+    } else if (category === 'Regulatory News') {
+      query += '+AND+(regulation+OR+policy+OR+law+OR+government)';
+    }
+    
+    const url = `https://newsapi.org/v2/everything?q=${query}&language=en&sortBy=publishedAt&apiKey=${process.env.NEWS_API_KEY}`;
+    const response = await axios.get(url);
+    
+    return response.data.articles.map(article => ({
+      title: article.title,
+      summary: article.description || "No description available",
+      link: article.url,
+      date: formatDate(article.publishedAt),
+      image_url: article.urlToImage,
+      source: article.source.name,
+    })).slice(0, 5);
+  } catch (error) {
+    console.error(`Error fetching from News API for ${category}:`, error);
+    return [];
+  }
+}
+
+/**
+ * Fetch articles from TechCrunch
+ */
+async function fetchTechCrunchArticles() {
+  try {
+    const response = await axios.get(SOURCES.TECH_CRUNCH);
+    return response.data.map(post => ({
+      title: post.title.rendered,
+      summary: post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 200) + '...',
+      link: post.link,
+      date: formatDate(post.date),
+      image_url: post.jetpack_featured_media_url,
+    })).slice(0, 3);
+  } catch (error) {
+    console.error('Error fetching from TechCrunch:', error);
+    return [];
+  }
+}
 
 /**
  * Basic rate limiting middleware
@@ -97,95 +187,29 @@ module.exports = async (req, res) => {
       return res.status(200).json(cachedData);
     }
     
-    // For now, serve the sample data directly
-    // In a production environment, you would fetch real-time data
-    // from various sources (arXiv, tech blogs, news APIs, etc.)
+    // Fetch data from various sources
+    const isDevMode = process.env.NODE_ENV === 'development' || process.env.USE_MOCK_DATA === 'true';
     
-    // Sample data structure - in a real implementation, this would be fetched
-    // from external APIs and transformed
+    // In development, we might want to use mock data for faster testing
+    if (isDevMode) {
+      console.log('Using mock data in development mode');
+      // Use the sample data below
+      cachedData = getMockData();
+      cacheTime = now;
+      return res.status(200).json(cachedData);
+    }
+    
+    console.log('Fetching fresh data from sources');
+    
+    // Fetch real data from various sources
     const data = {
-      "AI Model Updates": [
-        {
-          "title": "Claude 3.5 Sonnet Released: Outperforms GPT-4o in Reasoning Tasks",
-          "summary": "Anthropic has released Claude 3.5 Sonnet, a new version of their AI assistant that surpasses GPT-4o in reasoning capabilities. The model demonstrates improved performance on complex tasks involving multi-step problem solving and instruction following.",
-          "description_md": "### Claude 3.5 Sonnet Makes Significant Strides\n\nAnthropic's latest model shows a 31% improvement on reasoning benchmarks compared to Claude 3 Opus. Key improvements include:\n\n- Advanced mathematical reasoning capabilities\n- Enhanced code generation and debugging\n- Better context retention across long conversations\n- More nuanced understanding of ambiguous instructions\n\nBenchmark results indicated a 15% performance gain over GPT-4o on reasoning tasks, although GPT-4o still maintains advantages in certain creative tasks.",
-          "link": "https://www.anthropic.com/research/claude-3-5-sonnet",
-          "date": new Date().toISOString().split('T')[0],
-          "image_url": "https://www.michaelditter.com/img/ai-research/claude-3-5-sonnet.jpg",
-          "tags": ["LLMs", "Anthropic", "Claude", "Reasoning"]
-        },
-        {
-          "title": "Meta's Llama 4 Brings Multimodal Capabilities to Open Source Models",
-          "summary": "Meta has announced Llama 4, its latest family of large language models that includes robust multimodal capabilities. The new models can process and reason about images, text, and soon audio inputs within a single system.",
-          "link": "https://ai.meta.com/blog/llama-4/",
-          "date": new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          "image_url": "https://www.michaelditter.com/img/ai-research/llama-4.jpg",
-          "tags": ["LLMs", "Meta", "Llama", "Multimodal", "Open Source"]
-        },
-        {
-          "title": "DeepMind's AlphaCode 2 Achieves Competitive Programming Breakthrough",
-          "summary": "Google DeepMind has unveiled AlphaCode 2, which can now solve advanced competitive programming problems at the level of gold medalists in international competitions. The system combines sophisticated code generation with automatic verification methods.",
-          "link": "https://deepmind.google/research/alphacode-2/",
-          "date": new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          "tags": ["DeepMind", "Code Generation", "AI Programming"]
-        }
-      ],
-      "Hardware Advancements": [
-        {
-          "title": "NVIDIA Unveils H300 Tensor Chip: 5x Performance Leap for AI Training",
-          "summary": "NVIDIA has announced the H300 Tensor Core GPU, delivering a 5x performance improvement for AI training workloads compared to the previous H200 series. The chip incorporates new architecture optimizations specifically designed for large language model training.",
-          "description_md": "## H300: The Next Generation of AI Accelerators\n\nNVIDIA's H300 represents a significant leap forward in compute capability:\n\n- New Tensor Core architecture with 4th-gen FP8 precision\n- 1.1 TB/s memory bandwidth with HBM4 memory\n- 1,600 TFLOPS FP8 peak performance\n- 70% power efficiency improvement per FLOP\n- Support for model parallelism across 32,000+ GPUs\n\nThe H300 is expected to enter production in Q4 2025 and will significantly reduce the time and cost required to train foundation models with trillions of parameters.",
-          "link": "https://nvidia.com/h300-announcement",
-          "date": new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          "image_url": "https://www.michaelditter.com/img/ai-research/nvidia-h300.jpg",
-          "tags": ["NVIDIA", "GPU", "AI Hardware", "HBM4"]
-        }
-      ],
-      "Robotics": [
-        {
-          "title": "Boston Dynamics' Atlas Humanoid Robot Enters Commercial Production",
-          "summary": "Boston Dynamics has announced that its Atlas humanoid robot is entering commercial production, marking a significant milestone for versatile bipedal robots. The commercial version can lift 35kg and navigate complex environments autonomously.",
-          "link": "https://bostondynamics.com/atlas-commercial",
-          "date": new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          "tags": ["Boston Dynamics", "Humanoid Robots", "Robotics"]
-        }
-      ],
-      "Enterprise AI": [
-        {
-          "title": "McKinsey Study: AI Implementation Increases Productivity by 37% in Financial Services",
-          "summary": "A new McKinsey study shows financial services companies implementing enterprise AI solutions have seen productivity increases averaging 37%. The largest gains came from automating document processing and enhancing customer service operations.",
-          "link": "https://mckinsey.com/finance-ai-productivity-2025",
-          "date": new Date().toISOString().split('T')[0],
-          "tags": ["Financial Services", "Productivity", "McKinsey", "ROI"]
-        }
-      ],
-      "Regulatory News": [
-        {
-          "title": "EU AI Act Enforcement Guidelines Released, Implementation Timeline Clarified",
-          "summary": "The European Commission has released enforcement guidelines for the EU AI Act, providing clarity on implementation timelines. Critical AI systems must comply by January 2026, while general-purpose AI systems have until July 2026.",
-          "link": "https://digital-strategy.ec.europa.eu/ai-act-enforcement",
-          "date": new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          "tags": ["EU AI Act", "Regulation", "Compliance", "Europe"]
-        }
-      ],
-      "Research": [
-        {
-          "title": "MIT Researchers Develop Framework for Measuring AI Alignment",
-          "summary": "MIT researchers have introduced a quantitative framework for measuring AI alignment with human values. The approach uses a combination of benchmarks, red-teaming exercises, and statistical methods to evaluate how well AI systems adhere to human intent.",
-          "link": "https://mit.edu/csail/ai-alignment-measurement",
-          "date": new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          "tags": ["MIT", "AI Alignment", "Safety", "Measurement"]
-        }
-      ],
-      "Future Trends": [
-        {
-          "title": "Gartner Predicts 65% of Enterprises Will Use Multimodal AI by 2027",
-          "summary": "Gartner's latest forecast predicts that 65% of enterprises will deploy multimodal AI applications by 2027, up from just 15% in 2025. The adoption will be driven by improved user interfaces, document processing, and multimedia content analysis.",
-          "link": "https://gartner.com/ai-predictions-2027",
-          "date": new Date().toISOString().split('T')[0],
-          "tags": ["Gartner", "Multimodal AI", "Enterprise", "Predictions"]
-        }
-      ]
+      "AI Model Updates": await fetchNewsApiArticles("AI Model Updates"),
+      "Hardware Advancements": await fetchNewsApiArticles("Hardware Advancements"),
+      "Robotics": await fetchNewsApiArticles("Robotics"),
+      "Enterprise AI": await fetchNewsApiArticles("Enterprise AI"),
+      "Regulatory News": await fetchNewsApiArticles("Regulatory News"),
+      "Research": await fetchArxivArticles(),
+      "Future Trends": await fetchTechCrunchArticles(),
     };
     
     // Update cache
@@ -214,6 +238,96 @@ function validateApiKey(authHeader) {
   const apiKey = authHeader.substring(7); // Remove 'Bearer ' prefix
   // In production, you would validate against a database or environment variable
   return apiKey === process.env.API_KEY;
+}
+
+/**
+ * Return mock data for development or when external APIs fail
+ */
+function getMockData() {
+  return {
+    "AI Model Updates": [
+      {
+        "title": "Claude 3.5 Sonnet Released: Outperforms GPT-4o in Reasoning Tasks",
+        "summary": "Anthropic has released Claude 3.5 Sonnet, a new version of their AI assistant that surpasses GPT-4o in reasoning capabilities. The model demonstrates improved performance on complex tasks involving multi-step problem solving and instruction following.",
+        "description_md": "### Claude 3.5 Sonnet Makes Significant Strides\n\nAnthropic's latest model shows a 31% improvement on reasoning benchmarks compared to Claude 3 Opus. Key improvements include:\n\n- Advanced mathematical reasoning capabilities\n- Enhanced code generation and debugging\n- Better context retention across long conversations\n- More nuanced understanding of ambiguous instructions\n\nBenchmark results indicated a 15% performance gain over GPT-4o on reasoning tasks, although GPT-4o still maintains advantages in certain creative tasks.",
+        "link": "https://www.anthropic.com/research/claude-3-5-sonnet",
+        "date": new Date().toISOString().split('T')[0],
+        "image_url": "https://www.michaelditter.com/img/ai-research/claude-3-5-sonnet.jpg",
+        "tags": ["LLMs", "Anthropic", "Claude", "Reasoning"]
+      },
+      {
+        "title": "Meta's Llama 4 Brings Multimodal Capabilities to Open Source Models",
+        "summary": "Meta has announced Llama 4, its latest family of large language models that includes robust multimodal capabilities. The new models can process and reason about images, text, and soon audio inputs within a single system.",
+        "link": "https://ai.meta.com/blog/llama-4/",
+        "date": new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        "image_url": "https://www.michaelditter.com/img/ai-research/llama-4.jpg",
+        "tags": ["LLMs", "Meta", "Llama", "Multimodal", "Open Source"]
+      },
+      {
+        "title": "DeepMind's AlphaCode 2 Achieves Competitive Programming Breakthrough",
+        "summary": "Google DeepMind has unveiled AlphaCode 2, which can now solve advanced competitive programming problems at the level of gold medalists in international competitions. The system combines sophisticated code generation with automatic verification methods.",
+        "link": "https://deepmind.google/research/alphacode-2/",
+        "date": new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        "tags": ["DeepMind", "Code Generation", "AI Programming"]
+      }
+    ],
+    "Hardware Advancements": [
+      {
+        "title": "NVIDIA Unveils H300 Tensor Chip: 5x Performance Leap for AI Training",
+        "summary": "NVIDIA has announced the H300 Tensor Core GPU, delivering a 5x performance improvement for AI training workloads compared to the previous H200 series. The chip incorporates new architecture optimizations specifically designed for large language model training.",
+        "description_md": "## H300: The Next Generation of AI Accelerators\n\nNVIDIA's H300 represents a significant leap forward in compute capability:\n\n- New Tensor Core architecture with 4th-gen FP8 precision\n- 1.1 TB/s memory bandwidth with HBM4 memory\n- 1,600 TFLOPS FP8 peak performance\n- 70% power efficiency improvement per FLOP\n- Support for model parallelism across 32,000+ GPUs\n\nThe H300 is expected to enter production in Q4 2025 and will significantly reduce the time and cost required to train foundation models with trillions of parameters.",
+        "link": "https://nvidia.com/h300-announcement",
+        "date": new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        "image_url": "https://www.michaelditter.com/img/ai-research/nvidia-h300.jpg",
+        "tags": ["NVIDIA", "GPU", "AI Hardware", "HBM4"]
+      }
+    ],
+    "Robotics": [
+      {
+        "title": "Boston Dynamics' Atlas Humanoid Robot Enters Commercial Production",
+        "summary": "Boston Dynamics has announced that its Atlas humanoid robot is entering commercial production, marking a significant milestone for versatile bipedal robots. The commercial version can lift 35kg and navigate complex environments autonomously.",
+        "link": "https://bostondynamics.com/atlas-commercial",
+        "date": new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        "tags": ["Boston Dynamics", "Humanoid Robots", "Robotics"]
+      }
+    ],
+    "Enterprise AI": [
+      {
+        "title": "McKinsey Study: AI Implementation Increases Productivity by 37% in Financial Services",
+        "summary": "A new McKinsey study shows financial services companies implementing enterprise AI solutions have seen productivity increases averaging 37%. The largest gains came from automating document processing and enhancing customer service operations.",
+        "link": "https://mckinsey.com/finance-ai-productivity-2025",
+        "date": new Date().toISOString().split('T')[0],
+        "tags": ["Financial Services", "Productivity", "McKinsey", "ROI"]
+      }
+    ],
+    "Regulatory News": [
+      {
+        "title": "EU AI Act Enforcement Guidelines Released, Implementation Timeline Clarified",
+        "summary": "The European Commission has released enforcement guidelines for the EU AI Act, providing clarity on implementation timelines. Critical AI systems must comply by January 2026, while general-purpose AI systems have until July 2026.",
+        "link": "https://digital-strategy.ec.europa.eu/ai-act-enforcement",
+        "date": new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        "tags": ["EU AI Act", "Regulation", "Compliance", "Europe"]
+      }
+    ],
+    "Research": [
+      {
+        "title": "MIT Researchers Develop Framework for Measuring AI Alignment",
+        "summary": "MIT researchers have introduced a quantitative framework for measuring AI alignment with human values. The approach uses a combination of benchmarks, red-teaming exercises, and statistical methods to evaluate how well AI systems adhere to human intent.",
+        "link": "https://mit.edu/csail/ai-alignment-measurement",
+        "date": new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        "tags": ["MIT", "AI Alignment", "Safety", "Measurement"]
+      }
+    ],
+    "Future Trends": [
+      {
+        "title": "Gartner Predicts 65% of Enterprises Will Use Multimodal AI by 2027",
+        "summary": "Gartner's latest forecast predicts that 65% of enterprises will deploy multimodal AI applications by 2027, up from just 15% in 2025. The adoption will be driven by improved user interfaces, document processing, and multimedia content analysis.",
+        "link": "https://gartner.com/ai-predictions-2027",
+        "date": new Date().toISOString().split('T')[0],
+        "tags": ["Gartner", "Multimodal AI", "Enterprise", "Predictions"]
+      }
+    ]
+  };
 }
 
 // For local testing only - uncomment and run with Node.js

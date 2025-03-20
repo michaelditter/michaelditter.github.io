@@ -1,1 +1,387 @@
-Placeholder for the template
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>AI Research Index | Weekly Updates on AI Advancements</title>
+    <meta name="description" content="Stay informed with the latest in AI research, model updates, hardware advancements, and industry trends. Updated weekly.">
+    <meta name="keywords" content="AI research, artificial intelligence, machine learning, LLMs, AI hardware, robotics, AI regulation">
+    <meta name="author" content="Michael J Ditter">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ canonical_url }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:title" content="AI Research Index | Weekly Updates on AI Advancements">
+    <meta property="og:description" content="Stay informed with the latest in AI research, model updates, hardware advancements, and industry trends. Updated weekly.">
+    <meta property="og:image" content="https://www.michaelditter.com/img/blog/ai-research-index.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ canonical_url }}">
+    <meta property="twitter:title" content="AI Research Index | Weekly Updates on AI Advancements">
+    <meta property="twitter:description" content="Stay informed with the latest in AI research, model updates, hardware advancements, and industry trends. Updated weekly.">
+    <meta property="twitter:image" content="https://www.michaelditter.com/img/blog/ai-research-index.jpg">
+    
+    <!-- Favicons and CSS imports would go here -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/blog.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Schema.org structured data for Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "AI Research Index | Weekly Updates on AI Advancements",
+        "description": "Stay informed with the latest in AI research, model updates, hardware advancements, and industry trends. Updated weekly.",
+        "image": "https://www.michaelditter.com/img/blog/ai-research-index.jpg",
+        "datePublished": "{{ last_updated }}",
+        "dateModified": "{{ last_updated }}",
+        "author": {
+            "@type": "Person",
+            "@id": "https://www.michaelditter.com/#person",
+            "name": "Michael J Ditter",
+            "url": "https://www.michaelditter.com"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Michael J Ditter",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.michaelditter.com/img/logo.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ canonical_url }}"
+        }
+    }
+    </script>
+    
+    <style>
+        /* Research index specific styles */
+        .research-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .research-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .research-header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .research-section {
+            margin-bottom: 4rem;
+        }
+        
+        .research-section h2 {
+            font-size: 1.8rem;
+            color: #333;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .ai-commentary {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0ea5e9;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+            color: #4a5568;
+            border-radius: 0.25rem;
+        }
+        
+        .ai-commentary p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .research-card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .research-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease;
+            background-color: white;
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .research-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 16px rgba(0,0,0,0.1);
+        }
+        
+        .research-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .research-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .research-profile img {
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .research-name {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .research-fullname {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .research-username {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        .research-content {
+            padding: 1.25rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .research-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+            color: #333;
+        }
+        
+        .research-content p {
+            margin-bottom: 1rem;
+            color: #333;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        
+        .research-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            margin-bottom: 0.75rem;
+        }
+        
+        .research-date {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+        
+        .research-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: auto;
+            margin-bottom: 0.75rem;
+        }
+        
+        .research-tag {
+            background-color: #f0f4f8;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #4a6b8a;
+        }
+        
+        .research-meta {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        @media (max-width: 768px) {
+            .research-card-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .research-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header class="site-header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="/" class="logo">Michael J Ditter</a>
+                <ul class="nav-links">
+                    <li><a href="/#about">About</a></li>
+                    <li><a href="/#expertise">Expertise</a></li>
+                    <li><a href="/#services">Services</a></li>
+                    <li><a href="/blog/" class="active">Insights</a></li>
+                    <li><a href="/#speaking">Speaking</a></li>
+                    <li><a href="/#contact" class="btn-primary">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" aria-label="Toggle Navigation Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Research Content -->
+    <main class="research-container">
+        <div class="research-header">
+            <h1>AI Research Index</h1>
+            <p class="section-subtitle">Weekly updates on artificial intelligence research, model advancements, and industry trends</p>
+        </div>
+        
+        {% for section_name, section in data.items() %}
+        {% if section.items %}
+        <section id="{{ section_name | lower | replace(' ', '-') }}" class="research-section">
+            <h2>{{ section_name }}</h2>
+            
+            {% if section.commentary %}
+            <div class="ai-commentary">
+                {{ section.commentary | safe }}
+            </div>
+            {% endif %}
+            
+            <div class="research-card-container">
+                {% for item in section.items %}
+                <a href="{{ item.link }}" class="research-card" target="_blank" rel="noopener">
+                    <div class="research-card-header">
+                        <div class="research-profile">
+                            <img src="/img/profile/michael-ditter-headshot-new.jpg" alt="Michael J Ditter" width="48" height="48">
+                            <div class="research-name">
+                                <span class="research-fullname">Michael J Ditter</span>
+                                <span class="research-username">@michaeljditter</span>
+                            </div>
+                        </div>
+                        <div class="research-logo">
+                            {% if "arxiv" in item.link | lower %}
+                            <img src="/img/logos/arxiv.svg" alt="arXiv" width="24" height="24">
+                            {% else %}
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="#0ea5e9">
+                                <path d="M13.5 1.5c-1.8 0-3.4.9-4.4 2.3C5.7 4.1 3 7 3 10.5c0 3.6 2.9 6.5 6.5 6.5h11c2.5 0 4.5-2 4.5-4.5 0-2.4-1.9-4.4-4.3-4.5-.3-3.6-3.3-6.5-7.2-6.5z"/>
+                            </svg>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if item.image_url %}
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="research-image">
+                    {% endif %}
+                    
+                    <div class="research-content">
+                        <h3>{{ item.title }}</h3>
+                        
+                        {% if item.description_html %}
+                        {{ item.description_html | safe }}
+                        {% else %}
+                        <p>{{ item.summary }}</p>
+                        {% endif %}
+                        
+                        {% if item.tags %}
+                        <div class="research-tags">
+                            {% for tag in item.tags %}
+                            <span class="research-tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="research-date">
+                        {% if item.formatted_date %}
+                        <span>{{ item.formatted_date }}</span>
+                        {% elif item.date %}
+                        <span>{{ item.date }}</span>
+                        {% endif %}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+        {% endfor %}
+        
+        <div class="research-meta">
+            <p>This AI Research Index is updated weekly. Last updated: {{ last_updated }}</p>
+            <p>Compiled by <a href="/">Michael J Ditter</a>, with AI-assisted commentary and curation.</p>
+        </div>
+    </main>
+
+    <!-- Footer would go here -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo">Michael J Ditter</a>
+                    <p>AI Specialist & Technology Consultant helping organizations navigate the complex world of artificial intelligence and emerging technologies.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-nav">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/#about">About</a></li>
+                            <li><a href="/#services">Services</a></li>
+                            <li><a href="/blog/">Insights</a></li>
+                            <li><a href="/#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Michael J Ditter. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+</body>
+</html>

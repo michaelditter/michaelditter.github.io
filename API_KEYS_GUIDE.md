@@ -84,16 +84,21 @@ If you suspect an API key has been compromised:
 The research generators require these API keys in production:
 
 1. **AI Research API Key**
-   - Purpose: Access AI research data API
-   - Required by: `.github/workflows/ai-research-update.yml`
-   - Storage: GitHub Secrets as `AI_RESEARCH_API_KEY`
+   - Purpose: Access OpenAI API for AI research data generation
+   - Required by: `.github/workflows/ai-research-update.yml`, `.github/workflows/ai-content-generator.yml`, `.github/workflows/bitcoin-newsletter.yml`
+   - Storage: GitHub Secrets as `OPENAI_API_KEY`
 
 2. **Bitcoin Research API Key**
    - Purpose: Access Bitcoin research data API
    - Required by: `.github/workflows/bitcoin-research-update.yml`
    - Storage: GitHub Secrets as `BITCOIN_RESEARCH_API_KEY`
+   - Note: The environment variable is referenced as `API_KEY_ENV: "BITCOIN_RESEARCH_API_KEY"` in the generator code
 
 3. **Vercel API Keys** (If using API key authentication)
    - Purpose: Authenticate requests to your serverless APIs
    - Required by: Bitcoin and AI Research APIs
-   - Storage: Vercel Environment Variables 
+   - Storage: Vercel Environment Variables as follows:
+     - `BUTTONDOWN_API_KEY`: Newsletter subscription service
+     - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`: Email delivery settings
+     - `SMTP_SECURE`: Boolean for secure email connection
+     - `EMAIL_FROM_NAME`: Name to show in newsletter emails 

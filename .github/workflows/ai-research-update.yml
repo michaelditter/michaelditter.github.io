@@ -28,11 +28,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r ai_research_generator/requirements.txt
+          
+          # Additional dependencies for AI commentary
+          pip install openai anthropic
       
       - name: Create image directories
         run: |
           mkdir -p img/ai-research
           mkdir -p img/profile
+          mkdir -p ai_research_generator/cache
           
           # If image directories don't exist, create placeholder files to prevent errors
           if [ ! -f "img/profile/michael-ditter-headshot.jpg" ]; then
@@ -43,16 +47,29 @@ jobs:
         id: generate_index
         continue-on-error: true
         env:
-          # Use the file data source for now
-          DATA_SOURCE_TYPE: "file"
+          # Use API data source
+          DATA_SOURCE_TYPE: "api"
+          API_URL: "https://ai-research-api.michaelditter.com/api/research-data"
+          
+          # API keys for services
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          
+          # AI Commentary configuration
+          ENABLE_AI_COMMENTARY: "true"
+          PREFERRED_AI_SERVICE: "openai"  # or "anthropic"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           
           # Output configuration
           OUTPUT_HTML_PATH: "blog/ai-research-index.html"
           CANONICAL_URL: "https://www.michaelditter.com/blog/ai-research-index.html"
         run: |
-          # Print configuration
+          # Print configuration (safely - don't print API keys)
           echo "Using DATA_SOURCE_TYPE: $DATA_SOURCE_TYPE"
+          echo "Using API_URL: $API_URL"
           echo "Using OUTPUT_HTML_PATH: $OUTPUT_HTML_PATH"
+          echo "AI Commentary Enabled: $ENABLE_AI_COMMENTARY"
+          echo "Preferred AI Service: $PREFERRED_AI_SERVICE"
           
           # Generate the HTML
           python ai_research_generator/generate_research_page.py
@@ -61,22 +78,56 @@ jobs:
         if: steps.generate_index.outcome == 'failure'
         env:
           DATA_SOURCE_TYPE: "file"
+          ENABLE_AI_COMMENTARY: "true"
+          PREFERRED_AI_SERVICE: "openai"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OUTPUT_HTML_PATH: "blog/ai-research-index.html"
           CANONICAL_URL: "https://www.michaelditter.com/blog/ai-research-index.html"
         run: |
           echo "API data fetch failed, falling back to file-based data"
           python ai_research_generator/generate_research_page.py
           
+      - name: Generate weekly blog post
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          # Generate a date-based directory for the weekly newsletter
+          CURRENT_DATE=$(date +'%Y-%m-%d')
+          NEWSLETTER_DIR="blog/ai-newsletter-$CURRENT_DATE"
+          mkdir -p "$NEWSLETTER_DIR"
+          
+          # Copy the research index and rename it as the newsletter
+          cp blog/ai-research-index.html "$NEWSLETTER_DIR/index.html"
+          
+          # Update metadata in the newsletter
+          sed -i "s/AI Research Index | Weekly Updates/AI Newsletter $CURRENT_DATE | Weekly AI Updates/g" "$NEWSLETTER_DIR/index.html"
+          sed -i "s/<title>AI Research Index/<title>AI Newsletter $CURRENT_DATE/g" "$NEWSLETTER_DIR/index.html"
+          
+          echo "Generated weekly AI newsletter at $NEWSLETTER_DIR/index.html"
+          
+      - name: Send email notification
+        id: send_email
+        if: ${{ false }}  # Disabled for now - enable when email sending is set up
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        run: |
+          # Use SendGrid or another email service to send the newsletter
+          # This is a placeholder for the email sending functionality
+          echo "Email sending is currently disabled - would send newsletter to subscribers"
+      
       - name: Check for changes
         id: check_changes
         run: |
-          git diff --quiet blog/ai-research-index.html || echo "changes=true" >> $GITHUB_OUTPUT
+          git status
+          git diff --name-only
+          git diff --quiet blog/ || echo "changes=true" >> $GITHUB_OUTPUT
           
       - name: Commit and push if changed
         if: steps.check_changes.outputs.changes == 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add blog/ai-research-index.html
-          git commit -m "Update AI Research Index - $(date +'%Y-%m-%d')"
+          git add blog/
+          git commit -m "Update AI Research Index and Newsletter - $(date +'%Y-%m-%d')"
           git push 

@@ -437,10 +437,22 @@ function initNewsletterForm() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Origin': 'https://michaelditter.com'
           },
           body: JSON.stringify({ email }),
+          mode: 'cors',
+          credentials: 'omit' // Changed from default to omit for CORS
         })
-        .then(response => response.json())
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            // Try to read error message if possible
+            return response.json().catch(e => {
+              throw new Error('Subscription failed');
+            });
+          }
+        })
         .then(data => {
           // Reset button
           submitButton.disabled = false;

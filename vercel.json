@@ -1,10 +1,22 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/*.js", "use": "@vercel/node" }
-  ],
+  "functions": {
+    "api/subscribe.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
   "routes": [
-    { "src": "/api/subscribe", "dest": "/api/subscribe.js" },
+    {
+      "src": "/api/subscribe",
+      "methods": ["OPTIONS", "POST"],
+      "headers": {
+        "Access-Control-Allow-Origin": "https://michaelditter.com",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Credentials": "true"
+      }
+    },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/$1" }
   ],
@@ -15,6 +27,7 @@
     "SMTP_SECURE": "@smtp_secure",
     "SMTP_USER": "@smtp_user",
     "SMTP_PASS": "@smtp_pass",
-    "EMAIL_FROM_NAME": "@email_from_name"
+    "EMAIL_FROM_NAME": "@email_from_name",
+    "NODE_ENV": "production"
   }
 } 

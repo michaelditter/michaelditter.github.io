@@ -449,10 +449,11 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Origin': 'https://michaelditter.com'
                         },
                         body: JSON.stringify({ email }),
                         mode: 'cors',
-                        credentials: 'same-origin'
+                        credentials: 'omit'
                     });
                     
                     console.log('Response status:', response.status);
