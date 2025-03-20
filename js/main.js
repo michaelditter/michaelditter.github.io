@@ -408,113 +408,19 @@ function measurePerformance() {
 
 /**
  * Newsletter form handling
+ * Note: Most newsletter forms now use the Buttondown iframe embed
  */
 function initNewsletterForm() {
+  // This function is kept for backward compatibility
+  // Modern newsletter forms use the Buttondown iframe embed
+  console.log('Newsletter forms now use Buttondown iframe embedding');
+  
+  // Any remaining newsletter forms will still be handled here
   const newsletterForms = document.querySelectorAll('.newsletter-form');
   
   if (newsletterForms.length) {
-    newsletterForms.forEach(form => {
-      form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        const emailInput = this.querySelector('input[name="email"]');
-        const email = emailInput.value.trim();
-        const submitButton = this.querySelector('button[type="submit"]');
-        
-        // Basic email validation
-        if (!email || !email.includes('@')) {
-          alert('Please enter a valid email address');
-          return;
-        }
-        
-        // Disable button and show loading state
-        const originalButtonText = submitButton.textContent;
-        submitButton.disabled = true;
-        submitButton.textContent = 'Sending...';
-        
-        // Send POST request to the API
-        fetch('https://api-only-pq88ssbko-michael-ditters-projects.vercel.app/api/subscribe?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Origin': 'https://michaelditter.com'
-          },
-          body: JSON.stringify({ email_address: email }),
-          mode: 'cors',
-          credentials: 'omit'
-        })
-        .then(response => {
-          console.log('Response status:', response.status);
-          
-          // Store the status code for error handling
-          const statusCode = response.status;
-          
-          // Always try to get the response text first for better debugging
-          return response.text().then(text => {
-            console.log('Raw response:', text);
-            
-            // Try to parse as JSON if possible
-            let data;
-            try {
-              data = JSON.parse(text);
-              console.log('Parsed JSON response:', data);
-            } catch (e) {
-              console.error('Failed to parse response as JSON:', e);
-              data = { error: 'Invalid response format', message: text };
-            }
-            
-            // Add status to the data for later reference
-            data.statusCode = statusCode;
-            
-            // If not a success response, format as an error
-            if (!response.ok) {
-              return data; // Will be handled in the next then block
-            }
-            
-            return data;
-          });
-        })
-        .then(data => {
-          // Reset button
-          submitButton.disabled = false;
-          submitButton.textContent = originalButtonText;
-          
-          // Check if it was an error response
-          if (data.statusCode >= 400) {
-            console.error('Error response:', data);
-            alert(data.message || 'An error occurred. Please try again later.');
-            return;
-          }
-          
-          if (data.success) {
-            // Show success message
-            const successMsg = document.createElement('div');
-            successMsg.className = 'form-success';
-            successMsg.textContent = `Success! The AI Marketing FAQ PDF has been sent to ${email}`;
-            
-            // Replace form with success message
-            form.innerHTML = '';
-            form.appendChild(successMsg);
-            
-            // Optional: scroll to success message
-            successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          } else {
-            // Handle specific error cases
-            if (data.error === 'Already subscribed') {
-              alert(`${email} is already subscribed. Thank you for your interest!`);
-            } else {
-              alert(data.message || 'An error occurred. Please try again later.');
-            }
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          submitButton.disabled = false;
-          submitButton.textContent = originalButtonText;
-          alert('An error occurred. Please try again later.');
-        });
-      });
-    });
+    console.log(`Found ${newsletterForms.length} legacy newsletter forms`);
+    // No need to add event listeners - these should be migrated to Buttondown iframes
   }
 }
 

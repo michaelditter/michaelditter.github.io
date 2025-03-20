@@ -157,13 +157,16 @@
                 
                 <!-- Newsletter Signup (Above the Fold) -->
                 <div class="hero-newsletter">
-                    <h3>Subscribe for AI Insights</h3>
-                    <p>Join my newsletter and get the AI Marketing FAQ PDF for free</p>
-                    <form id="hero-newsletter-form" class="hero-newsletter-form newsletter-form">
-                        <input type="email" name="email" placeholder="Enter your email address" required>
-                        <button type="submit" class="btn-primary">Get PDF</button>
-                    </form>
-                    <div id="newsletter-message" class="newsletter-message"></div>
+                    <h2>Subscribe to My Newsletter</h2>
+                    <p>Get the latest insights on AI, emerging technologies, and digital innovation delivered to your inbox.</p>
+                    
+                    <iframe
+                        scrolling="no"
+                        style="width:100%!important;height:220px;border:1px #ccc solid !important"
+                        src="https://buttondown.com/ditter?as_embed=true"
+                    ></iframe>
+                    
+                    <p class="newsletter-privacy">Your privacy is respected. Unsubscribe at any time.</p>
                 </div>
             </div>
             <div class="hero-image">
@@ -888,6 +891,7 @@
                             <li><a href="/blog/category/ai-strategy">AI Strategy</a></li>
                             <li><a href="/resources/machine-learning">Machine Learning</a></li>
                             <li><a href="/resources/ai-ethics">AI Ethics</a></li>
+                            <li><a href="/resources/ai-regulatory-frameworks">AI Regulations</a></li>
                             <li><a href="/resources/case-studies">Case Studies</a></li>
                             <li><a href="/resources/white-papers">White Papers</a></li>
                             <li><a href="/resources/webinars">Webinars</a></li>
@@ -912,123 +916,8 @@
 
     <!-- JavaScript -->
     <script src="js/main.js"></script>
-
-    <!-- Newsletter form submission script -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const newsletterForm = document.getElementById('hero-newsletter-form');
-        const messageElement = document.getElementById('newsletter-message');
-        
-        if (newsletterForm) {
-            newsletterForm.addEventListener('submit', async function(event) {
-                event.preventDefault();
-                
-                // Clear previous messages
-                messageElement.textContent = '';
-                messageElement.className = 'newsletter-message';
-                
-                // Get email input
-                const emailInput = this.querySelector('input[name="email"]');
-                const email = emailInput.value.trim();
-                const submitButton = this.querySelector('button[type="submit"]');
-                
-                // Basic validation
-                if (!email || !email.includes('@')) {
-                    messageElement.textContent = 'Please enter a valid email address';
-                    messageElement.classList.add('error');
-                    return;
-                }
-                
-                // Disable button and show loading state
-                const originalButtonText = submitButton.textContent;
-                submitButton.disabled = true;
-                submitButton.textContent = 'Sending...';
-                
-                try {
-                    console.log('Submitting to Vercel API...');
-                    
-                    // Send the request to the Vercel API endpoint with the absolute URL
-                    const response = await fetch('https://api-only-pq88ssbko-michael-ditters-projects.vercel.app/api/subscribe?x-vercel-protection-bypass=uMiUFNOyJ7X843djIWNk3EA9cUxKBAhN', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Origin': 'https://michaelditter.com'
-                        },
-                        body: JSON.stringify({ email_address: email }),
-                        mode: 'cors',
-                        credentials: 'omit'
-                    });
-                    
-                    console.log('Response status:', response.status);
-                    
-                    // Parse the response
-                    let data;
-                    try {
-                        data = await response.json();
-                        console.log('Response data:', data);
-                    } catch (jsonError) {
-                        console.error('Error parsing JSON response:', jsonError);
-                        throw new Error('Invalid response from server');
-                    }
-                    
-                    // Check if the request was successful
-                    if (response.ok) {
-                        // Show success message
-                        messageElement.textContent = data.message || 'Successfully subscribed! Thank you for joining.';
-                        messageElement.classList.add('success');
-                        
-                        // Clear the form
-                        emailInput.value = '';
-                    } else {
-                        // Handle specific error cases
-                        if (data.error === 'Already subscribed') {
-                            messageElement.textContent = data.message || 'This email is already subscribed. Thank you for your interest!';
-                            messageElement.classList.add('info');
-                        } else {
-                            throw new Error(data.message || 'Subscription failed');
-                        }
-                    }
-                } catch (error) {
-                    console.error('Subscription error:', error);
-                    messageElement.textContent = 'There was an error processing your subscription. Please try again later.';
-                    messageElement.classList.add('error');
-                } finally {
-                    // Re-enable the button
-                    submitButton.disabled = false;
-                    submitButton.textContent = originalButtonText;
-                }
-            });
-        }
-    });
-    </script>
-
+    
     <style>
-        /* Newsletter message styles */
-        .newsletter-message {
-            margin-top: 0.75rem;
-            padding: 0.5rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-        
-        .newsletter-message.success {
-            background-color: rgba(39, 174, 96, 0.2);
-            color: #27ae60;
-            border: 1px solid #27ae60;
-        }
-        
-        .newsletter-message.error {
-            background-color: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border: 1px solid #e74c3c;
-        }
-        
-        .newsletter-message.info {
-            background-color: rgba(52, 152, 219, 0.2);
-            color: #3498db;
-            border: 1px solid #3498db;
-        }
-        
         /* Hero newsletter form styles */
         .hero-newsletter {
             margin-top: 2rem;
@@ -1039,7 +928,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .hero-newsletter h3 {
+        .hero-newsletter h2 {
             font-size: 1.25rem;
             margin-bottom: 0.5rem;
             color: #000000;
@@ -1051,23 +940,16 @@
             color: #000000;
         }
         
-        .hero-newsletter-form {
-            display: flex;
-            gap: 0.5rem;
+        .hero-newsletter iframe {
+            width: 100%;
+            min-height: 220px;
+            border: 1px solid #ccc !important;
         }
         
-        .hero-newsletter-form input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border-radius: 4px;
-            border: none;
-            font-size: 0.9rem;
-        }
-        
-        @media (max-width: 768px) {
-            .hero-newsletter-form {
-                flex-direction: column;
-            }
+        .newsletter-privacy {
+            font-style: italic;
+            margin-top: 1rem;
+            color: #555;
         }
     </style>
 </body>

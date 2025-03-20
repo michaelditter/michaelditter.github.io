@@ -413,131 +413,15 @@
             <div class="newsletter-content">
                 <h2>Stay Updated on AI Trends</h2>
                 <p>Subscribe to my newsletter for the latest insights on AI, machine learning, and technology strategy.</p>
-                <form id="blog-newsletter-form" class="newsletter-form">
-                    <input type="email" name="email" placeholder="Your email address" required>
-                    <button type="submit" class="btn-primary">Subscribe</button>
-                </form>
-                <div id="blog-newsletter-message" class="newsletter-message"></div>
+                <iframe
+                    scrolling="no"
+                    style="width:100%!important;height:220px;border:1px #ccc solid !important"
+                    src="https://buttondown.com/ditter?as_embed=true"
+                ></iframe>
                 <p class="form-privacy">I respect your privacy. Unsubscribe at any time.</p>
             </div>
         </div>
     </section>
-
-    <!-- Newsletter form submission script -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const newsletterForm = document.getElementById('blog-newsletter-form');
-        const messageElement = document.getElementById('blog-newsletter-message');
-        
-        if (newsletterForm) {
-            newsletterForm.addEventListener('submit', async function(event) {
-                event.preventDefault();
-                
-                // Clear previous messages
-                messageElement.textContent = '';
-                messageElement.className = 'newsletter-message';
-                
-                // Get email input
-                const emailInput = this.querySelector('input[name="email"]');
-                const email = emailInput.value.trim();
-                const submitButton = this.querySelector('button[type="submit"]');
-                
-                // Basic validation
-                if (!email || !email.includes('@')) {
-                    messageElement.textContent = 'Please enter a valid email address';
-                    messageElement.classList.add('error');
-                    return;
-                }
-                
-                // Disable button and show loading state
-                const originalButtonText = submitButton.textContent;
-                submitButton.disabled = true;
-                submitButton.textContent = 'Sending...';
-                
-                try {
-                    console.log('Submitting to Vercel API...');
-                    
-                    // Send the request to the Vercel API endpoint with the absolute URL
-                    const response = await fetch('/api/subscribe', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ email_address: email }),
-                        mode: 'cors',
-                        credentials: 'omit'
-                    });
-                    
-                    console.log('Response status:', response.status);
-                    
-                    // Parse the response
-                    let data;
-                    try {
-                        data = await response.json();
-                        console.log('Response data:', data);
-                    } catch (jsonError) {
-                        console.error('Error parsing JSON response:', jsonError);
-                        throw new Error('Invalid response from server');
-                    }
-                    
-                    // Check if the request was successful
-                    if (response.ok) {
-                        // Show success message
-                        messageElement.textContent = data.message || 'Successfully subscribed! Thank you for joining.';
-                        messageElement.classList.add('success');
-                        
-                        // Clear the form
-                        emailInput.value = '';
-                    } else {
-                        // Handle specific error cases
-                        if (data.error === 'Already subscribed') {
-                            messageElement.textContent = data.message || 'This email is already subscribed. Thank you for your interest!';
-                            messageElement.classList.add('info');
-                        } else {
-                            throw new Error(data.message || 'Subscription failed');
-                        }
-                    }
-                } catch (error) {
-                    console.error('Subscription error:', error);
-                    messageElement.textContent = 'There was an error processing your subscription. Please try again later.';
-                    messageElement.classList.add('error');
-                } finally {
-                    // Re-enable the button
-                    submitButton.disabled = false;
-                    submitButton.textContent = originalButtonText;
-                }
-            });
-        }
-    });
-    </script>
-    
-    <style>
-        /* Newsletter message styles */
-        .newsletter-message {
-            margin-top: 0.75rem;
-            padding: 0.5rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-        
-        .newsletter-message.success {
-            background-color: rgba(39, 174, 96, 0.2);
-            color: #27ae60;
-            border: 1px solid #27ae60;
-        }
-        
-        .newsletter-message.error {
-            background-color: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border: 1px solid #e74c3c;
-        }
-        
-        .newsletter-message.info {
-            background-color: rgba(52, 152, 219, 0.2);
-            color: #3498db;
-            border: 1px solid #3498db;
-        }
-    </style>
 
     <!-- Footer -->
     <footer class="site-footer">
@@ -577,6 +461,7 @@
                             <li><a href="/blog/category/ai-strategy">AI Strategy</a></li>
                             <li><a href="/resources/machine-learning">Machine Learning</a></li>
                             <li><a href="/resources/ai-ethics">AI Ethics</a></li>
+                            <li><a href="/resources/ai-regulatory-frameworks">AI Regulations</a></li>
                             <li><a href="/resources/case-studies">Case Studies</a></li>
                             <li><a href="/resources/white-papers">White Papers</a></li>
                             <li><a href="/resources/webinars">Webinars</a></li>
