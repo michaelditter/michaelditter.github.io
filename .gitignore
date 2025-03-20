@@ -1,3 +1,5 @@
+# .gitignore file - Updated March 22, 2024 to force rebuild
+
 # System files
 .DS_Store
 Thumbs.db
