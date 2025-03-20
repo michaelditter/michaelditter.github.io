@@ -410,7 +410,7 @@ function measurePerformance() {
  * Newsletter form handling
  */
 function initNewsletterForm() {
-  const newsletterForms = document.querySelectorAll('form[action*="api/subscribe"]');
+  const newsletterForms = document.querySelectorAll('.newsletter-form');
   
   if (newsletterForms.length) {
     newsletterForms.forEach(form => {
