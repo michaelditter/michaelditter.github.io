@@ -147,7 +147,10 @@ export default async function handler(req, res) {
   const allowedOrigins = [
     'https://michaelditter.github.io', 
     'https://michaelditter.com', 
-    'https://www.michaelditter.com'
+    'https://www.michaelditter.com',
+    'https://michael-ditter-branding.vercel.app',
+    'https://api-only-pq88ssbko-michael-ditters-projects.vercel.app',
+    'http://localhost:3000'
   ];
   
   // Set CORS headers - Allow requests from allowed origins
@@ -161,7 +164,7 @@ export default async function handler(req, res) {
   } else {
     log(`WARNING: Request from non-allowed origin: ${origin}`);
     // Fall back to default origin for development/testing
-    res.setHeader('Access-Control-Allow-Origin', 'https://michaelditter.com');
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Temporarily allow all origins for debugging
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin');
