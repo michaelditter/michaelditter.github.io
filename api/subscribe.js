@@ -114,18 +114,19 @@ async function sendEmailWithPdf(to, pdfBuffer) {
 
 // Export handler function
 export default async function handler(req, res) {
-  // Log request info
-  log(`Received ${req.method} request from ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`);
-  
-  // Set CORS headers
+  // Set CORS headers - IMPORTANT: Allow requests from GitHub Pages domain
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://michaelditter.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  // Handle preflight requests for CORS
+  // Log request details
+  log(`Incoming request: ${req.method} ${req.url || ''}`);
+  log(`Origin: ${req.headers.origin || 'unknown'}`);
+  log(`Headers: ${JSON.stringify(req.headers)}`);
+  
   if (req.method === 'OPTIONS') {
-    log('Handling OPTIONS request (CORS preflight)');
+    log('Handling OPTIONS preflight request - responding with 200 OK');
     res.status(200).end();
     return;
   }
@@ -138,14 +139,16 @@ export default async function handler(req, res) {
 
   try {
     // Get email from request body
-    const { email } = req.body;
-    log(`Processing subscription for email: ${email}`);
+    log(`Request body: ${JSON.stringify(req.body || {})}`);
+    const { email } = req.body || {};
 
     // Validate email
     if (!email || !email.includes('@')) {
       log('Invalid email provided');
       return res.status(400).json({ error: 'Invalid email', message: 'Please provide a valid email address' });
     }
+
+    log(`Processing subscription for email: ${email}`);
 
     // Get API key from environment variable
     const apiKey = process.env.BUTTONDOWN_API_KEY;
@@ -167,7 +170,8 @@ export default async function handler(req, res) {
 
     // Parse response
     const data = await response.json();
-    log(`Buttondown API response: ${response.status}`);
+    log(`Buttondown API response status: ${response.status}`);
+    log(`Buttondown API response data: ${JSON.stringify(data)}`);
 
     // Check for errors
     if (!response.ok) {
@@ -195,6 +199,7 @@ export default async function handler(req, res) {
       
       // Generate PDF
       pdfBuffer = await generatePdf(markdownPath);
+      log(`PDF generated successfully (${pdfBuffer?.length || 0} bytes)`);
       
       // Send email with PDF
       emailResult = await sendEmailWithPdf(email, pdfBuffer);
@@ -202,6 +207,7 @@ export default async function handler(req, res) {
       log(`Email sent result: ${JSON.stringify(emailResult)}`);
     } catch (pdfError) {
       log(`Error with PDF or email: ${pdfError.message}`);
+      log(`Full error: ${pdfError.stack || pdfError}`);
       // Continue with the flow even if PDF generation or email fails
     }
 
@@ -214,6 +220,7 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     log(`Subscription error: ${error.message}`);
+    log(`Full error stack: ${error.stack || error}`);
     return res.status(500).json({ 
       error: 'Subscription failed', 
       message: 'There was an issue subscribing to the newsletter. Please try again later.' 
