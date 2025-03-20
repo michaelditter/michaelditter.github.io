@@ -114,37 +114,48 @@ async function sendEmailWithPdf(to, pdfBuffer) {
 
 // Export handler function
 export default async function handler(req, res) {
+  // ============ CORS HANDLING - ENHANCED VERSION ============
   // Get the origin from the request
   const origin = req.headers.origin;
-  const allowedOrigins = ['https://michaelditter.github.io', 'https://michaelditter.com', 'https://www.michaelditter.com'];
+  log(`Request origin: ${origin || 'unknown'}`);
   
-  // Set CORS headers - Allow requests from both GitHub Pages and custom domain
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  // Define allowed origins
+  const allowedOrigins = [
+    'https://michaelditter.github.io', 
+    'https://michaelditter.com', 
+    'https://www.michaelditter.com'
+  ];
   
-  // Check if the request origin is in our allowed list
+  // Set CORS headers - Allow requests from allowed origins
   if (allowedOrigins.includes(origin)) {
+    log(`Origin ${origin} is allowed - setting CORS headers`);
     res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin');
+    res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
   } else {
-    // For development/testing, log but still set a default
-    log(`Received request from non-allowed origin: ${origin}`);
+    log(`WARNING: Request from non-allowed origin: ${origin}`);
+    // Fall back to default origin for development/testing
     res.setHeader('Access-Control-Allow-Origin', 'https://michaelditter.com');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin');
   }
   
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  // Log request details
-  log(`Incoming request: ${req.method} ${req.url || ''}`);
-  log(`Origin: ${origin || 'unknown'}`);
-  log(`Headers: ${JSON.stringify(req.headers)}`);
-  
+  // Handle OPTIONS (preflight) request immediately
   if (req.method === 'OPTIONS') {
     log('Handling OPTIONS preflight request - responding with 200 OK');
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
+  
+  // Log request details
+  log(`Processing ${req.method} request to ${req.url || ''}`);
+  log(`Headers: ${JSON.stringify(req.headers)}`);
+  
+  // ============ END CORS HANDLING ============
 
-  // Only allow POST requests
+  // Only allow POST requests for actual processing
   if (req.method !== 'POST') {
     log(`Method not allowed: ${req.method}`);
     return res.status(405).json({ error: 'Method not allowed', message: 'Only POST requests are allowed' });

@@ -4,20 +4,26 @@
     "api/subscribe.js": {
       "memory": 1024,
       "maxDuration": 10
+    },
+    "api/test-subscribe.js": {
+      "memory": 1024,
+      "maxDuration": 10
     }
   },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, Origin" }
+      ]
+    }
+  ],
   "routes": [
     {
-      "src": "/api/subscribe",
-      "methods": ["OPTIONS", "POST"],
-      "headers": {
-        "Access-Control-Allow-Origin": "https://michaelditter.com",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Credentials": "true"
-      }
+      "handle": "filesystem"
     },
-    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 } 
