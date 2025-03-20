@@ -890,7 +890,7 @@
 
 /* Research Index Page Styles */
 .research-container {
-    padding-top: 120px; /* Add padding to account for fixed header */
+    padding-top: 140px; /* Increased padding to account for fixed header */
     margin: 0 auto;
     max-width: 1200px;
     width: 95%;
