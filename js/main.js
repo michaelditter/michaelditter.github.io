@@ -410,57 +410,69 @@ function measurePerformance() {
  * Newsletter form handling
  */
 function initNewsletterForm() {
-  const newsletterForms = document.querySelectorAll('.newsletter-form');
+  const newsletterForms = document.querySelectorAll('form[action="/api/subscribe"]');
   
   if (newsletterForms.length) {
     newsletterForms.forEach(form => {
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
         
-        const emailInput = form.querySelector('input[type="email"]');
-        const submitButton = form.querySelector('button[type="submit"]');
-        const originalButtonText = submitButton.textContent;
+        const emailInput = this.querySelector('input[name="email"]');
+        const email = emailInput.value.trim();
+        const submitButton = this.querySelector('button[type="submit"]');
         
-        // Simple validation
-        if (!emailInput.value.trim() || !isValidEmail(emailInput.value)) {
-          showFormMessage(form, 'Please enter a valid email address', 'error');
+        // Basic email validation
+        if (!email || !email.includes('@')) {
+          alert('Please enter a valid email address');
           return;
         }
         
-        // Show loading state
+        // Disable button and show loading state
+        const originalButtonText = submitButton.textContent;
         submitButton.disabled = true;
-        submitButton.textContent = 'Subscribing...';
+        submitButton.textContent = 'Sending...';
         
-        try {
-          // Send the form data to the API
-          const response = await fetch('/api/subscribe', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: emailInput.value }),
-          });
-          
-          const data = await response.json();
-          
-          if (response.ok) {
-            // Success
-            showFormMessage(form, data.message || 'Successfully subscribed! Thank you for joining.', 'success');
-            form.reset();
-          } else {
-            // API error
-            const errorMessage = data.message || 'Failed to subscribe. Please try again.';
-            showFormMessage(form, errorMessage, 'error');
-          }
-        } catch (error) {
-          // Network or other error
-          console.error('Newsletter subscription error:', error);
-          showFormMessage(form, 'Unable to connect to the subscription service. Please try again later.', 'error');
-        } finally {
-          // Reset button state
+        // Send POST request to the API
+        fetch('/api/subscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Reset button
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
-        }
+          
+          if (data.success) {
+            // Show success message
+            const successMsg = document.createElement('div');
+            successMsg.className = 'form-success';
+            successMsg.textContent = `Success! The AI Marketing FAQ PDF has been sent to ${email}`;
+            
+            // Replace form with success message
+            form.innerHTML = '';
+            form.appendChild(successMsg);
+            
+            // Optional: scroll to success message
+            successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            // Handle specific error cases
+            if (data.error === 'Already subscribed') {
+              alert(`${email} is already subscribed. Thank you for your interest!`);
+            } else {
+              alert(data.message || 'An error occurred. Please try again later.');
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+          alert('An error occurred. Please try again later.');
+        });
       });
     });
   }
