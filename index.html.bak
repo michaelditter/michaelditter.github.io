@@ -39,7 +39,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/custom-overrides.css">
     
     <!-- Schema.org structured data for Person -->
     <script type="application/ld+json">
@@ -53,7 +52,7 @@
         "alternateName": "Mike Ditter",
         "description": "Director of AI Strategy and Emerging Technology at Diageo, specializing in AI implementation, AR/VR, and emerging technologies.",
         "url": "https://www.michaelditter.com/",
-        "image": "https://www.michaelditter.com/img/profile/michael-ditter-headshot-original.jpg",
+        "image": "https://www.michaelditter.com/img/profile/michael-ditter-headshot.jpg",
         "sameAs": [
             "https://www.linkedin.com/in/michaeljditter/",
             "https://twitter.com/michaeljditter"
@@ -143,7 +142,7 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="img/profile/michael-ditter-headshot-new.jpg" alt="Michael J Ditter, AI Strategy and Emerging Technology Leader" width="400" height="400">
+                <img src="img/profile/michael-ditter-headshot.jpg" alt="Michael J Ditter, AI Strategy and Emerging Technology Leader" width="400" height="400">
             </div>
         </div>
     </section>
@@ -157,7 +156,7 @@
             </div>
             <div class="about-content">
                 <div class="about-image">
-                    <img src="img/profile/michael-ditter-headshot-new.jpg" alt="Michael J Ditter" width="400" height="400">
+                    <img src="img/profile/michael-ditter-headshot.jpg" alt="Michael J Ditter" width="400" height="400">
                 </div>
                 <div class="about-text">
                     <h3>Michael J Ditter</h3>
@@ -346,7 +345,7 @@
                 <a href="/blog/ai-newsletter-2025-03-19/" class="twitter-card">
                     <div class="twitter-card-header">
                         <div class="twitter-profile">
-                            <img src="/img/profile/michael-ditter-headshot-original.jpg" alt="Michael J Ditter" width="48" height="48">
+                            <img src="/img/profile/michael-ditter-headshot.jpg" alt="Michael J Ditter" width="48" height="48">
                             <div class="twitter-name">
                                 <span class="twitter-fullname">Michael J Ditter</span>
                                 <span class="twitter-username">@michaeljditter</span>
@@ -376,7 +375,7 @@
                 <a href="/blog/bitcoin-market-report-2025-03-19/" class="twitter-card">
                     <div class="twitter-card-header">
                         <div class="twitter-profile">
-                            <img src="/img/profile/michael-ditter-headshot-original.jpg" alt="Michael J Ditter" width="48" height="48">
+                            <img src="/img/profile/michael-ditter-headshot.jpg" alt="Michael J Ditter" width="48" height="48">
                             <div class="twitter-name">
                                 <span class="twitter-fullname">Michael J Ditter</span>
                                 <span class="twitter-username">@michaeljditter</span>
@@ -402,22 +401,6 @@
             </div>
             
             <div class="insights-grid">
-                <div class="insight-card">
-                    <a href="/blog/model-context-protocol-mcp-technical-breakdown/">
-                        <div class="insight-image">
-                            <img src="/img/blog/model-context-protocol-mcp.jpg" alt="Model Context Protocol Diagram" width="380" height="250">
-                        </div>
-                        <div class="insight-content">
-                            <div class="insight-meta">
-                                <span class="insight-date">April 15, 2024</span>
-                                <span class="insight-category">AI Integration</span>
-                            </div>
-                            <h3>Model Context Protocol (MCP) – Technical Breakdown</h3>
-                            <p>A comprehensive analysis of the Model Context Protocol, the new standard that enables AI models to connect seamlessly with external tools and data sources through a unified interface.</p>
-                            <span class="read-more">Read More</span>
-                        </div>
-                    </a>
-                </div>
                 <div class="insight-card">
                     <a href="/blog/ai-strategy-unveiling-the-future-strategic-integration-of-ai-in-business-operations/">
                         <div class="insight-image">
@@ -621,185 +604,73 @@
         <div class="container">
             <div class="section-header">
                 <h2>Frequently Asked Questions</h2>
-                <p class="section-subtitle">Comprehensive FAQ on AI Marketing Strategy</p>
+                <p class="section-subtitle">Common questions about working with me</p>
             </div>
             <div class="faq-grid">
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3><span class="faq-icon">🔍</span> What is an AI marketing strategy and why is it important?</h3>
+                        <h3>How do you approach new AI strategy engagements?</h3>
                         <button class="faq-toggle" aria-label="Toggle answer">
                             <img src="img/icons/plus.svg" alt="Expand" width="24" height="24">
                         </button>
                     </div>
                     <div class="faq-answer">
-                        <p>An AI marketing strategy is a plan that integrates artificial intelligence technologies into marketing activities to improve efficiency and outcomes. It's important because AI can analyze massive data sets, automate decisions, and personalize marketing in ways not possible manually. AI helps marketers understand customer needs, match them to products, and persuade more effectively – core marketing goals that AI can "dramatically enhance".</p>
-                        <p>Key reasons AI marketing strategy matters include:</p>
-                        <ul>
-                            <li><strong>Competitive Edge & ROI:</strong> AI can boost marketing ROI by reducing manual work and strengthening output. A 2018 McKinsey study found marketing is the domain where AI could add the greatest business value. Companies with AI marketing see higher revenue growth and performance gains.</li>
-                            <li><strong>Efficiency & Automation:</strong> AI automates tasks like data analysis, content creation, and even media buying. This frees up marketers to focus on strategy and creative work. Routine decisions (bids, sends, recommendations) can be handled in milliseconds by AI.</li>
-                            <li><strong>Personalization at Scale:</strong> AI can tailor experiences for millions of customers individually – something human-only strategies can't achieve. This improves customer engagement and satisfaction.</li>
-                            <li><strong>Real-time Insights:</strong> AI tools provide real-time analytics and predictions, enabling agile decision-making. In today's fast-paced digital market, this agility is crucial.</li>
-                        </ul>
-                        <p>In short, an AI marketing strategy integrates AI to make marketing more efficient, effective, and data-driven, giving brands a competitive advantage in the age of data.</p>
+                        <p>I begin by thoroughly understanding your business objectives, current technological landscape, and organizational readiness. This initial assessment allows me to identify high-impact opportunities for AI integration that align with your strategic goals. From there, I develop a phased implementation roadmap that prioritizes initiatives based on potential value, feasibility, and time-to-impact.</p>
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3><span class="faq-icon">🧠</span> What are the different types of AI models used in marketing and branding?</h3>
+                        <h3>What industries do you specialize in?</h3>
                         <button class="faq-toggle" aria-label="Toggle answer">
                             <img src="img/icons/plus.svg" alt="Expand" width="24" height="24">
                         </button>
                     </div>
                     <div class="faq-answer">
-                        <p>Marketing and branding leverage several types of AI models, each suited to particular tasks:</p>
-                        <ul>
-                            <li><strong>Machine Learning (ML):</strong> Algorithms that learn from data to make predictions or decisions. This includes supervised ML (trained on labeled data to predict outcomes) and unsupervised ML (finds patterns in unlabeled data). Marketers use ML for things like customer segmentation, recommendation systems, and churn prediction.</li>
-                            <li><strong>Deep Learning:</strong> A subset of ML using multi-layered neural networks. Deep learning excels at recognizing complex patterns (e.g. image recognition, language understanding). It has revolutionized marketing analytics by uncovering intricate customer behavior patterns and powering advanced capabilities like image-based product searches.</li>
-                            <li><strong>Natural Language Processing (NLP):</strong> Models that understand and generate language. NLP powers chatbots, sentiment analysis, voice assistants, and content generation. In marketing, NLP-driven tools can analyze social media sentiment or automatically write ad copy.</li>
-                            <li><strong>Computer Vision:</strong> AI models that interpret images or videos. Brands use computer vision for visual search (allowing customers to search via photos), automated ad placement in images, or analyzing user-generated photos for brand insights.</li>
-                            <li><strong>Generative AI:</strong> Models (often deep learning-based) that create new content – text, images, audio, etc. Examples include GPT-like language models for copywriting and GANs or diffusion models for generating images. Generative AI is widely used for creating marketing content at scale (social posts, product photos, videos).</li>
-                            <li><strong>Hybrid AI:</strong> Combinations of the above (for example, an AI system that uses computer vision and NLP together).</li>
-                        </ul>
-                        <p>Each type serves different marketing needs. For instance, machine learning and deep learning provide predictive analytics and personalization, NLP enables conversational marketing and content creation, and computer vision supports visual marketing and AR experiences. These AI model types form the backbone of modern marketing applications.</p>
+                        <p>I have extensive experience in consumer goods, beverage, retail, and technology sectors. However, my methodologies and approaches to AI and emerging technology strategy are applicable across industries. The fundamental principles of effective technology integration, change management, and digital transformation remain consistent, though adaptations are made to address industry-specific challenges and opportunities.</p>
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3><span class="faq-icon">🏆</span> What is "share of model" in AI branding, and why does it matter?</h3>
+                        <h3>How long do typical projects take?</h3>
                         <button class="faq-toggle" aria-label="Toggle answer">
                             <img src="img/icons/plus.svg" alt="Expand" width="24" height="24">
                         </button>
                     </div>
                     <div class="faq-answer">
-                        <p>"Share of model" is an emerging concept in marketing that measures a brand's presence within the data and outputs of AI models (especially large language models like those behind AI chatbots and search assistants). In other words, it's like "share of voice" but for AI – how often an AI mentions or recommends your brand compared to competitors when answering user queries.</p>
-                        <p>This matters because AI-driven recommendations are becoming a crucial part of the customer journey. Millions of consumers are now asking AI assistants for product advice (e.g., "What's the best laptop for gaming?") or using AI-curated search results. In fact, more than a billion people in 100+ countries engage with Google's AI-generated search overviews each month.</p>
-                        <p>Why it matters:</p>
-                        <ul>
-                            <li><strong>Influence on Consumer Choice:</strong> When an AI assistant or chatbot provides an answer, users often treat it as authoritative. If your brand appears in those AI-crafted answers (high share of model), you become part of the consideration set effortlessly.</li>
-                            <li><strong>New SEO Paradigm:</strong> As search engines integrate AI (e.g., Bing's chat or Google's SGE), being "AI-visible" is akin to ranking high in classic search. Brand visibility to AI is becoming as important as brand visibility to humans.</li>
-                            <li><strong>Competitive Benchmark:</strong> It's a metric to see how you stack up in the AI recommendation landscape. If your share of model is low, it's a warning that you might be underrepresented in the data these AIs were trained on.</li>
-                            <li><strong>AI Brand Perception:</strong> Just as market share indicates success in the marketplace, share of model hints at your success in the "AI marketplace of information." It reflects how AI "perceives" your brand – essentially AI brand awareness.</li>
-                        </ul>
-                        <p>In summary, share of model matters because AI recommendations could make or break brand discovery in the coming years. As consumers turn to Alexa, Siri, or ChatGPT for advice, ensuring those AIs know and favor your brand is critical.</p>
+                        <p>Project timelines vary significantly based on scope and complexity. Initial strategy development typically takes 4-8 weeks, while implementation phases can range from 3-12 months depending on the scale of the initiative. I structure engagements to deliver incremental value throughout the process, rather than waiting until the end to demonstrate results.</p>
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3><span class="faq-icon">🎯</span> How can brands optimize for share of model in AI-generated content?</h3>
+                        <h3>How do you measure success in AI implementation?</h3>
                         <button class="faq-toggle" aria-label="Toggle answer">
                             <img src="img/icons/plus.svg" alt="Expand" width="24" height="24">
                         </button>
                     </div>
                     <div class="faq-answer">
-                        <p>Optimizing for "share of model" means making your brand more likely to be mentioned or recommended by AI systems. This is a new frontier (akin to SEO for AI). Strategies include:</p>
-                        <ul>
-                            <li><strong>Strengthen Digital Presence and SEO:</strong> AI models are trained on vast internet data, including websites, articles, and reviews. Ensure your brand has a strong, consistent digital footprint. This means robust SEO – high-quality content on your site using relevant keywords, getting mentioned in reputable publications, and maintaining active knowledge panels or wiki entries.</li>
-                            <li><strong>Provide Structured Data:</strong> Use schema markup and structured data on your website. Search engines and AI crawlers eat this up. Structured data (like product specs, FAQ schema, etc.) can feed knowledge into AI models more directly.</li>
-                            <li><strong>Regularly Engage AI Models:</strong> A tactic suggested by AI branding experts is to "engage with LLMs regularly to understand what they have learned about your brand". Practically, this means querying tools like ChatGPT or Bard with relevant questions to see what they say about your brand.</li>
-                            <li><strong>Content Creation for AI Consumption:</strong> Create content that AIs will train on. Traditional SEO content (blogs, guides, Q&As) that answer common user questions can now serve double duty: ranking on Google and informing AI answers.</li>
-                            <li><strong>Consistent Brand Messaging:</strong> Maintain brand consistency across platforms to be understood by AI. If your brand appears differently in various contexts, AI might get a fragmented view. Ensure your brand name, product names, and value propositions are consistent across your site, social media, and e-commerce listings.</li>
-                            <li><strong>Keep Information Updated:</strong> AI models trained at one point in time (like GPT-4's knowledge cutoff) won't know new info unless updated. So keep your site updated with current product info, and for AI systems that use live data, ensure new product releases or news about your brand are well-covered online.</li>
-                        </ul>
-                        <p>In essence, optimizing for share of model is about feeding the AI ecosystem with rich, relevant, positive information about your brand and doing so consistently. By treating AI models as a new audience – which they are – you can increase the likelihood your brand surfaces in AI-driven conversations and recommendations.</p>
+                        <p>Success metrics are tailored to your specific objectives but typically include a blend of quantitative and qualitative indicators. These might include efficiency gains, cost reduction, revenue growth, improved decision quality, enhanced customer experience, and increased employee satisfaction. I work with clients to establish baseline measurements and implement tracking mechanisms to demonstrate clear ROI.</p>
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3><span class="faq-icon">👁️</span> How does AI influence consumer brand perception?</h3>
+                        <h3>What makes your approach to AR/VR unique?</h3>
                         <button class="faq-toggle" aria-label="Toggle answer">
                             <img src="img/icons/plus.svg" alt="Expand" width="24" height="24">
                         </button>
                     </div>
                     <div class="faq-answer">
-                        <p>AI is influencing brand perception in several ways, both through how brands use AI and how consumers experience AI-driven interactions:</p>
-                        <ul>
-                            <li><strong>Personalized Experiences Enhance Perception:</strong> When consumers receive highly relevant recommendations or communications thanks to AI, they often develop a more favorable view of the brand. According to research, 80% of consumers are more likely to do business with a company that offers personalized experiences, reflecting how positively personalization (mostly driven by AI) impacts their attitude.</li>
-                            <li><strong>Consistency and Availability:</strong> AI (like chatbots or voice assistants) gives brands a 24/7 presence. Quick, automated customer service can improve perception – customers appreciate immediate answers at any hour. One survey found 69% of consumers were satisfied with their last chatbot interaction.</li>
-                            <li><strong>Brand as Innovative:</strong> Brands adopting AI often position themselves as innovators. When customers see AI features (like AR try-ons, AI shopping assistants, etc.), they may perceive the brand as cutting-edge and forward-thinking.</li>
-                            <li><strong>Potential Trust Erosion if Misused:</strong> On the flip side, heavy reliance on AI can cause skepticism. Some consumers worry about authenticity – e.g., is an influencer's post genuine or AI-generated? There's evidence that transparency issues or over-automation can reduce trust.</li>
-                            <li><strong>AI-Driven Content and Ads Shape Brand Associations:</strong> AI often determines which messages or images a customer sees (through programmatic ad targeting or algorithmic social feeds). If AI consistently shows your brand in contexts that highlight your intended values, it reinforces those brand associations.</li>
-                            <li><strong>AI Personas and Influencers:</strong> Some brands create AI-generated personas (virtual influencers or brand characters). These can engage audiences in novel ways and often draw curiosity.</li>
-                        </ul>
-                        <p>In summary, AI can boost brand perception by delivering personalization, innovation, and responsiveness, making customers feel valued and understood by the brand. However, missteps in AI usage – impersonal automation, inaccuracies, or ethical lapses – can erode trust. It's a double-edged sword: brands using AI must ensure it augments the human touch rather than replaces it.</p>
+                        <p>My approach to AR/VR focuses on business value first, technology second. Many organizations are enamored with the technology itself rather than understanding how it can solve real business problems. I help clients identify concrete use cases where immersive technologies can deliver measurable value, whether through enhanced customer engagement, improved training outcomes, or operational efficiencies. This pragmatic approach ensures sustainable adoption and tangible results.</p>
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3><span class="faq-icon">📊</span> How can AI help monitor and analyze brand sentiment?</h3>
+                        <h3>Do you offer ongoing support after strategy development?</h3>
                         <button class="faq-toggle" aria-label="Toggle answer">
                             <img src="img/icons/plus.svg" alt="Expand" width="24" height="24">
                         </button>
                     </div>
                     <div class="faq-answer">
-                        <p>AI has become an invaluable tool for brand sentiment analysis and reputation management by allowing companies to gauge public opinion at scale and in real time:</p>
-                        <ul>
-                            <li><strong>Social Media Listening with AI:</strong> AI-powered social listening platforms (like Brandwatch, Sprinklr, etc.) use natural language processing to sift through millions of social posts, comments, and reviews to identify mentions of your brand and determine sentiment (positive, negative, neutral). Instead of manually reading tweets, marketers get dashboards showing sentiment trends.</li>
-                            <li><strong>Sentiment Breakdown and Drivers:</strong> AI doesn't just score sentiment, it can often extract topics driving that sentiment. For instance, it might reveal that most negative sentiment this month is about "customer service wait time" or that positive sentiment often mentions "quality" or a specific product feature.</li>
-                            <li><strong>Real-Time Alerts for Crisis Management:</strong> Many AI systems can send alerts if they detect unusual activity – say a viral negative post or an abnormal surge in mentions. Early detection is key in crisis management, and AI provides that.</li>
-                            <li><strong>Multi-channel Monitoring:</strong> AI sentiment tools aggregate data from everywhere – Twitter, Facebook, news articles, forums (Reddit), blogs, review sites (like Yelp or TripAdvisor). This gives a comprehensive view of reputation across all channels in one place.</li>
-                            <li><strong>Measuring Campaign Impact:</strong> After a major campaign or event, AI sentiment analysis can quantify how it shifted public perception. For example, after a Super Bowl ad, did positive mentions of the brand increase? Did any negative backlash emerge?</li>
-                            <li><strong>Competitor Benchmarking:</strong> Many AI reputation tools also track competitors. You can gauge your brand's sentiment relative to peers (Is your net sentiment higher or lower than competitor X?).</li>
-                        </ul>
-                        <p>In summary, AI serves as an always-on "reputation radar", detecting how people feel about a brand and why. By leveraging AI for sentiment analysis, brands can be far more proactive and precise in managing their reputation: addressing issues before they escalate, amplifying what drives positive sentiment, and aligning their strategies with customer opinion trends.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3><span class="faq-icon">✍️</span> What types of marketing content can AI produce?</h3>
-                        <button class="faq-toggle" aria-label="Toggle answer">
-                            <img src="img/icons/plus.svg" alt="Expand" width="24" height="24">
-                        </button>
-                    </div>
-                    <div class="faq-answer">
-                        <p>AI is capable of generating a wide range of marketing content across different formats:</p>
-                        <ul>
-                            <li><strong>Text Content:</strong> This includes blog posts, articles, website copy, and product descriptions. AI language models (like GPT-3/4) can draft long-form content or short pieces. According to one survey, 44.4% of marketing professionals have utilized AI for content production, with tools like Jasper.ai and ChatGPT being particularly popular for writing tasks.</li>
-                            <li><strong>Social Media Posts and Captions:</strong> AI can write engaging captions, tweets, or social media updates. Marketers might input a few keywords or a tone (e.g., witty, inspirational) and get multiple caption ideas.</li>
-                            <li><strong>Images and Graphics:</strong> With generative adversarial networks (GANs) and newer diffusion models, AI can create images from text prompts. Marketers use AI image generators (like DALL·E, Midjourney) to produce custom visuals – for example, concept art for a campaign, social media graphics, or even logo variations.</li>
-                            <li><strong>Video Content:</strong> AI is increasingly used for video creation. There are AI video editors that can automatically generate short videos from text scripts or from a collection of images/video clips. For instance, tools like Synthesia allow marketers to create videos with AI avatars speaking in multiple languages from a provided script.</li>
-                            <li><strong>Audio Content:</strong> AI can produce voiceovers using text-to-speech with realistic voices. Brands can use this to generate podcast narration, audio ads, or voice prompts without hiring voice actors.</li>
-                            <li><strong>Interactive Content:</strong> AI can generate chatbot scripts or conversational flows – essentially content meant for interactive consumption. If a brand wants a quiz or a chat-based storytelling on their site, AI can help script the branching dialogues.</li>
-                        </ul>
-                        <p>In essence, AI now touches almost every format: articles, ads, emails, images, videos, and audio. It might not do all of these at a final polished level without human refinement, but it drastically accelerates the content creation process. Notably, AI is often used to generate the first draft or concept, which humans then review and refine to ensure it's on-brand and high-quality.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3><span class="faq-icon">💬</span> How do AI chatbots and virtual assistants affect the customer experience?</h3>
-                        <button class="faq-toggle" aria-label="Toggle answer">
-                            <img src="img/icons/plus.svg" alt="Expand" width="24" height="24">
-                        </button>
-                    </div>
-                    <div class="faq-answer">
-                        <p>AI chatbots and virtual assistants (like voice AIs) have become an extension of a brand's customer service and personality. Their impact on brand perception and CX is substantial:</p>
-                        <ul>
-                            <li><strong>Instant, 24/7 Service:</strong> Chatbots provide immediate answers at any hour, which improves the experience for customers (no waiting for business hours). This accessibility makes the brand seem reliable and customer-centric. Surveys indicate a majority of consumers appreciate fast responses; in fact, 96% of respondents feel businesses that use chatbots are taking good care of customers.</li>
-                            <li><strong>Shaping Brand Voice and Personality:</strong> Chatbots often have a programmed tone. A friendly, helpful chatbot interaction can reinforce a positive, approachable brand image. Many brands even give their bot a name and slight persona (formal vs. playful) to align with brand values.</li>
-                            <li><strong>Handling Volume and Maintaining Quality:</strong> By triaging common inquiries, chatbots ensure that human agents focus on complex issues. This means overall support quality can improve – customers get quick answers to FAQs via bot, and detailed attention on tough problems via humans.</li>
-                            <li><strong>Potential Frustration if Poorly Implemented:</strong> The flip side is that a poorly functioning chatbot can irritate customers. If the bot fails to understand queries, gives wrong answers, or doesn't seamlessly hand off to a human when needed, it can make customers feel the brand is cheap or doesn't value them enough to provide real help.</li>
-                            <li><strong>Voice Assistants Integration:</strong> Many brands integrate with Alexa, Google Assistant, Siri (for example, ordering pizza via Alexa for Domino's). This convenience factor can enhance brand perception, painting the brand as modern and easy to do business with.</li>
-                        </ul>
-                        <p>Overall, chatbots and voice assistants, when executed well, generally enhance customer experience by providing quick, convenient service and thereby improve brand perception as being responsive and innovative. Brands appear "in tune" with the latest tech and "always available" – traits customers like. The human touch is still crucial for complex or emotional situations, so the best scenario is a seamless synergy: AI for speed and convenience, humans for empathy and complexity.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3><span class="faq-icon">🔎</span> Does AI-generated content affect SEO or search rankings?</h3>
-                        <button class="faq-toggle" aria-label="Toggle answer">
-                            <img src="img/icons/plus.svg" alt="Expand" width="24" height="24">
-                        </button>
-                    </div>
-                    <div class="faq-answer">
-                        <p>The short answer: AI-generated content itself is not penalized by Google as long as it's high-quality and helpful to users.</p>
-                        <p>Google's stance as of 2023-2024 has evolved to accept AI content. They have explicitly stated that "appropriate use of AI or automation is not against our guidelines." Google updated its "Helpful Content" guidance to emphasize content created for people, rather than strictly "by people." This means if AI helps create content that is useful, original, and satisfies user intent, Google has no issue with it.</p>
-                        <p>Key points:</p>
-                        <ul>
-                            <li><strong>Quality is the Determining Factor:</strong> Google's algorithms aim to reward content that demonstrates E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) and that fulfills searcher needs. If AI content is fluff, low-quality, or just rehashed from other sites, it will be treated like any other low-quality content and might rank poorly. But if it's well-written, factually correct, and valuable, it can rank well.</li>
-                            <li><strong>No Automatic Penalty for AI Content:</strong> Earlier fears were that Google would detect and demote AI-written text. Google's policy now is nuanced: they target content that's generated with the intent to manipulate rankings (like mass-produced nonsense stuffed with keywords). If you were to churn out a thousand AI pages just to capture traffic with no regard for user value, that violates guidelines.</li>
-                            <li><strong>Ensure Originality and Avoid Duplication:</strong> One risk with some AI content is accidental similarity to existing text, since models predict probable word sequences. Google hates duplicate content or anything that looks like auto-generated scraped text. It's important to review AI outputs and add unique insights.</li>
-                            <li><strong>Optimize AI Content Like Any Other:</strong> AI content should still be optimized for SEO: proper headings, keyword usage, meta tags, etc. If done right, AI content can rank competitively. Some case studies have shown AI-written articles ranking on page 1 for moderately competitive queries (with human editing).</li>
-                        </ul>
-                        <p>In summary, AI content is SEO-friendly if you uphold quality standards. Google's algorithms focus on the value delivered to users. They explicitly say "using AI doesn't give content any special gains, but there's no penalty if the content is high quality." So treat AI as a content creation assistant, then polish the output to meet or exceed what a human would do.</p>
+                        <p>Yes, I offer various support models based on client needs. These range from periodic check-ins and advisement to more involved implementation oversight and capability building. Many clients benefit from an ongoing advisory relationship where I provide guidance on emerging trends, technology evolution, and opportunity identification. This ensures that strategies remain relevant and effective as the technological landscape evolves.</p>
                     </div>
                 </div>
             </div>
@@ -833,7 +704,6 @@
                         </a>
                         <a href="https://github.com/michaeljditter" aria-label="GitHub Profile" target="_blank" rel="noopener">
                             <img src="img/icons/github.svg" alt="GitHub" width="24" height="24">
-                        </a>
                         <a href="https://www.instagram.com/drinkpartay" aria-label="Instagram Profile" target="_blank" rel="noopener">
                             <img src="img/icons/instagram.svg" alt="Instagram" width="24" height="24">
                         </a>
@@ -866,9 +736,9 @@
                     <div class="footer-legal">
                         <h3>Legal</h3>
                         <ul>
-                            <li><a href="/terms.html">Terms of Service</a></li>
-                            <li><a href="/privacy.html">Privacy Policy</a></li>
-                            <li><a href="/cookie-policy.html">Cookie Policy</a></li>
+                            <li><a href="/terms">Terms of Service</a></li>
+                            <li><a href="/privacy">Privacy Policy</a></li>
+                            <li><a href="/cookie-policy">Cookie Policy</a></li>
                         </ul>
                     </div>
                 </div>

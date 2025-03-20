@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ description }}">
+    <meta name="author" content="Michael Ditter">
+    <meta name="keywords" content="Bitcoin, cryptocurrency, market analysis, research, blockchain, trading, investments">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://www.michaelditter.com/img/bitcoin-research/bitcoin-research-banner.jpg">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ title }}">
+    <meta name="twitter:description" content="{{ description }}">
+    <meta name="twitter:image" content="https://www.michaelditter.com/img/bitcoin-research/bitcoin-research-banner.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ canonical_url }}">
+    
+    <title>{{ title }} | Michael J Ditter</title>
+    
+    <style>
+        /* Base styles */
+        :root {
+            --bitcoin-orange: #f2a900;
+            --bitcoin-light: #faf1d9;
+            --bitcoin-dark: #4d4d4e;
+            --bitcoin-background: #f9f9f9;
+            --section-border: #e0e0e0;
+            --tag-background: #f4f4f4;
+            --body-text: #333;
+            --link-color: #0066cc;
+            --positive-green: #28a745;
+            --negative-red: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--body-text);
+            background-color: var(--bitcoin-background);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header styles */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--bitcoin-orange);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--bitcoin-dark);
+            margin-bottom: 10px;
+        }
+        
+        .header h2 {
+            font-size: 1.5rem;
+            color: var(--bitcoin-dark);
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
+        
+        .header .last-updated {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Section styles */
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section-header {
+            border-bottom: 2px solid var(--bitcoin-orange);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--bitcoin-dark);
+        }
+        
+        /* Card styles */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            background-color: var(--bitcoin-light);
+            border-bottom: 1px solid var(--section-border);
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .card-title a {
+            color: var(--bitcoin-dark);
+            text-decoration: none;
+        }
+        
+        .card-title a:hover {
+            color: var(--bitcoin-orange);
+            text-decoration: underline;
+        }
+        
+        .card-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .card-content {
+            padding: 20px;
+        }
+        
+        .card-summary {
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .card-description {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--section-border);
+        }
+        
+        .card-description h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--bitcoin-dark);
+        }
+        
+        .card-description h3 {
+            font-size: 1.1rem;
+            margin: 15px 0 5px;
+            color: var(--bitcoin-dark);
+        }
+        
+        .card-description p {
+            margin-bottom: 10px;
+        }
+        
+        .card-description ul, .card-description ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .card-description li {
+            margin-bottom: 5px;
+        }
+        
+        /* Tag styles */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            background-color: var(--tag-background);
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            color: var(--bitcoin-dark);
+        }
+        
+        /* Price trend indicators */
+        .trend-up {
+            color: var(--positive-green);
+            font-weight: bold;
+        }
+        
+        .trend-down {
+            color: var(--negative-red);
+            font-weight: bold;
+        }
+        
+        /* Source citation */
+        .source {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        /* Footer styles */
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid var(--bitcoin-orange);
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .footer a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header h2 {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ title }}</h1>
+        <h2>Weekly analysis of Bitcoin markets, technology, and developments</h2>
+        <p class="last-updated">Last updated: {{ generated_date }}</p>
+    </div>
+    
+    <!-- Market Trends Section -->
+    {% if data["Bitcoin Market Trends"] %}
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title">Bitcoin Market Trends</h2>
+        </div>
+        <div class="card-grid">
+            {% for item in data["Bitcoin Market Trends"] %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {% if item.link %}
+                        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+                        {% else %}
+                        {{ item.title }}
+                        {% endif %}
+                    </h3>
+                    <p class="card-date">{{ item.formatted_date if item.formatted_date is defined else item.date }}</p>
+                </div>
+                <div class="card-content">
+                    <p class="card-summary">
+                        {% if item.trend is defined and item.trend == "up" %}
+                        <span class="trend-up">▲</span>
+                        {% elif item.trend is defined and item.trend == "down" %}
+                        <span class="trend-down">▼</span>
+                        {% endif %}
+                        {{ item.summary }}
+                    </p>
+                    
+                    {% if item.description_html is defined %}
+                    <div class="card-description">
+                        {{ item.description_html|safe }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if item.source is defined and item.source %}
+                    <p class="source">Source: {{ item.source }}</p>
+                    {% endif %}
+                    
+                    {% if item.tags %}
+                    <div class="tags">
+                        {% for tag in item.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Price Analysis Section -->
+    {% if data["Price Analysis"] %}
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title">Price Analysis</h2>
+        </div>
+        <div class="card-grid">
+            {% for item in data["Price Analysis"] %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {% if item.link %}
+                        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+                        {% else %}
+                        {{ item.title }}
+                        {% endif %}
+                    </h3>
+                    <p class="card-date">{{ item.formatted_date if item.formatted_date is defined else item.date }}</p>
+                </div>
+                <div class="card-content">
+                    <p class="card-summary">{{ item.summary }}</p>
+                    
+                    {% if item.description_html is defined %}
+                    <div class="card-description">
+                        {{ item.description_html|safe }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if item.source is defined and item.source %}
+                    <p class="source">Source: {{ item.source }}</p>
+                    {% endif %}
+                    
+                    {% if item.tags %}
+                    <div class="tags">
+                        {% for tag in item.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Institutional Developments Section -->
+    {% if data["Institutional Developments"] %}
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title">Institutional Developments</h2>
+        </div>
+        <div class="card-grid">
+            {% for item in data["Institutional Developments"] %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {% if item.link %}
+                        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+                        {% else %}
+                        {{ item.title }}
+                        {% endif %}
+                    </h3>
+                    <p class="card-date">{{ item.formatted_date if item.formatted_date is defined else item.date }}</p>
+                </div>
+                <div class="card-content">
+                    <p class="card-summary">{{ item.summary }}</p>
+                    
+                    {% if item.description_html is defined %}
+                    <div class="card-description">
+                        {{ item.description_html|safe }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if item.source is defined and item.source %}
+                    <p class="source">Source: {{ item.source }}</p>
+                    {% endif %}
+                    
+                    {% if item.tags %}
+                    <div class="tags">
+                        {% for tag in item.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Regulatory Updates Section -->
+    {% if data["Regulatory Updates"] %}
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title">Regulatory Updates</h2>
+        </div>
+        <div class="card-grid">
+            {% for item in data["Regulatory Updates"] %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {% if item.link %}
+                        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+                        {% else %}
+                        {{ item.title }}
+                        {% endif %}
+                    </h3>
+                    <p class="card-date">{{ item.formatted_date if item.formatted_date is defined else item.date }}</p>
+                </div>
+                <div class="card-content">
+                    <p class="card-summary">{{ item.summary }}</p>
+                    
+                    {% if item.description_html is defined %}
+                    <div class="card-description">
+                        {{ item.description_html|safe }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if item.source is defined and item.source %}
+                    <p class="source">Source: {{ item.source }}</p>
+                    {% endif %}
+                    
+                    {% if item.tags %}
+                    <div class="tags">
+                        {% for tag in item.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Technology Advancements Section -->
+    {% if data["Technology Advancements"] %}
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title">Technology Advancements</h2>
+        </div>
+        <div class="card-grid">
+            {% for item in data["Technology Advancements"] %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {% if item.link %}
+                        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+                        {% else %}
+                        {{ item.title }}
+                        {% endif %}
+                    </h3>
+                    <p class="card-date">{{ item.formatted_date if item.formatted_date is defined else item.date }}</p>
+                </div>
+                <div class="card-content">
+                    <p class="card-summary">{{ item.summary }}</p>
+                    
+                    {% if item.description_html is defined %}
+                    <div class="card-description">
+                        {{ item.description_html|safe }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if item.source is defined and item.source %}
+                    <p class="source">Source: {{ item.source }}</p>
+                    {% endif %}
+                    
+                    {% if item.tags %}
+                    <div class="tags">
+                        {% for tag in item.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Research Insights Section -->
+    {% if data["Research Insights"] %}
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title">Research Insights</h2>
+        </div>
+        <div class="card-grid">
+            {% for item in data["Research Insights"] %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {% if item.link %}
+                        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+                        {% else %}
+                        {{ item.title }}
+                        {% endif %}
+                    </h3>
+                    <p class="card-date">{{ item.formatted_date if item.formatted_date is defined else item.date }}</p>
+                </div>
+                <div class="card-content">
+                    <p class="card-summary">{{ item.summary }}</p>
+                    
+                    {% if item.description_html is defined %}
+                    <div class="card-description">
+                        {{ item.description_html|safe }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if item.source is defined and item.source %}
+                    <p class="source">Source: {{ item.source }}</p>
+                    {% endif %}
+                    
+                    {% if item.tags %}
+                    <div class="tags">
+                        {% for tag in item.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Outlook & Forecasts Section -->
+    {% if data["Outlook & Forecasts"] %}
+    <div class="section">
+        <div class="section-header">
+            <h2 class="section-title">Outlook & Forecasts</h2>
+        </div>
+        <div class="card-grid">
+            {% for item in data["Outlook & Forecasts"] %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {% if item.link %}
+                        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+                        {% else %}
+                        {{ item.title }}
+                        {% endif %}
+                    </h3>
+                    <p class="card-date">{{ item.formatted_date if item.formatted_date is defined else item.date }}</p>
+                </div>
+                <div class="card-content">
+                    <p class="card-summary">{{ item.summary }}</p>
+                    
+                    {% if item.description_html is defined %}
+                    <div class="card-description">
+                        {{ item.description_html|safe }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if item.source is defined and item.source %}
+                    <p class="source">Source: {{ item.source }}</p>
+                    {% endif %}
+                    
+                    {% if item.tags %}
+                    <div class="tags">
+                        {% for tag in item.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="footer">
+        <p>&copy; {{ generated_date.split(' ')[2] }} <a href="https://www.michaelditter.com">Michael J Ditter</a>. All rights reserved.</p>
+        <p>Generated on {{ last_updated }}</p>
+    </div>
+</body>
+</html> 

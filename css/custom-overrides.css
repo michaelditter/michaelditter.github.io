@@ -16,4 +16,61 @@
 .author-bio img,
 .research-profile img {
   box-shadow: none;
+}
+
+/* Author signature styling */
+.author-signature {
+  font-style: italic;
+  text-align: right;
+  border-top: 1px solid #eaeaea;
+  padding-top: 1rem;
+  margin-top: 2rem;
+}
+
+/* FAQ Styles */
+.faq-item {
+  margin-bottom: 1rem;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.faq-question h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.faq-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.faq-answer {
+  padding: 0 1.25rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.faq-item.active .faq-answer {
+  padding: 1.25rem;
+  border-top: 1px solid #eaeaea;
+}
+
+/* Ensure FAQ items have adequate spacing within the grid */
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1.5rem;
 } 

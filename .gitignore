@@ -19,4 +19,36 @@ node_modules/
 .env.local
 .env.development.local
 .env.test.local
-.env.production.local 
+.env.production.local
+
+# Python virtual environments
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Build and distribution directories
+dist/
+build/
+*.egg-info/
+
+# Vercel
+.vercel
+
+# Temporary files
+.tmp
+.temp
+*.tmp
+*.temp
+tmp/
+
+# Cache
+.cache/
+.npm
+
+# Node.js dependencies
+npm-debug.log
+yarn-debug.log
+yarn-error.log 

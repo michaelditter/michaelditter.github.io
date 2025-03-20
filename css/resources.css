@@ -1,0 +1,368 @@
+/* Resources Pages Styling */
+
+:root {
+  --color-primary: #0067b8;
+  --color-primary-light: #0078d4;
+  --color-primary-dark: #005a9e;
+  --color-secondary: #333333;
+  --color-secondary-light: #555555;
+  --color-secondary-dark: #1a1a1a;
+  --color-light: #f5f5f5;
+  --color-light-gray: #e0e0e0;
+  --color-medium-gray: #cccccc;
+  --color-dark-gray: #888888;
+  --color-white: #ffffff;
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-danger: #dc3545;
+  --color-info: #17a2b8;
+}
+
+/* Resources Header Styling */
+.resources-header {
+  background-color: var(--color-light);
+  padding: 8rem 0 4rem;
+  text-align: center;
+}
+
+.resources-breadcrumb {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-dark-gray);
+}
+
+.resources-breadcrumb a {
+  color: var(--color-secondary);
+  text-decoration: none;
+}
+
+.resources-breadcrumb a:hover {
+  color: var(--color-primary);
+}
+
+/* Resources Content Styling */
+.resources-content {
+  padding: 4rem 0;
+}
+
+/* Filters */
+.resources-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  margin-bottom: 1rem;
+  min-width: 200px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--color-secondary);
+}
+
+.filter-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--color-light-gray);
+  border-radius: 0.25rem;
+  background-color: var(--color-white);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+}
+
+/* Resources Grid */
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.resource-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.resource-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.resource-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.resource-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.resource-card:hover .resource-image img {
+  transform: scale(1.05);
+}
+
+.resource-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.resource-date {
+  font-size: 0.85rem;
+  color: var(--color-dark-gray);
+  margin-bottom: 0.75rem;
+}
+
+.resource-content h3 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  color: var(--color-secondary);
+  line-height: 1.4;
+}
+
+.resource-content p {
+  color: var(--color-secondary-light);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.resource-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--color-dark-gray);
+}
+
+.resource-pages::before {
+  content: "📄";
+  margin-right: 0.25rem;
+}
+
+.resource-type::before {
+  content: "📁";
+  margin-right: 0.25rem;
+}
+
+/* CTA Section */
+.resources-cta {
+  margin-top: 3rem;
+}
+
+.cta-box {
+  background-color: var(--color-light);
+  padding: 3rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.cta-box h3 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+  color: var(--color-secondary);
+}
+
+.cta-box p {
+  margin-bottom: 1.5rem;
+  color: var(--color-secondary-light);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Webinar-specific styles */
+.tabs-container {
+  margin-bottom: 3rem;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 2px solid var(--color-light-gray);
+  margin-bottom: 2rem;
+}
+
+.tab-button {
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-secondary-light);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.tab-button:hover {
+  color: var(--color-primary);
+}
+
+.tab-button.active {
+  color: var(--color-primary);
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--color-primary);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.upcoming-webinar {
+  margin-bottom: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  background-color: var(--color-white);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.upcoming-webinar.featured-webinar {
+  border-left: 5px solid var(--color-primary);
+}
+
+.webinar-image {
+  position: relative;
+  flex: 0 0 300px;
+}
+
+.featured-webinar .webinar-image {
+  flex: 0 0 400px;
+}
+
+.webinar-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+}
+
+.webinar-content {
+  flex: 1;
+  min-width: 250px;
+}
+
+.webinar-content h2 {
+  margin: 0 0 1rem;
+  color: var(--color-secondary);
+  font-size: 1.5rem;
+}
+
+.webinar-content h3 {
+  margin: 0 0 0.75rem;
+  color: var(--color-secondary);
+  font-size: 1.25rem;
+}
+
+.webinar-date {
+  color: var(--color-primary);
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.webinar-description {
+  margin-bottom: 1.5rem;
+  color: var(--color-secondary-light);
+}
+
+.webinar-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: var(--color-light);
+  padding: 1.25rem;
+  border-radius: 0.25rem;
+}
+
+.detail-label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-secondary);
+}
+
+.detail-value {
+  color: var(--color-secondary-light);
+}
+
+.live-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--color-danger);
+  color: var(--color-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.duration-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--color-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .resources-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .resources-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .upcoming-webinar {
+    flex-direction: column;
+  }
+  
+  .webinar-image {
+    flex: none;
+    width: 100%;
+  }
+  
+  .featured-webinar .webinar-image {
+    flex: none;
+    width: 100%;
+  }
+} 

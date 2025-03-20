@@ -392,10 +392,8 @@ h6 {
 
 .hero-content {
   flex: 1;
-  /* Ensure content is above the blue box */
   position: relative;
   z-index: 3;
-  /* Add some space to ensure text isn't cut off */
   padding: var(--space-md);
 }
 
@@ -403,7 +401,6 @@ h6 {
   font-size: 3.25rem;
   margin-bottom: var(--space-lg);
   color: var(--color-secondary-dark);
-  /* Ensure wrapping for longer words */
   word-wrap: break-word;
   hyphens: auto;
   line-height: 1.2;

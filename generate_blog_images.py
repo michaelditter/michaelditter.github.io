@@ -104,4 +104,33 @@ if __name__ == "__main__":
         "AI Bias Mitigation Strategies", 
         "ai-bias.jpg", 
         bg_color=(231, 76, 60)  # Red for warning/caution
+    )
+    
+    # AI optimization techniques image
+    create_blog_image(
+        "Advanced AI Optimization Techniques", 
+        "ai-optimization.jpg", 
+        bg_color=(41, 128, 185)  # Blue for technical optimization
+    )
+    
+    # AI strategy image
+    create_blog_image(
+        "AI Strategy for the C-Suite", 
+        "ai-strategy.jpg", 
+        bg_color=(22, 160, 133)  # Emerald green for strategy
+    )
+    
+    # Blog metadata images for social sharing
+    create_blog_image(
+        "Michael J Ditter - Blog & Insights", 
+        "blog-og.jpg", 
+        bg_color=(44, 62, 80),  # Dark slate for the blog main image
+        size=(1200, 630)  # Standard OG image size
+    )
+    
+    create_blog_image(
+        "Michael J Ditter - Blog & Insights", 
+        "blog-twitter.jpg", 
+        bg_color=(44, 62, 80),  # Dark slate for the blog main image
+        size=(1200, 600)  # Standard Twitter card size
     ) 

@@ -1,0 +1,19 @@
+{
+  "name": "ai-research-api",
+  "version": "1.0.0",
+  "description": "API for AI Research Updates",
+  "main": "index.js",
+  "author": "Michael J Ditter",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "node-cache": "^5.1.2"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.0.14"
+  },
+  "engines": {
+    "node": ">=18.x"
+  },
+  "private": true
+} 
