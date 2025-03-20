@@ -141,6 +141,16 @@
                     <a href="#contact" class="btn-primary">Get in Touch</a>
                     <a href="#expertise" class="btn-secondary">Explore My Expertise</a>
                 </div>
+                
+                <!-- Newsletter Signup (Above the Fold) -->
+                <div class="hero-newsletter">
+                    <h3>Subscribe for AI Insights</h3>
+                    <p>Join my newsletter and get the AI Marketing FAQ PDF for free</p>
+                    <form class="hero-newsletter-form" action="/api/subscribe" method="POST">
+                        <input type="email" name="email" placeholder="Enter your email address" required>
+                        <button type="submit" class="btn-primary">Get PDF</button>
+                    </form>
+                </div>
             </div>
             <div class="hero-image">
                 <img src="img/profile/michael-ditter-headshot-new.jpg" alt="Michael J Ditter, AI Strategy and Emerging Technology Leader" width="400" height="400">
@@ -882,5 +892,48 @@
 
     <!-- JavaScript -->
     <script src="js/main.js"></script>
+
+    <!-- Add styles for the hero newsletter form -->
+    <style>
+        .hero-newsletter {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hero-newsletter h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-white);
+        }
+        
+        .hero-newsletter p {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--color-light);
+        }
+        
+        .hero-newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .hero-newsletter-form input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            border: none;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
 </body>
 </html> 
