@@ -1062,4 +1062,54 @@
     .research-header h1 {
         font-size: 2rem;
     }
+}
+
+/* Blog Share Links */
+.blog-share {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.blog-share h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.share-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.share-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.7rem 1.2rem;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.share-link img {
+    margin-right: 8px;
+}
+
+.share-link[href*="twitter"] {
+    background-color: #1da1f2;
+}
+
+.share-link[href*="linkedin"] {
+    background-color: #0077b5;
+}
+
+.share-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 } 
