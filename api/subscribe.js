@@ -193,11 +193,21 @@ export default async function handler(req, res) {
     // Get email from request body
     const bodyData = req.body || {};
     log(`Request body: ${JSON.stringify(bodyData)}`);
+    log(`Body type: ${typeof req.body}`);
+    log(`Request keys: ${Object.keys(bodyData)}`);
+    
     const email = bodyData.email_address;
+    log(`Extracted email: ${email}`);
+    log(`Email type: ${typeof email}`);
 
     // Validate email
-    if (!email || !email.includes('@')) {
-      log('Invalid email provided');
+    if (!email) {
+      log('Email is missing or undefined');
+      return res.status(400).json({ error: 'Missing email', message: 'Please provide an email address' });
+    }
+    
+    if (!email.includes('@')) {
+      log(`Invalid email format: ${email}`);
       return res.status(400).json({ error: 'Invalid email', message: 'Please provide a valid email address' });
     }
 

@@ -444,19 +444,47 @@ function initNewsletterForm() {
           credentials: 'omit'
         })
         .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            // Try to read error message if possible
-            return response.json().catch(e => {
-              throw new Error('Subscription failed');
-            });
-          }
+          console.log('Response status:', response.status);
+          
+          // Store the status code for error handling
+          const statusCode = response.status;
+          
+          // Always try to get the response text first for better debugging
+          return response.text().then(text => {
+            console.log('Raw response:', text);
+            
+            // Try to parse as JSON if possible
+            let data;
+            try {
+              data = JSON.parse(text);
+              console.log('Parsed JSON response:', data);
+            } catch (e) {
+              console.error('Failed to parse response as JSON:', e);
+              data = { error: 'Invalid response format', message: text };
+            }
+            
+            // Add status to the data for later reference
+            data.statusCode = statusCode;
+            
+            // If not a success response, format as an error
+            if (!response.ok) {
+              return data; // Will be handled in the next then block
+            }
+            
+            return data;
+          });
         })
         .then(data => {
           // Reset button
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
+          
+          // Check if it was an error response
+          if (data.statusCode >= 400) {
+            console.error('Error response:', data);
+            alert(data.message || 'An error occurred. Please try again later.');
+            return;
+          }
           
           if (data.success) {
             // Show success message
