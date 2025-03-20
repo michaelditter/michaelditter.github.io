@@ -183,6 +183,8 @@ h6 {
   transition: all var(--transition-normal);
   box-shadow: var(--box-shadow-sm);
   border: none;
+  position: relative;
+  z-index: 10;
 }
 
 .btn-primary:hover, .btn-primary:focus {
@@ -923,6 +925,8 @@ h6 {
 .faq-section {
   padding: var(--space-xxl) 0;
   background-color: var(--color-light);
+  position: relative;
+  z-index: 1;
 }
 
 .faq-grid {
@@ -1330,4 +1334,25 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+/* Make profile images larger */
+.blog-author img {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+}
+
+.author-bio img {
+  width: 180px !important;
+  height: 180px !important;
+  border-radius: 50%;
+  border: 3px solid var(--color-primary-light);
+}
+
+@media (max-width: 768px) {
+  .author-bio img {
+    width: 140px !important;
+    height: 140px !important;
+  }
 } 
