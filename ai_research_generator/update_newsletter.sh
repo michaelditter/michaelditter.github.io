@@ -60,4 +60,24 @@ if grep -q "ai-newsletter" "${BASE_DIR}/index.html"; then
 fi
 
 echo "$(date): AI newsletter update completed successfully" | tee -a "$LOG_FILE"
-echo "Newsletter available at: https://www.michaelditter.com/blog/ai-newsletter-${NEWSLETTER_DATE}/" 
+echo "Newsletter available at: https://www.michaelditter.com/blog/ai-newsletter-${NEWSLETTER_DATE}/"
+
+# Script to update the AI newsletter with the latest research content
+
+echo "Updating AI newsletter with latest research content..."
+
+# Make sure directories exist
+mkdir -p blog/ai-newsletter-2025-03-19
+
+# Copy the latest research index to the newsletter location
+cp blog/ai-research-index.html blog/ai-newsletter-2025-03-19/index.html
+
+# Update the canonical URL and other metadata
+sed -i '' 's|https://www.michaelditter.com/blog/ai-research-index.html|https://www.michaelditter.com/blog/ai-newsletter-2025-03-19/|g' blog/ai-newsletter-2025-03-19/index.html
+sed -i '' 's|AI Research Updates|AI Newsletter - March 19, 2025|g' blog/ai-newsletter-2025-03-19/index.html
+sed -i '' 's|<title>AI Research Updates|<title>AI Newsletter - March 19, 2025|g' blog/ai-newsletter-2025-03-19/index.html
+
+# Create a backup copy
+cp blog/ai-newsletter-2025-03-19/index.html blog/ai-newsletter-2025-03-19/index.html.bak
+
+echo "Newsletter updated successfully!" 

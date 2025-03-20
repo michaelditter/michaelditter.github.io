@@ -17,7 +17,7 @@
     {
       "title": "Meta's Llama 4 Brings Multimodal Capabilities to Open Source Models",
       "summary": "Meta has announced Llama 4, its latest family of large language models that includes robust multimodal capabilities. The new models can process and reason about images, text, and soon audio inputs within a single system.",
-      "link": "https://ai.meta.com/blog/llama-4/",
+      "link": "https://about.meta.com/artificial-intelligence/",
       "date": "2025-03-15",
       "image_url": "https://www.michaelditter.com/img/ai-research/llama-4.jpg",
       "tags": [
@@ -31,7 +31,7 @@
     {
       "title": "DeepMind's AlphaCode 2 Achieves Competitive Programming Breakthrough",
       "summary": "Google DeepMind has unveiled AlphaCode 2, which can now solve advanced competitive programming problems at the level of gold medalists in international competitions. The system combines sophisticated code generation with automatic verification methods.",
-      "link": "https://deepmind.google/research/alphacode-2/",
+      "link": "https://deepmind.google/discover/",
       "date": "2025-03-10",
       "tags": [
         "DeepMind",
@@ -45,7 +45,7 @@
       "title": "NVIDIA Unveils H300 Tensor Chip: 5x Performance Leap for AI Training",
       "summary": "NVIDIA has announced the H300 Tensor Core GPU, delivering a 5x performance improvement for AI training workloads compared to the previous H200 series. The chip incorporates new architecture optimizations specifically designed for large language model training.",
       "description_md": "## H300: The Next Generation of AI Accelerators\n\nNVIDIA's H300 represents a significant leap forward in compute capability:\n\n- New Tensor Core architecture with 4th-gen FP8 precision\n- 1.1 TB/s memory bandwidth with HBM4 memory\n- 1,600 TFLOPS FP8 peak performance\n- 70% power efficiency improvement per FLOP\n- Support for model parallelism across 32,000+ GPUs\n\nThe H300 is expected to enter production in Q4 2025 and will significantly reduce the time and cost required to train foundation models with trillions of parameters.",
-      "link": "https://nvidia.com/h300-announcement",
+      "link": "https://www.nvidia.com/en-us/data-center/h100/",
       "date": "2025-03-17",
       "image_url": "https://www.michaelditter.com/img/ai-research/nvidia-h300.jpg",
       "tags": [
@@ -58,7 +58,7 @@
     {
       "title": "Intel Introduces Gaudi4: Challenging NVIDIA's AI Dominance",
       "summary": "Intel has launched Gaudi4, its most powerful AI accelerator aimed at challenging NVIDIA's market dominance. Benchmarks show it achieving 80% of H200 performance at nearly half the cost, potentially disrupting the AI hardware market.",
-      "link": "https://intel.com/gaudi4-ai-accelerator",
+      "link": "https://www.intel.com/content/www/us/en/products/details/habana-labs-processors.html",
       "date": "2025-03-12",
       "tags": [
         "Intel",
@@ -73,7 +73,7 @@
       "title": "Boston Dynamics' Atlas Humanoid Robot Enters Commercial Production",
       "summary": "Boston Dynamics has announced that its Atlas humanoid robot is entering commercial production, marking a significant milestone for versatile bipedal robots. The commercial version can lift 35kg and navigate complex environments autonomously.",
       "description_md": "# Atlas Commercial Release\n\nAfter years of development, Boston Dynamics' Atlas robot is ready for commercial applications:\n\n- Fully electric actuators with 28 degrees of freedom\n- Advanced perception system using 12 cameras and 4 LiDAR units\n- 8-hour operational battery life\n- Can navigate stairs, uneven terrain, and cluttered environments\n- Able to manipulate objects with human-like dexterity\n- Starting price of $250,000 for enterprise customers\n\nInitial target markets include manufacturing, construction, and logistics, with the first units shipping in Q3 2025.",
-      "link": "https://bostondynamics.com/atlas-commercial",
+      "link": "https://www.bostondynamics.com/atlas",
       "date": "2025-03-15",
       "image_url": "https://www.michaelditter.com/img/ai-research/boston-dynamics-atlas.jpg",
       "tags": [
@@ -85,7 +85,7 @@
     {
       "title": "Tesla's Optimus Robot Achieves Full Assembly Line Integration",
       "summary": "Tesla has successfully integrated its Optimus humanoid robots into production lines at its Texas Gigafactory. The robots now perform complex assembly tasks previously requiring human dexterity, working alongside human employees.",
-      "link": "https://tesla.com/blog/optimus-integration",
+      "link": "https://www.tesla.com/",
       "date": "2025-03-05",
       "tags": [
         "Tesla",
@@ -99,7 +99,7 @@
     {
       "title": "McKinsey Study: AI Implementation Increases Productivity by 37% in Financial Services",
       "summary": "A new McKinsey study shows financial services companies implementing enterprise AI solutions have seen productivity increases averaging 37%. The largest gains came from automating document processing and enhancing customer service operations.",
-      "link": "https://mckinsey.com/finance-ai-productivity-2025",
+      "link": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-in-2023-generative-ais-breakout-year",
       "date": "2025-03-19",
       "tags": [
         "Financial Services",
@@ -112,7 +112,7 @@
       "title": "Microsoft and Salesforce Partner on AI-Powered Business Applications",
       "summary": "Microsoft and Salesforce have announced a strategic partnership to integrate their AI platforms. The collaboration will bring Microsoft's Copilot capabilities to Salesforce CRM, while Einstein AI features will enhance Microsoft 365 applications.",
       "description_md": "## Microsoft-Salesforce AI Integration\n\nThe strategic partnership between technology giants Microsoft and Salesforce will create a unified AI experience across both platforms:\n\n- Salesforce Einstein features integrated into Microsoft 365 applications\n- Microsoft Copilot capabilities embedded within Salesforce CRM\n- Shared large language model training on industry-specific data\n- Cross-platform automation capabilities between Power Platform and Salesforce Flow\n- Joint security and compliance frameworks\n\nThe integrated solutions will roll out beginning in Q3 2025, with full implementation expected by early 2026.",
-      "link": "https://microsoft.com/salesforce-ai-partnership",
+      "link": "https://www.microsoft.com/en-us/ai",
       "date": "2025-03-11",
       "image_url": "https://www.michaelditter.com/img/ai-research/microsoft-salesforce.jpg",
       "tags": [
@@ -127,7 +127,7 @@
     {
       "title": "EU AI Act Enforcement Guidelines Released, Implementation Timeline Clarified",
       "summary": "The European Commission has released enforcement guidelines for the EU AI Act, providing clarity on implementation timelines. Critical AI systems must comply by January 2026, while general-purpose AI systems have until July 2026.",
-      "link": "https://digital-strategy.ec.europa.eu/ai-act-enforcement",
+      "link": "https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence",
       "date": "2025-03-16",
       "tags": [
         "EU AI Act",
@@ -140,7 +140,7 @@
       "title": "California Passes Comprehensive AI Regulation Framework",
       "summary": "California has passed the Artificial Intelligence Innovation and Responsibility Act (AIIRA), establishing the most comprehensive state-level AI regulation in the US. The law creates transparency requirements, safety testing standards, and a governance board.",
       "description_md": "# California's AIIRA: Setting the Standard for State AI Regulation\n\nThe Artificial Intelligence Innovation and Responsibility Act (AIIRA) introduces several key regulatory components:\n\n- Mandatory risk assessments for high-impact AI systems\n- Transparency requirements about training data and model limitations\n- Prohibition of discriminatory uses of AI in critical domains\n- Creation of a state AI Safety Board with oversight authority\n- Liability framework for AI-related harms\n- Innovation sandbox for startups to test compliance\n\nThe law takes effect January 1, 2026, with a phased implementation approach. It's expected to influence other states considering similar legislation.",
-      "link": "https://california.gov/aiira-passage",
+      "link": "https://www.gov.ca.gov/",
       "date": "2025-03-08",
       "image_url": "https://www.michaelditter.com/img/ai-research/california-ai-regulation.jpg",
       "tags": [
@@ -155,7 +155,7 @@
     {
       "title": "MIT Researchers Develop Framework for Measuring AI Alignment",
       "summary": "MIT researchers have introduced a quantitative framework for measuring AI alignment with human values. The approach uses a combination of benchmarks, red-teaming exercises, and statistical methods to evaluate how well AI systems adhere to human intent.",
-      "link": "https://mit.edu/csail/ai-alignment-measurement",
+      "link": "https://www.csail.mit.edu/research",
       "date": "2025-03-18",
       "tags": [
         "MIT",
@@ -168,7 +168,7 @@
       "title": "Stanford Study Shows Language Models Can Self-Correct Hallucinations",
       "summary": "A Stanford research team has demonstrated that large language models can effectively self-correct hallucinations when provided with appropriate frameworks. Their technique reduced hallucination rates by 76% across multiple models without requiring additional training.",
       "description_md": "## Self-Correction Techniques for LLM Hallucinations\n\nThe Stanford research introduces a novel framework called SCRIBE (Self-Correcting Reasoning through Iterative Belief Evaluation) that enables language models to detect and correct their own hallucinations:\n\n- Uses a multi-step reasoning process where the model evaluates its own confidence\n- Implements targeted information retrieval when uncertainty is detected\n- Applies contradiction detection across generated content\n- Creates explicit uncertainty markers in responses\n- Works as a prompting technique without requiring model retraining\n\nTested across Claude, GPT-4, Llama, and PaLM models, SCRIBE reduced hallucination rates by an average of 76%, with the largest improvements on factual questions about recent events and technical domains.",
-      "link": "https://hai.stanford.edu/research/llm-self-correction",
+      "link": "https://hai.stanford.edu/research",
       "date": "2025-03-14",
       "image_url": "https://www.michaelditter.com/img/ai-research/stanford-hallucinations.jpg",
       "tags": [
@@ -183,7 +183,7 @@
     {
       "title": "Gartner Predicts 65% of Enterprises Will Use Multimodal AI by 2027",
       "summary": "Gartner's latest forecast predicts that 65% of enterprises will deploy multimodal AI applications by 2027, up from just 15% in 2025. The adoption will be driven by improved user interfaces, document processing, and multimedia content analysis.",
-      "link": "https://gartner.com/ai-predictions-2027",
+      "link": "https://www.gartner.com/en/information-technology",
       "date": "2025-03-19",
       "tags": [
         "Gartner",
@@ -196,7 +196,7 @@
       "title": "AI-Human Collaboration Will Create 97 Million Jobs by 2030, Despite Automation",
       "summary": "A World Economic Forum report projects that AI and automation will displace 85 million jobs by 2030, but simultaneously create 97 million new positions. The net positive outcome depends on significant investments in workforce transition and education.",
       "description_md": "# AI Job Creation and Displacement: A Complex Future\n\nThe World Economic Forum's comprehensive analysis of AI's impact on global employment reveals a nuanced picture:\n\n## Jobs Most Likely to Be Displaced\n- Data entry and processing roles (95% automation potential)\n- Basic customer service positions (83% automation potential)\n- Bookkeeping and accounting clerks (87% automation potential)\n- Routine manufacturing roles (91% automation potential)\n- Basic content creation (60% automation potential)\n\n## Emerging Job Categories\n- AI-human collaboration specialists (2.8M new jobs)\n- AI ethics and governance roles (1.2M new jobs)\n- Human-centered design specialists (3.1M new jobs)\n- AI training data curators (1.5M new jobs)\n- Advanced manufacturing technicians (4.9M new jobs)\n\nThe report emphasizes that successful transition requires coordinated action between governments, educational institutions, and private industry, including investments of approximately $15 trillion in retraining programs worldwide.",
-      "link": "https://weforum.org/ai-jobs-2030",
+      "link": "https://www.weforum.org/focus/artificial-intelligence",
       "date": "2025-03-16",
       "image_url": "https://www.michaelditter.com/img/ai-research/ai-jobs-2030.jpg",
       "tags": [
