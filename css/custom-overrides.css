@@ -1,0 +1,19 @@
+/* Custom overrides for specific styling adjustments */
+
+/* Remove the border from the circular hero image */
+.hero-image img {
+  border: none;
+}
+
+/* Keep the about section image with its original styles */
+.about-image img {
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow-md);
+}
+
+/* Additional styling for profile images to ensure consistency */
+.blog-author img, 
+.author-bio img,
+.research-profile img {
+  box-shadow: none;
+} 
