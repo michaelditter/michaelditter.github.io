@@ -193,7 +193,7 @@ export default async function handler(req, res) {
     // Get email from request body
     const bodyData = req.body || {};
     log(`Request body: ${JSON.stringify(bodyData)}`);
-    const { email } = bodyData;
+    const email = bodyData.email_address;
 
     // Validate email
     if (!email || !email.includes('@')) {
