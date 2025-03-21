@@ -245,27 +245,14 @@ jobs:
       # Ensure all files are committed
       - name: Commit changes
         run: |
-          # Configure git
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
           
-          # Stage the generated files (safely handling potentially missing files)
-          if [ -d "blog/" ]; then
-            git add blog/ || true
-          fi
-          
-          if [ -d "img/blog/" ]; then
-            git add img/blog/ || true
-          fi
-          
-          # Add JSON files only if they exist
+          # Add all the generated files
           for json_file in .github/tmp/*.json; do
-            if [ -f "$json_file" ]; then
-              git add "$json_file"
-            fi
+            git add "$json_file" || echo "Could not add $json_file"
           done
           
-          # Add social content files if they exist
           if [ -f ".github/tmp/social_content.txt" ]; then
             git add .github/tmp/social_content.txt
           fi
@@ -274,23 +261,25 @@ jobs:
             git add .github/tmp/social_content_display.txt
           fi
           
-          # Check if there are changes to commit
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
+          git add blog/ img/ || echo "Could not add blog or img directories"
+          
+          # Commit the changes
+          git commit -m "Update Bitcoin market report for ${{ env.TODAY }}" || echo "No changes to commit"
+          
+          # Push changes to repository
+          git push
+
+      - name: Send to Buttondown Newsletter
+        if: ${{ env.NEWSLETTER_DATA_FILE != '' }}
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        run: |
+          if [ -f "${{ env.NEWSLETTER_DATA_FILE }}" ]; then
+            echo "Sending Bitcoin report to Buttondown newsletter..."
+            pip install requests
+            python .github/scripts/send_to_buttondown.py "${{ env.NEWSLETTER_DATA_FILE }}"
           else
-            # Commit the changes
-            git commit -m "Add Bitcoin market report for ${{ env.POST_SLUG }}"
-            echo "Changes committed successfully"
-            
-            # Push directly to main branch
-            git push origin HEAD:main
-            echo "Changes pushed to main branch"
-            
-            echo "::notice::Bitcoin market report for ${{ env.POST_SLUG }} has been committed directly to main branch"
-            echo "::notice::You can send the newsletter by:"
-            echo "::notice::1. Going to the Actions tab"
-            echo "::notice::2. Selecting the 'Send Newsletter' workflow"
-            echo "::notice::3. Running the workflow with the post slug: ${{ env.POST_SLUG }}"
+            echo "Newsletter data file not found: ${{ env.NEWSLETTER_DATA_FILE }}"
           fi
       
       # Remove the PR creation step since we're directly committing to main
@@ -320,3 +309,9 @@ jobs:
       #     labels: |
       #       bitcoin-report
       #       content-review 
+
+      - name: Set environment variables
+        run: |
+          echo "TODAY=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+          echo "POST_SLUG=bitcoin-market-report-$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+          echo "NEWSLETTER_DATA_FILE=.github/tmp/bitcoin-market-report-$(date '+%Y-%m-%d')-newsletter-data.json" >> $GITHUB_ENV 
