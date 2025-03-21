@@ -1,4 +1,4 @@
-name: Bitcoin Weekly Newsletter
+name: Bitcoin Market Report Generator
 
 # ===== IMPORTANT NOTES =====
 # 1. NOTE: Twitter/X posting capability has been disabled in this workflow.
@@ -10,16 +10,14 @@ name: Bitcoin Weekly Newsletter
 
 on:
   schedule:
-    # Run every Friday at 9:00 AM UTC
-    - cron: '0 9 * * 5'
-  # Allow manual trigger
+    # Run at 6:00 AM UTC every day
+    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
-      test_mode:
-        description: 'Run in test mode (no API calls)'
+      manual_trigger:
+        description: 'Manual trigger for Bitcoin report generation'
         required: false
-        default: false
-        type: boolean
+        default: 'Run Bitcoin report generation'
 
 jobs:
   generate-bitcoin-report:
@@ -47,26 +45,55 @@ jobs:
           mkdir -p .github/tmp
           mkdir -p img/blog
       
-      - name: Generate sample data if in test mode
-        if: ${{ github.event.inputs.test_mode == 'true' }}
+      - name: Fetch market data
+        env:
+          ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+          RAPID_API_KEY: ${{ secrets.RAPID_API_KEY }}
+          TEST_MODE: ${{ inputs.test_mode || 'false' }}
         run: |
-          echo "Running in test mode with sample data"
-          echo "#Bitcoin Update:" > .github/tmp/social_content.txt
-          echo "Price: \$84,570 (+3.60%)" >> .github/tmp/social_content.txt
-          echo "1. Positive regulatory moves & pending SEC Bitcoin ETF decision" >> .github/tmp/social_content.txt
-          echo "2. Institutional adoption with Fidelity & BlackRock" >> .github/tmp/social_content.txt
-          echo "Outlook: Bullish with support at \$80K & resistance at \$100K. #BTC #Crypto" >> .github/tmp/social_content.txt
-          
-          POST_SLUG="bitcoin-market-report-$(date +%Y-%m-%d)"
-          POST_TITLE="Bitcoin Surges Past \$84K: Institutional Adoption Drives Growth"
-          echo "POST_SLUG=$POST_SLUG" >> $GITHUB_ENV
-          echo "POST_TITLE=$POST_TITLE" >> $GITHUB_ENV
+          if [ "$TEST_MODE" = "true" ]; then
+            echo "Running in test mode without API calls"
+            
+            # Prepare the tmp directory
+            mkdir -p .github/tmp
+            
+            # Create sample social content for test mode
+            echo "#Bitcoin Update:" > .github/tmp/social_content.txt
+            echo "Price: \$84,570 (+3.60%)" >> .github/tmp/social_content.txt
+            echo "1. Positive regulatory moves & pending SEC Bitcoin ETF decision" >> .github/tmp/social_content.txt
+            echo "2. Institutional adoption with Fidelity & BlackRock" >> .github/tmp/social_content.txt
+            echo "Outlook: Bullish with support at \$80K & resistance at \$100K. #BTC #Crypto" >> .github/tmp/social_content.txt
+            
+            # Set environment variables
+            echo "TODAY=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+            echo "POST_SLUG=bitcoin-market-report-$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+            echo "NEWSLETTER_DATA_FILE=.github/tmp/bitcoin-market-report-$(date '+%Y-%m-%d')-newsletter-data.json" >> $GITHUB_ENV
+            
+            # Create sample newsletter data JSON for test mode
+            cat > ${{ env.NEWSLETTER_DATA_FILE }} << EOF
+            {
+              "price": "$84,570",
+              "price_change_24h": "(+3.60%)",
+              "key_points": [
+                "Positive regulatory moves & pending SEC Bitcoin ETF decision",
+                "Institutional adoption with Fidelity & BlackRock"
+              ],
+              "analysis": [
+                "Bitcoin continues to show strength amid increased institutional adoption.",
+                "Technical indicators suggest continued bullish momentum in the short term."
+              ],
+              "outlook": "Bullish with support at $80K & resistance at $100K"
+            }
+            EOF
+          else
+            python .github/scripts/fetch_bitcoin_data.py
+          fi
       
       - name: Generate Bitcoin report with OpenAI
-        if: ${{ github.event.inputs.test_mode != 'true' }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          # Generate the full Bitcoin report
           python .github/scripts/generate_bitcoin_report.py
       
       - name: Save social content to environment variable (Base64 encoded)
@@ -242,7 +269,16 @@ jobs:
             echo "SOCIAL_CONTENT_B64 is not set"
           fi
           
-      # Ensure all files are committed
+      - name: Update Bitcoin card and archive
+        run: |
+          # Update Bitcoin card on homepage
+          echo "Updating Bitcoin card on homepage..."
+          python .github/scripts/update_bitcoin_card.py "${{ env.POST_SLUG }}" "${{ env.NEWSLETTER_DATA_FILE }}"
+          
+          # Update Bitcoin report archive page
+          echo "Updating Bitcoin report archive page..."
+          python .github/scripts/update_bitcoin_archive.py "${{ env.POST_SLUG }}" "${{ env.NEWSLETTER_DATA_FILE }}"
+          
       - name: Commit changes
         run: |
           git config --global user.name "GitHub Action"
@@ -261,14 +297,15 @@ jobs:
             git add .github/tmp/social_content_display.txt
           fi
           
-          git add blog/ img/ || echo "Could not add blog or img directories"
+          # Add the main files
+          git add blog/ img/ index.html || echo "Could not add directories"
           
           # Commit the changes
           git commit -m "Update Bitcoin market report for ${{ env.TODAY }}" || echo "No changes to commit"
           
           # Push changes to repository
           git push
-
+          
       - name: Send to Buttondown Newsletter
         if: ${{ env.NEWSLETTER_DATA_FILE != '' }}
         env:
@@ -281,34 +318,6 @@ jobs:
           else
             echo "Newsletter data file not found: ${{ env.NEWSLETTER_DATA_FILE }}"
           fi
-      
-      # Remove the PR creation step since we're directly committing to main
-      # - name: Create Pull Request
-      #   uses: peter-evans/create-pull-request@v5
-      #   with:
-      #     token: ${{ github.token }}
-      #     commit-message: "Add Bitcoin market report for ${{ env.POST_SLUG }}"
-      #     title: "Weekly Bitcoin Market Report"
-      #     body: |
-      #       This PR contains this week's Bitcoin market report ready for review.
-      #       
-      #       Please review the content for accuracy and relevance before merging.
-      #       
-      #       Key points from the report:
-      #       - Generated Bitcoin market analysis for the week
-      #       - Created both a blog post and website Twitter-style card
-      #       - Added Bitcoin market data visualization
-      #       
-      #       After merging, you can send the newsletter by:
-      #       1. Going to the Actions tab
-      #       2. Selecting the "Send Newsletter" workflow
-      #       3. Running the workflow with the post slug: `${{ env.POST_SLUG }}`
-      #     branch: bitcoin-report-update
-      #     base: main
-      #     delete-branch: true
-      #     labels: |
-      #       bitcoin-report
-      #       content-review 
 
       - name: Set environment variables
         run: |
