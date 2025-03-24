@@ -50,6 +50,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/custom-overrides.css">
     
+    <!-- Shadcn UI Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shadcn/ui@0.7.0/dist/shadcn-ui.min.css">
+    
+    <!-- Chart.js for AI Report Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
     <!-- Schema.org structured data for Person -->
     <script type="application/ld+json">
     {
@@ -175,6 +181,96 @@
             </div>
             <div class="hero-image">
                 <img src="img/profile/michael-ditter-headshot-new.jpg" alt="Michael J Ditter, AI Strategy and Emerging Technology Leader" width="400" height="400">
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-time Bitcoin Report Section -->
+    <section id="bitcoin-report" class="bitcoin-report-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Bitcoin Market Insights</h2>
+                <p class="section-subtitle">Real-time Bitcoin market data and analysis</p>
+            </div>
+            <div class="shadcn-card">
+                <div class="bitcoin-dashboard">
+                    <div class="bitcoin-price-header">
+                        <h3>Current Bitcoin Price</h3>
+                        <span class="update-time" id="bitcoin-update-time">Updating...</span>
+                    </div>
+                    <div class="bitcoin-price-display">
+                        <span class="btc-price" id="bitcoin-price">$0.00</span>
+                        <span class="btc-change" id="bitcoin-change">(0.00%)</span>
+                    </div>
+                    <div class="bitcoin-market-details">
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <span class="detail-label">Market Cap</span>
+                                <span class="detail-value" id="bitcoin-market-cap">$0.00 T</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">24h Volume</span>
+                                <span class="detail-value" id="bitcoin-volume">$0.00 B</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <span class="detail-label">BTC Dominance</span>
+                                <span class="detail-value" id="bitcoin-dominance">0.00%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Key Trend</span>
+                                <span class="detail-value" id="bitcoin-trend">Neutral</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bitcoin-insights">
+                        <h4>Latest Insights</h4>
+                        <ul id="bitcoin-insights-list">
+                            <li>Loading insights...</li>
+                        </ul>
+                    </div>
+                    <div class="bitcoin-cta">
+                        <a href="/blog/bitcoin-market-report-2025-03-21/" class="btn-secondary">View Full Report</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Research Report Section -->
+    <section id="ai-report" class="ai-report-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>AI Market Report</h2>
+                <p class="section-subtitle">Runaway Leader: ChatGPT dominates the chatbot app race in India</p>
+            </div>
+            <div class="shadcn-card">
+                <div class="ai-dashboard">
+                    <div class="ai-report-metrics">
+                        <div class="ai-metric-card">
+                            <h3>14 million</h3>
+                            <p>Daily web visits</p>
+                        </div>
+                        <div class="ai-metric-card">
+                            <h3>14 million</h3>
+                            <p>Daily mobile users</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-row">
+                            <div class="chart-column">
+                                <h4>Daily web visits (millions)</h4>
+                                <canvas id="webVisitsChart" width="400" height="300"></canvas>
+                            </div>
+                            <div class="chart-column">
+                                <h4>Daily mobile users (millions)</h4>
+                                <canvas id="mobileUsersChart" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                        <p class="chart-source">Source: Similarweb</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

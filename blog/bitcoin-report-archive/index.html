@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>Bitcoin Market Report Archive | Michael J Ditter</title>
+    <meta name="description" content="Archive of Bitcoin market reports, price analysis, and insights by Michael J Ditter. Access historical Bitcoin price data and market analysis.">
+    <meta name="keywords" content="Bitcoin, Cryptocurrency, Market Reports, Bitcoin Archive, Bitcoin Price History, Crypto Analysis">
+    <meta name="author" content="Michael J Ditter">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.michaelditter.com/blog/bitcoin-report-archive/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.michaelditter.com/blog/bitcoin-report-archive/">
+    <meta property="og:title" content="Bitcoin Market Report Archive | Michael J Ditter">
+    <meta property="og:description" content="Archive of Bitcoin market reports, price analysis, and insights by Michael J Ditter.">
+    <meta property="og:image" content="https://www.michaelditter.com/img/blog/bitcoin-report-archive.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.michaelditter.com/blog/bitcoin-report-archive/">
+    <meta property="twitter:title" content="Bitcoin Market Report Archive | Michael J Ditter">
+    <meta property="twitter:description" content="Archive of Bitcoin market reports, price analysis, and insights by Michael J Ditter.">
+    <meta property="twitter:image" content="https://www.michaelditter.com/img/blog/bitcoin-report-archive.jpg">
+    
+    <!-- CSS and Fonts -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/custom-overrides.css">
+    
+    <style>
+        .archive-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        
+        .archive-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .archive-header h1 {
+            margin-bottom: 0.5rem;
+            color: #0066cc;
+        }
+        
+        .archive-list {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .archive-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .archive-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .archive-item-content {
+            padding: 1.5rem;
+        }
+        
+        .archive-item-date {
+            display: block;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .archive-item-title {
+            margin-bottom: 0.75rem;
+            font-size: 1.3rem;
+            color: #0066cc;
+        }
+        
+        .archive-item-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .price-tag {
+            background-color: #f0f0f0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-right: 1rem;
+        }
+        
+        .price-change {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .price-change.positive {
+            color: #28a745;
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+        
+        .price-change.negative {
+            color: #dc3545;
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+        
+        .archive-item-summary {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .archive-item-link {
+            display: inline-block;
+            color: #0066cc;
+            font-weight: 500;
+            text-decoration: none;
+            border-bottom: 1px solid #0066cc;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        
+        .archive-item-link:hover {
+            color: #004999;
+            border-color: #004999;
+        }
+        
+        .archive-pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .archive-pagination a {
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+        
+        .archive-pagination a:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .archive-pagination span {
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            background-color: #0066cc;
+            color: white;
+        }
+        
+        .breadcrumb {
+            margin-bottom: 2rem;
+            color: #6c757d;
+        }
+        
+        .breadcrumb a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (min-width: 768px) {
+            .archive-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header class="site-header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="/" class="logo">Michael J Ditter</a>
+                <ul class="nav-links">
+                    <li><a href="/#about">About</a></li>
+                    <li><a href="/#expertise">Expertise</a></li>
+                    <li><a href="/#services">Services</a></li>
+                    <li><a href="/blog/" class="active">Insights</a></li>
+                    <li><a href="/#speaking">Speaking</a></li>
+                    <li><a href="/#contact" class="btn-primary">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" aria-label="Toggle Navigation Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Archive Content -->
+    <section class="archive-section">
+        <div class="container">
+            <div class="archive-page">
+                <div class="breadcrumb">
+                    <a href="/">Home</a> / <a href="/blog/">Blog</a> / <span>Bitcoin Report Archive</span>
+                </div>
+                
+                <div class="archive-header">
+                    <h1>Bitcoin Market Report Archive</h1>
+                    <p>Access historical Bitcoin market reports, price analysis, and insights.</p>
+                </div>
+                
+                <div class="archive-list">
+                    <!-- March 21, 2025 Report -->
+                    <div class="archive-item">
+                        <div class="archive-item-content">
+                            <span class="archive-item-date">March 21, 2025</span>
+                            <h2 class="archive-item-title">Bitcoin Market Report - March 21, 2025</h2>
+                            <div class="archive-item-meta">
+                                <span class="price-tag">$87,950</span>
+                                <span class="price-change positive">(+4.20%)</span>
+                            </div>
+                            <p class="archive-item-summary">Bitcoin reaches new all-time high with strong institutional demand as ETF inflows continue to drive market momentum.</p>
+                            <a href="/blog/bitcoin-market-report-2025-03-21/" class="archive-item-link">Read Full Report</a>
+                        </div>
+                    </div>
+                    
+                    <!-- March 19, 2025 Report -->
+                    <div class="archive-item">
+                        <div class="archive-item-content">
+                            <span class="archive-item-date">March 19, 2025</span>
+                            <h2 class="archive-item-title">Bitcoin Market Report - March 19, 2025</h2>
+                            <div class="archive-item-meta">
+                                <span class="price-tag">$84,570</span>
+                                <span class="price-change positive">(+3.60%)</span>
+                            </div>
+                            <p class="archive-item-summary">Positive regulatory developments and institutional adoption continue to drive Bitcoin's upward momentum.</p>
+                            <a href="/blog/bitcoin-market-report-2025-03-19/" class="archive-item-link">Read Full Report</a>
+                        </div>
+                    </div>
+                    
+                    <!-- March 20, 2024 Report -->
+                    <div class="archive-item">
+                        <div class="archive-item-content">
+                            <span class="archive-item-date">March 20, 2024</span>
+                            <h2 class="archive-item-title">Bitcoin Market Report - March 20, 2024</h2>
+                            <div class="archive-item-meta">
+                                <span class="price-tag">$68,350</span>
+                                <span class="price-change positive">(+2.80%)</span>
+                            </div>
+                            <p class="archive-item-summary">Bitcoin continues its upward trajectory following increased adoption and positive market sentiment.</p>
+                            <a href="/blog/bitcoin-market-report-2024-03-20/" class="archive-item-link">Read Full Report</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="archive-pagination">
+                    <span>1</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo">Michael J Ditter</a>
+                    <p>AI Specialist & Technology Consultant helping organizations navigate the complex world of artificial intelligence and emerging technologies.</p>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/michaeljditter" aria-label="LinkedIn Profile" target="_blank" rel="noopener">
+                            <img src="/img/icons/linkedin.svg" alt="LinkedIn" width="24" height="24">
+                        </a>
+                        <a href="https://twitter.com/michaeljditter" aria-label="Twitter Profile" target="_blank" rel="noopener">
+                            <img src="/img/icons/twitter.svg" alt="Twitter" width="24" height="24">
+                        </a>
+                        <a href="https://github.com/michaeljditter" aria-label="GitHub Profile" target="_blank" rel="noopener">
+                            <img src="/img/icons/github.svg" alt="GitHub" width="24" height="24">
+                        </a>
+                        <a href="https://www.instagram.com/drinkpartay" aria-label="Instagram Profile" target="_blank" rel="noopener">
+                            <img src="/img/icons/instagram.svg" alt="Instagram" width="24" height="24">
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-nav">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/#about">About</a></li>
+                            <li><a href="/#expertise">Expertise</a></li>
+                            <li><a href="/#services">Services</a></li>
+                            <li><a href="/blog/">Insights</a></li>
+                            <li><a href="/#speaking">Speaking</a></li>
+                            <li><a href="/#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-resources">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="/blog/category/ai-strategy">AI Strategy</a></li>
+                            <li><a href="/resources/machine-learning">Machine Learning</a></li>
+                            <li><a href="/resources/ai-ethics">AI Ethics</a></li>
+                            <li><a href="/resources/ai-regulatory-frameworks">AI Regulations</a></li>
+                            <li><a href="/resources/case-studies">Case Studies</a></li>
+                            <li><a href="/resources/white-papers">White Papers</a></li>
+                            <li><a href="/resources/webinars">Webinars</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-legal">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="/terms.html">Terms of Service</a></li>
+                            <li><a href="/privacy.html">Privacy Policy</a></li>
+                            <li><a href="/cookie-policy.html">Cookie Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear">2025</span> Michael J Ditter. All rights reserved.</p>
+                <p>Built with <span class="heart">♥</span> for optimal performance, accessibility, and SEO.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    
+    <script>
+        // Set current year
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Toggle FAQ answers
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqToggles = document.querySelectorAll('.faq-toggle');
+            faqToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const faqItem = this.closest('.faq-item');
+                    faqItem.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

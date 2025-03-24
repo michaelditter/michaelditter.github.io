@@ -6,6 +6,7 @@ name: Bitcoin Market Report Generator
 #
 # 2. Required API Keys:
 #    - OPENAI_API_KEY: Required for generating the Bitcoin report content
+#    - COINMARKETCAP_API_KEY (optional): Additional data source for Bitcoin price
 # ===========================
 
 on:
@@ -14,10 +15,21 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
-      manual_trigger:
-        description: 'Manual trigger for Bitcoin report generation'
+      debug_mode:
+        description: 'Enable debug mode with detailed logging'
         required: false
-        default: 'Run Bitcoin report generation'
+        type: boolean
+        default: false
+      test_mode:
+        description: 'Use test data instead of fetching real data'
+        required: false
+        type: boolean
+        default: false
+      force_update:
+        description: 'Force update even if no new data'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   generate-bitcoin-report:
@@ -45,56 +57,81 @@ jobs:
           mkdir -p .github/tmp
           mkdir -p img/blog
       
+      - name: Debug current file structure
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Directory structure:"
+          find . -type f -name "*.html" | sort
+          find . -type f -name "*.py" | sort
+          echo "Index.html section containing bitcoin card:"
+          grep -A 20 -B 5 "twitter-card-container" index.html || echo "Bitcoin card section not found"
+      
       - name: Fetch market data
         env:
-          ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
-          RAPID_API_KEY: ${{ secrets.RAPID_API_KEY }}
-          TEST_MODE: ${{ inputs.test_mode || 'false' }}
+          COINMARKETCAP_API_KEY: ${{ secrets.COINMARKETCAP_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEBUG_MODE: ${{ inputs.debug_mode }}
+          TEST_MODE: ${{ inputs.test_mode }}
         run: |
           if [ "$TEST_MODE" = "true" ]; then
-            echo "Running in test mode without API calls"
-            
-            # Prepare the tmp directory
-            mkdir -p .github/tmp
-            
-            # Create sample social content for test mode
-            echo "#Bitcoin Update:" > .github/tmp/social_content.txt
-            echo "Price: \$84,570 (+3.60%)" >> .github/tmp/social_content.txt
-            echo "1. Positive regulatory moves & pending SEC Bitcoin ETF decision" >> .github/tmp/social_content.txt
-            echo "2. Institutional adoption with Fidelity & BlackRock" >> .github/tmp/social_content.txt
-            echo "Outlook: Bullish with support at \$80K & resistance at \$100K. #BTC #Crypto" >> .github/tmp/social_content.txt
-            
-            # Set environment variables
-            echo "TODAY=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
-            echo "POST_SLUG=bitcoin-market-report-$(date '+%Y-%m-%d')" >> $GITHUB_ENV
-            echo "NEWSLETTER_DATA_FILE=.github/tmp/bitcoin-market-report-$(date '+%Y-%m-%d')-newsletter-data.json" >> $GITHUB_ENV
-            
-            # Create sample newsletter data JSON for test mode
-            cat > ${{ env.NEWSLETTER_DATA_FILE }} << EOF
-            {
-              "price": "$84,570",
-              "price_change_24h": "(+3.60%)",
-              "key_points": [
-                "Positive regulatory moves & pending SEC Bitcoin ETF decision",
-                "Institutional adoption with Fidelity & BlackRock"
-              ],
-              "analysis": [
-                "Bitcoin continues to show strength amid increased institutional adoption.",
-                "Technical indicators suggest continued bullish momentum in the short term."
-              ],
-              "outlook": "Bullish with support at $80K & resistance at $100K"
-            }
-            EOF
+            echo "Running in test mode"
+            python .github/scripts/fetch_bitcoin_data.py --test
+          elif [ "$DEBUG_MODE" = "true" ]; then
+            echo "Running in debug mode"
+            python .github/scripts/fetch_bitcoin_data.py --debug
           else
+            echo "Running in standard mode"
             python .github/scripts/fetch_bitcoin_data.py
           fi
       
-      - name: Generate Bitcoin report with OpenAI
+      - name: Validate fetched data
+        run: |
+          if [ -f "$NEWSLETTER_DATA_FILE" ]; then
+            echo "✅ Data file exists at: $NEWSLETTER_DATA_FILE"
+            
+            # Check if valid JSON
+            if python -c "import json; data=json.load(open('$NEWSLETTER_DATA_FILE')); print(json.dumps(data, indent=2)[:500])"; then
+              echo "✅ Data file contains valid JSON"
+              
+              # Display key data elements
+              echo "Bitcoin Price: $BITCOIN_PRICE"
+              echo "Price Change: $BITCOIN_CHANGE"
+              
+              # Verify required fields exist
+              REQUIRED_FIELDS=$(python -c "import json; data=json.load(open('$NEWSLETTER_DATA_FILE')); print(','.join(['price' in data, 'price_change_24h' in data, 'key_points' in data, 'analysis' in data, 'outlook' in data]))")
+              if [[ "$REQUIRED_FIELDS" == *"False"* ]]; then
+                echo "❌ Missing required fields in data file"
+                exit 1
+              else
+                echo "✅ All required fields present in data file"
+              fi
+            else
+              echo "❌ Data file contains invalid JSON"
+              cat "$NEWSLETTER_DATA_FILE" | head -n 20
+              exit 1
+            fi
+          else
+            echo "❌ Data file not found at: $NEWSLETTER_DATA_FILE"
+            echo "Current directory contents:"
+            ls -la .github/tmp/
+            exit 1
+          fi
+      
+      - name: Generate Bitcoin report
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEBUG_MODE: ${{ inputs.debug_mode }}
         run: |
           # Generate the full Bitcoin report
           python .github/scripts/generate_bitcoin_report.py
+          
+          # Check if the report was created
+          if [ -f "blog/$POST_SLUG/index.html" ]; then
+            echo "✅ Bitcoin report generated successfully at blog/$POST_SLUG/index.html"
+          else
+            echo "❌ Failed to generate Bitcoin report"
+            exit 1
+          fi
       
       - name: Save social content to environment variable (Base64 encoded)
         run: |
@@ -233,16 +270,40 @@ jobs:
           print(f"Created Bitcoin report image: {image_path}")
           EOF
       
+      - name: Examine index.html before update
+        run: |
+          echo "Twitter card section before update:"
+          grep -A 30 -B 5 "twitter-card-container" index.html || echo "Failed to find Twitter card section"
+      
+      - name: Update Twitter card on homepage
+        run: |
+          echo "Running card update script..."
+          python .github/scripts/update_bitcoin_card.py --debug --data-file $NEWSLETTER_DATA_FILE --report-slug $POST_SLUG
+          
+          # Verify update
+          echo "Index.html section after update:"
+          grep -A 30 -B 5 "twitter-card-container" index.html || echo "Failed to find updated Twitter card section"
+      
+      - name: Update Bitcoin report archive
+        run: |
+          # Update the Bitcoin report archive page
+          if [ -f ".github/scripts/update_bitcoin_archive.py" ]; then
+            python .github/scripts/update_bitcoin_archive.py
+            echo "Bitcoin report archive updated"
+          else
+            echo "Archive update script not found, skipping this step"
+          fi
+      
       - name: Display Social Content (No Twitter Posting)
         run: |
           echo "📈 Bitcoin Update Content (displayed on website only):"
           echo "---------------------------------------------------------"
           if [ -f .github/tmp/social_content_display.txt ]; then
             # Clean up the content before displaying
-            cat .github/tmp/social_content_display.txt | grep -v "Error:" | grep -v "file command" | grep -v "GITHUB_ENV"
+            cat .github/tmp/social_content_display.txt
           elif [ -f .github/tmp/social_content.txt ]; then
             # Clean up the content before displaying
-            cat .github/tmp/social_content.txt | grep -v "Error:" | grep -v "file command" | grep -v "GITHUB_ENV"
+            cat .github/tmp/social_content.txt
           else
             echo "No social content file found."
           fi
@@ -250,77 +311,68 @@ jobs:
           echo "Note: This content is displayed in the Twitter-style card on the website."
           echo "Twitter posting functionality has been disabled."
       
-      # Debug environment variables
-      - name: Debug environment variables
+      - name: Check for changes
+        id: git-check
         run: |
-          echo "POST_SLUG: ${{ env.POST_SLUG }}"
-          echo "POST_TITLE: ${{ env.POST_TITLE }}"
-          echo "GITHUB_REPOSITORY: ${{ github.repository }}"
-          echo "GITHUB_ACTOR: ${{ github.actor }}"
+          git diff --quiet index.html || echo "::set-output name=changed::true"
+          echo "Changes to index.html: $(git diff --stat index.html)"
           
-          # Check if base64 encoded social content exists
-          if [[ -n "${{ env.SOCIAL_CONTENT_B64 }}" ]]; then
-            echo "SOCIAL_CONTENT_B64 is set (showing first 30 chars): ${SOCIAL_CONTENT_B64:0:30}..."
-            
-            # Decode a portion for verification
-            DECODED=$(echo "${{ env.SOCIAL_CONTENT_B64 }}" | base64 --decode 2>/dev/null | head -n 1)
-            echo "First line decoded: $DECODED"
-          else
-            echo "SOCIAL_CONTENT_B64 is not set"
+          # If force_update is set, always proceed
+          if [ "${{ inputs.force_update }}" = "true" ]; then
+            echo "Force update enabled, proceeding with commit"
+            echo "::set-output name=changed::true"
           fi
-          
-      - name: Update Bitcoin card and archive
-        run: |
-          # Update Bitcoin card on homepage
-          echo "Updating Bitcoin card on homepage..."
-          python .github/scripts/update_bitcoin_card.py "${{ env.POST_SLUG }}" "${{ env.NEWSLETTER_DATA_FILE }}"
-          
-          # Update Bitcoin report archive page
-          echo "Updating Bitcoin report archive page..."
-          python .github/scripts/update_bitcoin_archive.py "${{ env.POST_SLUG }}" "${{ env.NEWSLETTER_DATA_FILE }}"
-          
+      
       - name: Commit changes
+        if: steps.git-check.outputs.changed == 'true'
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           
-          # Add all the generated files
-          for json_file in .github/tmp/*.json; do
-            git add "$json_file" || echo "Could not add $json_file"
-          done
-          
-          if [ -f ".github/tmp/social_content.txt" ]; then
-            git add .github/tmp/social_content.txt
+          # Add files that might exist
+          if [ -f "img/blog/$POST_SLUG.jpg" ]; then
+            git add "img/blog/$POST_SLUG.jpg"
+            echo "Added report image"
           fi
           
-          if [ -f ".github/tmp/social_content_display.txt" ]; then
-            git add .github/tmp/social_content_display.txt
+          if [ -f "blog/$POST_SLUG/index.html" ]; then
+            git add "blog/$POST_SLUG/index.html"
+            echo "Added report page"
           fi
           
-          # Add the main files
-          git add blog/ img/ index.html || echo "Could not add directories"
+          git add index.html
+          echo "Added updated index.html"
           
-          # Commit the changes
-          git commit -m "Update Bitcoin market report for ${{ env.TODAY }}" || echo "No changes to commit"
+          # Add archive page if it exists
+          if [ -f "blog/bitcoin-report-archive/index.html" ]; then
+            git add blog/bitcoin-report-archive/index.html
+            echo "Added archive page"
+          fi
           
-          # Push changes to repository
-          git push
-          
-      - name: Send to Buttondown Newsletter
-        if: ${{ env.NEWSLETTER_DATA_FILE != '' }}
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          else
+            git commit -m "Update Bitcoin market report for $TODAY"
+            echo "Changes committed"
+          fi
+      
+      - name: Push changes
+        if: steps.git-check.outputs.changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+      
+      - name: Send Report to Newsletter (Optional)
+        if: ${{ false }}  # Disabled by default
         env:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
         run: |
-          if [ -f "${{ env.NEWSLETTER_DATA_FILE }}" ]; then
-            echo "Sending Bitcoin report to Buttondown newsletter..."
-            pip install requests
-            python .github/scripts/send_to_buttondown.py "${{ env.NEWSLETTER_DATA_FILE }}"
+          if [ -n "$BUTTONDOWN_API_KEY" ]; then
+            python .github/scripts/send_to_buttondown.py
+            echo "Newsletter sent to Buttondown"
           else
-            echo "Newsletter data file not found: ${{ env.NEWSLETTER_DATA_FILE }}"
-          fi
-
-      - name: Set environment variables
-        run: |
-          echo "TODAY=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
-          echo "POST_SLUG=bitcoin-market-report-$(date '+%Y-%m-%d')" >> $GITHUB_ENV
-          echo "NEWSLETTER_DATA_FILE=.github/tmp/bitcoin-market-report-$(date '+%Y-%m-%d')-newsletter-data.json" >> $GITHUB_ENV 
+            echo "Buttondown API key not provided, skipping newsletter sending"
+          fi 

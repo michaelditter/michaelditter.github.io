@@ -1,0 +1,38 @@
+{
+  "emojis": {
+    "price": "📈",
+    "key_points": "🔑",
+    "analysis": "📊",
+    "outlook": "🔮",
+    "bullish": "🚀",
+    "bearish": "📉",
+    "neutral": "⏺️",
+    "very_bullish": "💹",
+    "very_bearish": "🔻",
+    "volume": "📊",
+    "market_cap": "💰",
+    "date": "📅",
+    "source": "🔎",
+    "point1": "1️⃣",
+    "point2": "2️⃣",
+    "point3": "3️⃣"
+  },
+  "styling": {
+    "use_color_coding": true,
+    "positive_color": "#28a745",
+    "negative_color": "#dc3545",
+    "neutral_color": "#6c757d",
+    "header_color": "#0066cc",
+    "highlight_color": "#17a2b8"
+  },
+  "twitter_card": {
+    "update_frequency": "Daily",
+    "max_points": 2,
+    "include_outlook": true
+  },
+  "newsletter": {
+    "include_full_analysis": true,
+    "include_faq_link": true,
+    "include_archive_link": true
+  }
+} 

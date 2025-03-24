@@ -1,324 +1,63 @@
 #!/usr/bin/env python3
+"""
+Generate a formatted Bitcoin market report using data from fetch_bitcoin_data.py
+"""
+
 import os
-import sys
 import json
-import yaml
-import requests
-import datetime
+import sys
+import logging
 from pathlib import Path
-import openai
+from datetime import datetime
+import re
+import argparse
 
-# Configure OpenAI API
-client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger('bitcoin_report_generator')
 
-# Constants
-BLOG_POST_DIR = "blog"
-CURRENT_DATE = datetime.datetime.now()
-POST_DATE = CURRENT_DATE.strftime("%Y-%m-%d")
-TIMESTAMP = CURRENT_DATE.strftime("%Y-%m-%dT%H:%M:%S+00:00")
-FORMATTED_DATE = CURRENT_DATE.strftime("%B %d, %Y")
+# Check for debug mode
+DEBUG_MODE = os.environ.get('DEBUG_MODE', 'false').lower() == 'true'
+if DEBUG_MODE:
+    logger.setLevel(logging.DEBUG)
+    logger.debug("Running in DEBUG mode")
 
-def generate_post_slug():
-    """Generate a URL-friendly slug for the Bitcoin report"""
-    # Create a slug that includes the date to make it unique each week
-    slug = f"bitcoin-market-report-{POST_DATE}"
-    return slug
-
-def fetch_bitcoin_data():
-    """Fetch current Bitcoin data for analysis"""
-    try:
-        # Get Bitcoin price data
-        price_response = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true", timeout=10)
-        price_data = price_response.json()
-        
-        # Get Bitcoin market data
-        market_response = requests.get("https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&community_data=false&developer_data=false", timeout=10)
-        market_data = market_response.json()
-        
-        # Extract relevant data
-        current_price = price_data["bitcoin"]["usd"]
-        price_change_24h = price_data["bitcoin"]["usd_24h_change"]
-        market_cap = market_data["market_data"]["market_cap"]["usd"]
-        total_volume = market_data["market_data"]["total_volume"]["usd"]
-        high_24h = market_data["market_data"]["high_24h"]["usd"]
-        low_24h = market_data["market_data"]["low_24h"]["usd"]
-        ath = market_data["market_data"]["ath"]["usd"]
-        ath_change_percentage = market_data["market_data"]["ath_change_percentage"]["usd"]
-        
-        data = {
-            "current_price": current_price,
-            "price_change_24h": price_change_24h,
-            "market_cap": market_cap,
-            "total_volume": total_volume,
-            "high_24h": high_24h,
-            "low_24h": low_24h,
-            "ath": ath,
-            "ath_change_percentage": ath_change_percentage,
-            "timestamp": TIMESTAMP
+# Try to load formatting configuration
+CONFIG_PATH = Path(".github/config/report_format.json")
+try:
+    with open(CONFIG_PATH, "r") as f:
+        CONFIG = json.load(f)
+    logger.info(f"Loaded configuration from {CONFIG_PATH}")
+except (FileNotFoundError, json.JSONDecodeError) as e:
+    logger.warning(f"Could not load configuration: {e}")
+    # Default configuration if file not found or invalid
+    CONFIG = {
+        "emojis": {
+            "price": "📈",
+            "key_points": "🔑",
+            "analysis": "📊",
+            "outlook": "🔮",
+            "bullish": "🚀",
+            "bearish": "📉",
+            "neutral": "⏺️",
+            "point1": "1️⃣",
+            "point2": "2️⃣",
+            "point3": "3️⃣"
+        },
+        "styling": {
+            "use_color_coding": True,
+            "positive_color": "#28a745",
+            "negative_color": "#dc3545",
+            "neutral_color": "#6c757d"
         }
-        
-        return data
-    except requests.exceptions.RequestException as e:
-        print(f"Error connecting to price API: {str(e)}")
-        # Return fallback data if API fails
-        return get_fallback_bitcoin_data()
-    except (KeyError, ValueError, json.JSONDecodeError) as e:
-        print(f"Error parsing Bitcoin data: {str(e)}")
-        return get_fallback_bitcoin_data()
-    except Exception as e:
-        print(f"Unexpected error fetching Bitcoin data: {str(e)}")
-        return get_fallback_bitcoin_data()
-
-def get_fallback_bitcoin_data():
-    """Provide fallback data when API calls fail"""
-    print("Using fallback Bitcoin data")
-    return {
-        "current_price": 85000.00,
-        "price_change_24h": 3.5,
-        "market_cap": 1650000000000,
-        "total_volume": 32000000000,
-        "high_24h": 86000.00,
-        "low_24h": 83000.00,
-        "ath": 90000.00,
-        "ath_change_percentage": -5.5,
-        "timestamp": TIMESTAMP
     }
 
-def clean_social_content(content):
-    """Clean social content before saving to remove any potential issues."""
-    # Strip any leading/trailing whitespace
-    content = content.strip()
-    
-    # Remove any lines with error messages
-    lines = content.split('\n')
-    cleaned_lines = [line for line in lines if not line.startswith('Error:')]
-    
-    # Rejoin the lines
-    content = '\n'.join(cleaned_lines)
-    
-    # Ensure it's under Twitter's character limit
-    if len(content) > 280:
-        print(f"Warning: Social content exceeds Twitter's 280 character limit ({len(content)} chars). Truncating...")
-        content = content[:277] + "..."
-    
-    return content
-
-def generate_content():
-    """Generate Bitcoin report content using OpenAI"""
-    
-    # Get current Bitcoin data
-    bitcoin_data = fetch_bitcoin_data()
-    
-    # Create the report slug
-    slug = generate_post_slug()
-    
-    # Generate the title 
-    title_prompt = f"""
-    Generate a compelling, specific title for this week's Bitcoin market report dated {FORMATTED_DATE}.
-    The title should be informative, include specific details about the current Bitcoin market situation, and be 50-70 characters long.
-    Do not include quotation marks.
-    
-    Current Bitcoin price: ${bitcoin_data['current_price']:,.2f}
-    24-hour change: {bitcoin_data['price_change_24h']:.2f}%
-    """
-    
-    try:
-        title_response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a professional cryptocurrency analyst who creates compelling titles for Bitcoin market reports."},
-                {"role": "user", "content": title_prompt}
-            ]
-        )
-        title = title_response.choices[0].message.content.strip()
-    except Exception as e:
-        print(f"Error generating title: {str(e)}")
-        title = f"Bitcoin Market Analysis: ${bitcoin_data['current_price']:,.2f} on {FORMATTED_DATE}"
-    
-    # Generate the main report content with improved formatting instructions
-    content_prompt = f"""
-    Create a comprehensive weekly Bitcoin market analysis report for {FORMATTED_DATE}. The report should monitor key triggers that could lead to Bitcoin price movements.
-
-    IMPORTANT: Format the content with proper spacing, clear headings, and well-organized sections. Use HTML formatting for proper display on the web.
-
-    Follow this structure:
-
-    <h2>Executive Summary</h2>
-    <p>
-    Begin with a concise summary of the current Bitcoin market situation.
-    - Current price: ${bitcoin_data['current_price']}
-    - 24-hour change: {bitcoin_data['price_change_24h']:.2f}%
-    - Key takeaways from this week's developments
-    </p>
-
-    <h2>1. Regulatory Moves</h2>
-    <p>
-    Analyze recent or pending regulatory developments (ETF updates, legislation, etc.)
-    </p>
-    <h3>Key Regulatory Developments:</h3>
-    <ul>
-    <li>First important regulatory development</li>
-    <li>Second important regulatory development</li>
-    <li>Third important regulatory development</li>
-    </ul>
-    <p>
-    Provide analysis of how these regulations might impact Bitcoin's price and which countries or agencies to watch in the coming week.
-    </p>
-
-    <h2>2. Macroeconomic Factors</h2>
-    <p>
-    Analyze recent Federal Reserve decisions, inflation data, and global economic conditions affecting Bitcoin.
-    </p>
-    <h3>Key Macroeconomic Indicators:</h3>
-    <ul>
-    <li>Recent Federal Reserve decisions or statements</li>
-    <li>Latest inflation data and trends</li>
-    <li>Global economic conditions affecting Bitcoin</li>
-    </ul>
-    <p>
-    Detailed analysis of how these macro factors are influencing Bitcoin prices.
-    </p>
-
-    <h2>3. Institutional Adoption</h2>
-    <p>
-    Analyze recent investments by corporations or funds and institutional products or services.
-    </p>
-    <h3>Notable Institutional Developments:</h3>
-    <ul>
-    <li>Recent investments by major corporations or funds</li>
-    <li>New institutional products or services</li>
-    <li>Statements from financial leaders</li>
-    </ul>
-    <p>
-    Analysis of changing institutional sentiment toward Bitcoin.
-    </p>
-
-    <h2>4. Market Sentiment Analysis</h2>
-    <p>
-    Analyze current Fear & Greed Index, whale activity, and market psychology.
-    </p>
-    <h3>Key Sentiment Indicators:</h3>
-    <ul>
-    <li>Current Fear & Greed Index reading and what it suggests</li>
-    <li>Whale accumulation or distribution patterns</li>
-    <li>Social media and search trends related to Bitcoin</li>
-    </ul>
-    <p>
-    Analysis of overall market psychology and what it suggests for price movement.
-    </p>
-
-    <h2>5. Technical Indicators</h2>
-    <p>
-    Analyze key price levels, technical indicators, and chart patterns.
-    </p>
-    <h3>Key Technical Signals:</h3>
-    <ul>
-    <li>Analysis of key price levels (e.g., $100K, $80K)</li>
-    <li>RSI, moving averages, and other relevant indicators</li>
-    <li>Volume analysis and what it signals</li>
-    </ul>
-    <p>
-    Analysis of potential breakout/breakdown points and price targets.
-    </p>
-
-    <h2>Forward-Looking Analysis</h2>
-    <p>
-    Conclude with analysis of key events to watch, potential price targets, and overall market thesis.
-    </p>
-    <ul>
-    <li>Key events to watch in the coming week</li>
-    <li>Potential price targets and support/resistance levels</li>
-    <li>Overall market thesis for the near term</li>
-    </ul>
-    <p>
-    <em>Not investment advice. Bitcoin investments carry financial risk. Please conduct thorough research or consult a professional before making financial decisions.</em>
-    </p>
-
-    Use a professional but accessible tone. Include specific data points and references where possible. Avoid making definitive price predictions, instead focusing on analysis of key factors and potential scenarios.
-
-    The total length should be approximately 1500-2000 words. Remember to maintain proper HTML formatting with appropriate paragraph tags, heading tags, unordered lists, and occasional emphasis.
-    """
-    
-    content_response = client.chat.completions.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "You are a professional cryptocurrency analyst with expertise in Bitcoin markets. You create detailed, data-driven market analysis reports with clear, well-structured HTML formatting."},
-            {"role": "user", "content": content_prompt}
-        ]
-    )
-    post_content = content_response.choices[0].message.content.strip()
-    
-    # Generate a shorter X/Twitter post version
-    social_prompt = f"""
-    Create a concise X (Twitter) post summarizing the most important points from this week's Bitcoin market analysis. 
-    
-    Include:
-    1. Current price and 24h change
-    2. 1-2 key developments/triggers from this week
-    3. A brief outlook
-    
-    Keep under 280 characters and include relevant hashtags (#Bitcoin #BTC #Crypto).
-    
-    For reference, here's the full report: {post_content}
-    """
-    
-    try:
-        social_response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a cryptocurrency analyst who creates concise, informative social media posts about Bitcoin."},
-                {"role": "user", "content": social_prompt}
-            ]
-        )
-        social_content = social_response.choices[0].message.content.strip()
-    except Exception as e:
-        print(f"Error generating social content: {str(e)}")
-        # Fallback social content if API fails
-        social_content = f"#Bitcoin Update: Price: ${bitcoin_data['current_price']:,.2f} ({bitcoin_data['price_change_24h']:.2f}%). Monitor key catalysts: institutional adoption, regulatory news. Overall market sentiment: {('bearish' if bitcoin_data['price_change_24h'] < 0 else 'bullish')}. #BTC #Crypto"
-    
-    # Clean the social content
-    social_content = clean_social_content(social_content)
-    
-    # Save social content to a file for easier handling in GitHub Actions
-    social_content_file = Path(".github") / "tmp" / "social_content.txt"
-    social_content_file.parent.mkdir(parents=True, exist_ok=True)
-    
-    with open(social_content_file, 'w') as f:
-        f.write(social_content)
-    
-    # Generate meta description for SEO
-    description_prompt = f"Write a compelling meta description for a blog post with the title '{title}'. The description should summarize the key points of this week's Bitcoin market analysis, be 150-160 characters, and encourage readers to click."
-    description_response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are an SEO specialist who writes compelling meta descriptions."},
-            {"role": "user", "content": description_prompt}
-        ]
-    )
-    meta_description = description_response.choices[0].message.content.strip()
-    
-    # Create post directory
-    post_dir = Path(BLOG_POST_DIR) / slug
-    post_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Create post data with front matter
-    post_data = {
-        "title": title,
-        "date": TIMESTAMP,
-        "description": meta_description,
-        "category": "Bitcoin",
-        "tags": ["Bitcoin", "Cryptocurrency", "Market Analysis", "Trading"],
-        "author": "Michael J Ditter",
-        "featured": True,
-        "image": f"/img/blog/{slug}.jpg",  # Placeholder for image
-        "slug": slug
-    }
-    
-    # Create the HTML file
-    post_file = post_dir / "index.html"
-    
-    # Template for HTML
-    html_template = f'''<!DOCTYPE html>
+# Report template with emojis and proper formatting - Updated with new structure
+REPORT_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -326,124 +65,236 @@ def generate_content():
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     
     <!-- SEO Meta Tags -->
-    <title>{title} | Michael J Ditter</title>
-    <meta name="description" content="{meta_description}">
-    <meta name="keywords" content="Bitcoin, Cryptocurrency, Market Analysis, Trading, Michael J Ditter">
+    <title>Bitcoin Market Report - {date} | Michael J Ditter</title>
+    <meta name="description" content="Bitcoin price analysis and market insights for {date} by Michael J Ditter. Price: {price} {price_change_24h}.">
+    <meta name="keywords" content="Bitcoin, Cryptocurrency, Market Analysis, Crypto Report, Bitcoin Price, {date}">
     <meta name="author" content="Michael J Ditter">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://www.michaelditter.com/blog/{slug}/">
+    <link rel="canonical" href="https://www.michaelditter.com/blog/{post_slug}/">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://www.michaelditter.com/blog/{slug}/">
-    <meta property="og:title" content="{title}">
-    <meta property="og:description" content="{meta_description}">
-    <meta property="og:image" content="https://www.michaelditter.com/img/blog/{slug}.jpg">
-    <meta property="article:published_time" content="{TIMESTAMP}">
-    <meta property="article:author" content="https://www.michaelditter.com/#person">
-    <meta property="article:section" content="Bitcoin">
-    <meta property="article:tag" content="Bitcoin">
-    <meta property="article:tag" content="Cryptocurrency">
-    <meta property="article:tag" content="Market Analysis">
-    <meta property="article:tag" content="Trading">
+    <meta property="og:url" content="https://www.michaelditter.com/blog/{post_slug}/">
+    <meta property="og:title" content="Bitcoin Market Report - {date}">
+    <meta property="og:description" content="Bitcoin price analysis and market insights. Price: {price} {price_change_24h}.">
+    <meta property="og:image" content="https://www.michaelditter.com/img/blog/{post_slug}.jpg">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://www.michaelditter.com/blog/{slug}/">
-    <meta property="twitter:title" content="{title}">
-    <meta property="twitter:description" content="{meta_description}">
-    <meta property="twitter:image" content="https://www.michaelditter.com/img/blog/{slug}.jpg">
-    <meta property="twitter:creator" content="@michaeljditter">
-    
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/img/favicon/site.webmanifest">
+    <meta property="twitter:url" content="https://www.michaelditter.com/blog/{post_slug}/">
+    <meta property="twitter:title" content="Bitcoin Market Report - {date}">
+    <meta property="twitter:description" content="Bitcoin price analysis and market insights. Price: {price} {price_change_24h}.">
+    <meta property="twitter:image" content="https://www.michaelditter.com/img/blog/{post_slug}.jpg">
     
     <!-- CSS and Fonts -->
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/blog.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/custom-overrides.css">
     
-    <!-- Schema.org structured data for Article -->
-    <script type="application/ld+json">
-    {{
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "{title}",
-        "description": "{meta_description}",
-        "image": "https://www.michaelditter.com/img/blog/{slug}.jpg",
-        "datePublished": "{TIMESTAMP}",
-        "dateModified": "{TIMESTAMP}",
-        "author": {{
-            "@type": "Person",
-            "@id": "https://www.michaelditter.com/#person",
-            "name": "Michael J Ditter",
-            "url": "https://www.michaelditter.com"
-        }},
-        "publisher": {{
-            "@type": "Organization",
-            "name": "Michael J Ditter",
-            "logo": {{
-                "@type": "ImageObject",
-                "url": "https://www.michaelditter.com/img/logo.png"
-            }}
-        }},
-        "mainEntityOfPage": {{
-            "@type": "WebPage",
-            "@id": "https://www.michaelditter.com/blog/{slug}/"
-        }},
-        "keywords": "Bitcoin, Cryptocurrency, Market Analysis, Trading, Michael J Ditter",
-        "articleSection": "Bitcoin"
-    }}
-    </script>
-    
-    <!-- Schema.org structured data for BreadcrumbList -->
-    <script type="application/ld+json">
-    {{
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {{
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://www.michaelditter.com/"
-            }},
-            {{
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Blog",
-                "item": "https://www.michaelditter.com/blog/"
-            }},
-            {{
-                "@type": "ListItem",
-                "position": 3,
-                "name": "{title}",
-                "item": "https://www.michaelditter.com/blog/{slug}/"
-            }}
-        ]
-    }}
-    </script>
-    
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':
-    new Date().getTime(),event:'gtm.js'}});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    }})(window,document,'script','dataLayer','GTM-MP9VXW8V');</script>
-    <!-- End Google Tag Manager -->
+    <style>
+        .bitcoin-report {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        
+        .bitcoin-report h1 {
+            color: {header_color};
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+        }
+        
+        .price-section {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .price-label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .price-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+        
+        .price-change {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .positive {
+            color: {positive_color};
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+        
+        .negative {
+            color: {negative_color};
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+        
+        .neutral {
+            color: {neutral_color};
+            background-color: rgba(108, 117, 125, 0.1);
+        }
+
+        .report-section {
+            margin-bottom: 2.5rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background-color: #f0f7ff;
+            padding: 1rem 1.5rem;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .section-header h2 {
+            margin: 0;
+            color: #0066cc;
+            font-size: 1.5rem;
+        }
+        
+        .section-content {
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border-left: 4px solid #f0f7ff;
+        }
+        
+        .section-subtitle {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #333;
+        }
+        
+        .key-points {
+            margin-bottom: 1.5rem;
+        }
+        
+        .key-points li {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .analysis-section p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .outlook {
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            margin-bottom: 2rem;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .timestamp {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-align: right;
+            border-top: 1px solid #e9ecef;
+            padding-top: 1rem;
+        }
+        
+        .data-source {
+            display: inline-block;
+            background-color: #f1f3f5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .archive-link {
+            margin-left: 1rem;
+            color: {header_color};
+            text-decoration: none;
+        }
+        
+        .archive-link:hover {
+            text-decoration: underline;
+        }
+
+        .indicator-item {
+            display: flex;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .indicator-label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+            min-width: 120px;
+        }
+        
+        .indicator-value {
+            font-weight: 500;
+        }
+        
+        .technical-levels {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .level-item {
+            background-color: #fff;
+            padding: 0.75rem;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .level-label {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #555;
+        }
+        
+        .level-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .support {
+            border-left: 3px solid #28a745;
+        }
+        
+        .resistance {
+            border-left: 3px solid #dc3545;
+        }
+        
+        @media (max-width: 768px) {
+            .technical-levels {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body class="blog-post">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MP9VXW8V"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    
+<body>
     <!-- Header with Navigation -->
     <header class="site-header">
         <div class="container">
@@ -453,7 +304,7 @@ def generate_content():
                     <li><a href="/#about">About</a></li>
                     <li><a href="/#expertise">Expertise</a></li>
                     <li><a href="/#services">Services</a></li>
-                    <li><a href="/blog/" class="active">Insights</a></li>
+                    <li><a href="/blog/">Insights</a></li>
                     <li><a href="/#speaking">Speaking</a></li>
                     <li><a href="/#contact" class="btn-primary">Contact</a></li>
                 </ul>
@@ -466,133 +317,134 @@ def generate_content():
         </div>
     </header>
 
-    <!-- Blog Header -->
-    <section class="blog-header">
+    <!-- Report Content -->
+    <section class="blog-content-section">
         <div class="container">
-            <div class="blog-breadcrumb">
-                <a href="/">Home</a> / <a href="/blog/">Blog</a> / <span>Bitcoin Report</span>
-            </div>
-            <h1>{title}</h1>
-            <div class="blog-meta">
-                <div class="blog-author">
-                    <img src="/img/profile/michael-ditter-headshot.jpg" alt="Michael J Ditter" width="50" height="50">
-                    <span>By <a href="/#about">Michael J Ditter</a></span>
+            <div class="bitcoin-report">
+                <h1>{emoji_price} Bitcoin Market Report - {date}</h1>
+                
+                <!-- Executive Summary -->
+                <div class="price-section">
+                    <span class="price-label">Current Price:</span>
+                    <span class="price-value">{price}</span>
+                    <span class="price-change {change_class}">{price_change_24h}</span>
                 </div>
-                <div class="blog-details">
-                    <span class="blog-date">{FORMATTED_DATE}</span>
-                    <span class="blog-category">Bitcoin</span>
-                    <span class="blog-read-time">10 min read</span>
+                
+                <div class="executive-summary">
+                    <p>Weekly Bitcoin market analysis with key insights on regulatory developments, macroeconomic factors, institutional adoption, market sentiment, and technical indicators.</p>
                 </div>
-            </div>
-            <div class="blog-featured-image">
-                <img src="/img/blog/{slug}.jpg" alt="{title}" width="800" height="450">
-            </div>
-        </div>
-    </section>
-
-    <!-- Blog Content -->
-    <article class="blog-content">
-        <div class="container container-narrow">
-            <!-- Bitcoin Data Summary -->
-            <div class="bitcoin-summary">
-                <div class="bitcoin-price-card">
-                    <div class="price-header">
-                        <h3>Bitcoin Price</h3>
-                        <span class="update-time">Updated: {FORMATTED_DATE}</span>
+                
+                <!-- Key Developments Section -->
+                <div class="report-section">
+                    <div class="section-header">
+                        <h2>{emoji_key_points} Key Developments</h2>
                     </div>
-                    <div class="price-main">
-                        <span class="current-price">${bitcoin_data['current_price']}</span>
-                        <span class="price-change {'' if bitcoin_data['price_change_24h'] < 0 else 'positive'}">{bitcoin_data['price_change_24h']:.2f}% (24h)</span>
+                    <div class="section-content">
+                        <ul class="key-points">
+                            {key_points_html}
+                        </ul>
                     </div>
-                    <div class="price-details">
-                        <div class="detail-item">
-                            <span class="detail-label">Market Cap</span>
-                            <span class="detail-value">${bitcoin_data['market_cap']:,}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">24h High</span>
-                            <span class="detail-value">${bitcoin_data['high_24h']}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">24h Low</span>
-                            <span class="detail-value">${bitcoin_data['low_24h']}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">All-Time High</span>
-                            <span class="detail-value">${bitcoin_data['ath']} ({bitcoin_data['ath_change_percentage']:.2f}%)</span>
+                </div>
+                
+                <!-- Regulatory Moves Section -->
+                <div class="report-section">
+                    <div class="section-header">
+                        <h2>🏛️ Regulatory Developments</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-subtitle">Key Regulatory Moves:</div>
+                        <div class="analysis-section">
+                            {regulatory_html}
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Main content with improved formatting -->
-            <div class="blog-sections">
-                {post_content}
-            </div>
-            
-            <!-- Social Share -->
-            <div class="social-share">
-                <h3>Share This Report</h3>
-                <p>Found this analysis helpful? Share it with your network:</p>
-                <div class="share-buttons">
-                    <a href="https://twitter.com/intent/tweet?text={social_content.replace(' ', '%20')}&url=https://www.michaelditter.com/blog/{slug}/" target="_blank" rel="noopener" class="share-button twitter">
-                        <img src="/img/icons/twitter.svg" alt="Share on Twitter" width="24" height="24">
-                        Share on X (Twitter)
-                    </a>
-                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.michaelditter.com/blog/{slug}/&title={title.replace(' ', '%20')}" target="_blank" rel="noopener" class="share-button linkedin">
-                        <img src="/img/icons/linkedin.svg" alt="Share on LinkedIn" width="24" height="24">
-                        Share on LinkedIn
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Author Bio -->
-            <div class="author-bio">
-                <img src="/img/profile/michael-ditter-headshot.jpg" alt="Michael J Ditter" width="100" height="100">
-                <div class="author-info">
-                    <h3>About the Author</h3>
-                    <p>
-                        Michael J Ditter is the Director of AI Strategy and Emerging Technology at Diageo with extensive experience in AI implementation, immersive technologies, and digital innovation. He specializes in developing strategic approaches to AI adoption, AR/VR experiences, and emerging technology integration for global brands.
-                    </p>
-                    <div class="author-social">
-                        <a href="https://www.linkedin.com/in/michaeljditter/" target="_blank" rel="noopener">LinkedIn</a>
-                        <a href="https://twitter.com/michaeljditter" target="_blank" rel="noopener">Twitter</a>
+                
+                <!-- Macroeconomic Factors Section -->
+                <div class="report-section">
+                    <div class="section-header">
+                        <h2>🌐 Macroeconomic Factors</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-subtitle">Economic Indicators:</div>
+                        <div class="analysis-section">
+                            {macroeconomic_html}
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Related Posts -->
-            <div class="related-posts">
-                <h2>Related Articles</h2>
-                <div class="related-posts-grid">
-                    <div class="related-post">
-                        <a href="/blog/ai-optimization-techniques">
-                            <img src="/img/blog/ai-optimization.jpg" alt="AI Optimization Techniques" width="300" height="200">
-                            <h3>10 Advanced AI Optimization Techniques to Improve Model Performance</h3>
-                        </a>
+                
+                <!-- Institutional Adoption Section -->
+                <div class="report-section">
+                    <div class="section-header">
+                        <h2>🏢 Institutional Adoption</h2>
                     </div>
-                    <div class="related-post">
-                        <a href="/blog/ethical-ai-frameworks">
-                            <img src="/img/blog/ethical-ai.jpg" alt="Ethical AI Frameworks" width="300" height="200">
-                            <h3>Building Ethical AI Frameworks: A Comprehensive Guide</h3>
-                        </a>
+                    <div class="section-content">
+                        <div class="section-subtitle">Notable Developments:</div>
+                        <div class="analysis-section">
+                            {institutional_html}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </article>
-
-    <!-- Newsletter Signup -->
-    <section class="newsletter-section">
-        <div class="container">
-            <div class="newsletter-content">
-                <h2>Get Weekly Bitcoin Analysis</h2>
-                <p>Subscribe to my newsletter for weekly insights on Bitcoin, AI, and emerging technologies.</p>
-                <form class="newsletter-form" action="/api/subscribe" method="POST">
-                    <input type="email" name="email" placeholder="Your email address" required>
-                    <button type="submit" class="btn-primary">Subscribe</button>
-                </form>
-                <p class="form-privacy">I respect your privacy. Unsubscribe at any time.</p>
+                
+                <!-- Market Sentiment Section -->
+                <div class="report-section">
+                    <div class="section-header">
+                        <h2>🧠 Market Sentiment</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-subtitle">Sentiment Indicators:</div>
+                        <div class="analysis-section">
+                            {sentiment_html}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Technical Analysis Section -->
+                <div class="report-section">
+                    <div class="section-header">
+                        <h2>{emoji_analysis} Technical Analysis</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="analysis-section">
+                            {technical_html}
+                        </div>
+                        
+                        <div class="technical-levels">
+                            <div class="level-item support">
+                                <div class="level-label">Support 1</div>
+                                <div class="level-value">{support_1}</div>
+                            </div>
+                            <div class="level-item resistance">
+                                <div class="level-label">Resistance 1</div>
+                                <div class="level-value">{resistance_1}</div>
+                            </div>
+                            <div class="level-item support">
+                                <div class="level-label">Support 2</div>
+                                <div class="level-value">{support_2}</div>
+                            </div>
+                            <div class="level-item resistance">
+                                <div class="level-label">Resistance 2</div>
+                                <div class="level-value">{resistance_2}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Forward-Looking Analysis Section -->
+                <div class="report-section">
+                    <div class="section-header">
+                        <h2>{emoji_outlook} Forward-Looking Analysis</h2>
+                    </div>
+                    <div class="section-content">
+                        <p class="outlook">{outlook_emoji} {outlook}</p>
+                        <p><strong>Disclaimer:</strong> This analysis is for informational purposes only and does not constitute investment advice. Cryptocurrency investments involve risk, and past performance does not guarantee future results. Always conduct your own research before making investment decisions.</p>
+                    </div>
+                </div>
+                
+                <div class="timestamp">
+                    <p>{emoji_date} Report generated on {timestamp} 
+                    <span class="data-source">{emoji_source} Data source: {data_source}</span></p>
+                    <p><a href="/blog/bitcoin-report-archive/" class="archive-link">View Historical Reports</a></p>
+                </div>
             </div>
         </div>
     </section>
@@ -603,9 +455,9 @@ def generate_content():
             <div class="footer-main">
                 <div class="footer-brand">
                     <a href="/" class="footer-logo">Michael J Ditter</a>
-                    <p>Director of AI Strategy and Emerging Technology at Diageo, specializing in AI implementation, immersive technologies, and digital innovation.</p>
+                    <p>AI Specialist & Technology Consultant helping organizations navigate the complex world of artificial intelligence and emerging technologies.</p>
                     <div class="social-links">
-                        <a href="https://www.linkedin.com/in/michaeljditter/" aria-label="LinkedIn Profile" target="_blank" rel="noopener">
+                        <a href="https://www.linkedin.com/in/michaeljditter" aria-label="LinkedIn Profile" target="_blank" rel="noopener">
                             <img src="/img/icons/linkedin.svg" alt="LinkedIn" width="24" height="24">
                         </a>
                         <a href="https://twitter.com/michaeljditter" aria-label="Twitter Profile" target="_blank" rel="noopener">
@@ -613,6 +465,9 @@ def generate_content():
                         </a>
                         <a href="https://github.com/michaeljditter" aria-label="GitHub Profile" target="_blank" rel="noopener">
                             <img src="/img/icons/github.svg" alt="GitHub" width="24" height="24">
+                        </a>
+                        <a href="https://www.instagram.com/drinkpartay" aria-label="Instagram Profile" target="_blank" rel="noopener">
+                            <img src="/img/icons/instagram.svg" alt="Instagram" width="24" height="24">
                         </a>
                     </div>
                 </div>
@@ -633,9 +488,10 @@ def generate_content():
                         <h3>Resources</h3>
                         <ul>
                             <li><a href="/blog/category/ai-strategy">AI Strategy</a></li>
-                            <li><a href="/blog/category/machine-learning">Machine Learning</a></li>
-                            <li><a href="/blog/category/ai-ethics">AI Ethics</a></li>
-                            <li><a href="/blog/category/bitcoin">Bitcoin</a></li>
+                            <li><a href="/resources/machine-learning">Machine Learning</a></li>
+                            <li><a href="/resources/ai-ethics">AI Ethics</a></li>
+                            <li><a href="/resources/ai-regulatory-frameworks">AI Regulations</a></li>
+                            <li><a href="/resources/case-studies">Case Studies</a></li>
                             <li><a href="/resources/white-papers">White Papers</a></li>
                             <li><a href="/resources/webinars">Webinars</a></li>
                         </ul>
@@ -643,80 +499,438 @@ def generate_content():
                     <div class="footer-legal">
                         <h3>Legal</h3>
                         <ul>
-                            <li><a href="/terms">Terms of Service</a></li>
-                            <li><a href="/privacy">Privacy Policy</a></li>
-                            <li><a href="/cookie-policy">Cookie Policy</a></li>
+                            <li><a href="/terms.html">Terms of Service</a></li>
+                            <li><a href="/privacy.html">Privacy Policy</a></li>
+                            <li><a href="/cookie-policy.html">Cookie Policy</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <span id="currentYear">2023</span> Michael J Ditter. All rights reserved.</p>
+                <p>&copy; <span id="currentYear">2025</span> Michael J Ditter. All rights reserved.</p>
                 <p>Built with <span class="heart">♥</span> for optimal performance, accessibility, and SEO.</p>
             </div>
         </div>
     </footer>
-
-    <!-- JavaScript -->
-    <script src="/js/main.js"></script>
 </body>
-</html>'''
+</html>
+"""
+
+def load_report_data(data_file=None):
+    """Load Bitcoin report data from a JSON file."""
+    # If no file is specified, check environment variable
+    if not data_file:
+        data_file = os.environ.get("NEWSLETTER_DATA_FILE")
     
-    # Save the HTML file
-    with open(post_file, 'w') as f:
-        f.write(html_template)
+    if not data_file or not os.path.exists(data_file):
+        logger.error(f"Data file not found: {data_file}")
+        sys.exit(1)
     
-    # Create a JSON file with newsletter data for Buttondown
-    newsletter_data = {
-        "title": title,
-        "content": post_content,
-        "social_content": social_content,
-        "description": meta_description,
-        "tags": ["Bitcoin", "Cryptocurrency", "Market Analysis", "Trading"],
-        "slug": slug,
-        "url": f"https://www.michaelditter.com/blog/{slug}/",
-        "bitcoin_data": bitcoin_data
-    }
-    
-    newsletter_file = Path(".github") / "tmp" / f"{slug}-newsletter-data.json"
-    newsletter_file.parent.mkdir(parents=True, exist_ok=True)
-    
-    with open(newsletter_file, 'w') as f:
-        json.dump(newsletter_data, f, indent=2)
-    
-    # Create placeholder directories if they don't exist
-    placeholder_dir = Path("img") / "blog"
-    placeholder_dir.mkdir(parents=True, exist_ok=True)
-    
-    print(f"Generated Bitcoin report: \"{title}\"")
-    print(f"Report saved to: {post_file}")
-    print(f"Newsletter data saved to: {newsletter_file}")
-    print(f"Social media content: {social_content}")
-    
-    # Export the slug for use in other workflow steps
     try:
-        if "GITHUB_ENV" in os.environ:
-            github_env = os.environ["GITHUB_ENV"]
-            with open(github_env, "a") as env_file:
-                env_file.write(f"POST_SLUG={slug}\n")
-                env_file.write(f"POST_TITLE={title}\n")
-                
-                # Use multi-line syntax for social content to avoid issues with special characters
-                env_file.write("SOCIAL_CONTENT<<EOF\n")
-                env_file.write(f"{social_content}\n")
-                env_file.write("EOF\n")
-            print("Successfully set workflow environment variables")
+        with open(data_file, "r") as f:
+            data = json.load(f)
+            logger.info(f"Loaded report data from {data_file}")
+            if DEBUG_MODE:
+                logger.debug(f"Data: {json.dumps(data, indent=2)}")
+            return data
+    except (json.JSONDecodeError, FileNotFoundError) as e:
+        logger.error(f"Error loading report data: {e}")
+        sys.exit(1)
+
+def format_date(date_str=None):
+    """Format date for display in the report."""
+    if date_str:
+        # Try to parse date string
+        try:
+            date_formats = ["%Y-%m-%d", "%B %d, %Y", "%b %d, %Y"]
+            for date_format in date_formats:
+                try:
+                    date_obj = datetime.strptime(date_str, date_format)
+                    return date_obj.strftime("%B %d, %Y")
+                except ValueError:
+                    continue
+            
+            # If no format matched, return as is
+            return date_str
+        except Exception as e:
+            logger.warning(f"Could not parse date {date_str}: {e}")
+            return date_str
+    else:
+        # Use current date
+        return datetime.now().strftime("%B %d, %Y")
+
+def get_change_class(price_change):
+    """Determine the CSS class for price change."""
+    if not price_change:
+        return "neutral"
+    
+    # Extract numeric value from formatted price change string
+    # E.g., "(+3.60%)" -> "+3.60" -> 3.60
+    change_str = re.search(r'([+-]?\d+\.?\d*)', price_change)
+    if not change_str:
+        return "neutral"
+    
+    change = float(change_str.group(1))
+    if change > 0:
+        return "positive"
+    elif change < 0:
+        return "negative"
+    else:
+        return "neutral"
+
+def get_emoji_for_sentiment(sentiment):
+    """Get appropriate emoji based on sentiment."""
+    sentiment = sentiment.lower() if sentiment else "neutral"
+    
+    # Check if the sentiment is in the config
+    if sentiment in CONFIG["emojis"]:
+        return CONFIG["emojis"][sentiment]
+    
+    # Fallbacks
+    if "very" in sentiment:
+        if "bull" in sentiment:
+            return CONFIG["emojis"].get("very_bullish", CONFIG["emojis"]["bullish"])
+        elif "bear" in sentiment:
+            return CONFIG["emojis"].get("very_bearish", CONFIG["emojis"]["bearish"])
+    
+    if "bull" in sentiment:
+        return CONFIG["emojis"]["bullish"]
+    elif "bear" in sentiment:
+        return CONFIG["emojis"]["bearish"]
+    else:
+        return CONFIG["emojis"]["neutral"]
+
+def format_key_points(key_points):
+    """Format key points for HTML display."""
+    if not key_points:
+        return "<li>No key points available</li>"
+    
+    html = ""
+    for i, point in enumerate(key_points):
+        point_emoji = CONFIG["emojis"].get(f"point{i+1}", "•")
+        html += f"<li>{point_emoji} {point}</li>\n"
+    
+    return html
+
+def format_analysis(analysis):
+    """Format analysis paragraphs for HTML display."""
+    if not analysis:
+        return "<p>No analysis available</p>"
+    
+    html = ""
+    for paragraph in analysis:
+        html += f"<p>{paragraph}</p>\n"
+    
+    return html
+
+def format_regulatory_analysis(data):
+    """Format regulatory analysis for HTML display."""
+    regulatory_insights = data.get("regulatory_insights", [
+        "Recent regulatory developments have shown increased clarity in certain jurisdictions, while others continue to refine their stance on cryptocurrencies.",
+        "The SEC continues to evaluate Bitcoin ETF applications, which remains a significant factor for institutional adoption.",
+        "Global regulatory frameworks are gradually evolving, with a trend toward more defined but varied approaches across different regions."
+    ])
+    
+    return format_analysis(regulatory_insights)
+
+def format_macroeconomic_analysis(data):
+    """Format macroeconomic analysis for HTML display."""
+    macro_insights = data.get("macroeconomic_insights", [
+        "Inflation metrics and central bank policies continue to influence Bitcoin's positioning as a potential hedge asset.",
+        "Global economic uncertainty has contributed to increased interest in alternative assets, including cryptocurrencies.",
+        "Market liquidity conditions and interest rate environments remain significant factors in Bitcoin's price movements."
+    ])
+    
+    return format_analysis(macro_insights)
+
+def format_institutional_analysis(data):
+    """Format institutional adoption analysis for HTML display."""
+    institutional_insights = data.get("institutional_insights", [
+        "Institutional interest in Bitcoin continues to grow, with several major financial entities expanding their cryptocurrency offerings.",
+        "Corporate treasury adoption remains selective but shows signs of gradual expansion in certain sectors.",
+        "Bitcoin ETFs and other investment vehicles are evolving, providing more avenues for institutional exposure to the asset class."
+    ])
+    
+    return format_analysis(institutional_insights)
+
+def format_sentiment_analysis(data):
+    """Format market sentiment analysis for HTML display."""
+    sentiment_insights = data.get("sentiment_insights", [
+        f"The current market sentiment appears to be {data.get('sentiment', 'neutral')}, with social media activity showing corresponding patterns.",
+        "On-chain metrics indicate wallet accumulation patterns that align with longer-term market cycles.",
+        "The Fear & Greed Index has shown notable shifts over the past week, reflecting changing market psychology."
+    ])
+    
+    return format_analysis(sentiment_insights)
+
+def format_technical_analysis(data):
+    """Format technical analysis for HTML display."""
+    technical_insights = data.get("technical_insights", [
+        "Bitcoin's price action shows significant resistance at higher levels, with key support zones being tested in recent trading sessions.",
+        "Volume patterns indicate changing market dynamics, with institutional-sized transactions showing particular patterns of interest.",
+        "Moving averages and momentum indicators suggest the current trend direction remains intact, though with potential volatility ahead."
+    ])
+    
+    return format_analysis(technical_insights)
+
+def generate_support_resistance_levels(price):
+    """Generate support and resistance levels based on current price."""
+    if isinstance(price, str):
+        # Try to extract numeric value from price string
+        # E.g., "$84,570" -> 84570
+        price_str = re.search(r'[\$£€]?([0-9,]+\.?[0-9]*)', price)
+        if price_str:
+            # Remove commas and convert to float
+            price_num = float(price_str.group(1).replace(',', ''))
         else:
-            print("GITHUB_ENV not found, skipping setting environment variables")
+            # Fallback
+            price_num = 50000
+    else:
+        price_num = float(price)
+    
+    # Generate support and resistance levels as percentages of current price
+    return {
+        "support_1": f"${int(price_num * 0.95):,}",
+        "support_2": f"${int(price_num * 0.90):,}",
+        "resistance_1": f"${int(price_num * 1.05):,}",
+        "resistance_2": f"${int(price_num * 1.10):,}"
+    }
+
+def generate_report_html(data, post_slug):
+    """Generate complete HTML for Bitcoin report."""
+    logger.info("Generating Bitcoin report HTML")
+    
+    # Extract relevant data
+    price = data.get("price", "$0.00")
+    price_change_24h = data.get("price_change_24h", "(0.00%)")
+    key_points = data.get("key_points", [])
+    analysis = data.get("analysis", [])
+    outlook = data.get("outlook", "Market outlook unavailable")
+    data_source = data.get("data_source", "Unknown")
+    sentiment = data.get("sentiment", "neutral")
+    date = format_date(data.get("date"))
+    
+    # Generate support and resistance levels
+    levels = generate_support_resistance_levels(price)
+    
+    # Format report timestamp
+    timestamp = data.get("timestamp")
+    if timestamp:
+        try:
+            dt = datetime.fromisoformat(timestamp)
+            formatted_timestamp = dt.strftime("%B %d, %Y at %I:%M %p")
+        except (ValueError, TypeError):
+            formatted_timestamp = timestamp
+    else:
+        formatted_timestamp = datetime.now().strftime("%B %d, %Y at %I:%M %p")
+    
+    # Get styling values
+    styling = CONFIG.get("styling", {})
+    positive_color = styling.get("positive_color", "#28a745")
+    negative_color = styling.get("negative_color", "#dc3545")
+    neutral_color = styling.get("neutral_color", "#6c757d")
+    header_color = styling.get("header_color", "#0066cc")
+    
+    # Get appropriate CSS class for price change
+    change_class = get_change_class(price_change_24h)
+    
+    # Get emojis
+    emojis = CONFIG.get("emojis", {})
+    emoji_price = emojis.get("price", "📈")
+    emoji_key_points = emojis.get("key_points", "🔑")
+    emoji_analysis = emojis.get("analysis", "📊")
+    emoji_outlook = emojis.get("outlook", "🔮")
+    emoji_date = emojis.get("date", "📅")
+    emoji_source = emojis.get("source", "🔎")
+    
+    # Get sentiment-specific emoji for outlook
+    outlook_emoji = get_emoji_for_sentiment(sentiment)
+    
+    # Format content sections for HTML
+    key_points_html = format_key_points(key_points)
+    regulatory_html = format_regulatory_analysis(data)
+    macroeconomic_html = format_macroeconomic_analysis(data)
+    institutional_html = format_institutional_analysis(data)
+    sentiment_html = format_sentiment_analysis(data)
+    technical_html = format_technical_analysis(data)
+    
+    # Generate complete HTML
+    html = REPORT_TEMPLATE.format(
+        post_slug=post_slug,
+        date=date,
+        price=price,
+        price_change_24h=price_change_24h,
+        key_points_html=key_points_html,
+        regulatory_html=regulatory_html,
+        macroeconomic_html=macroeconomic_html,
+        institutional_html=institutional_html,
+        sentiment_html=sentiment_html,
+        technical_html=technical_html,
+        outlook=outlook,
+        timestamp=formatted_timestamp,
+        data_source=data_source,
+        change_class=change_class,
+        positive_color=positive_color,
+        negative_color=negative_color,
+        neutral_color=neutral_color,
+        header_color=header_color,
+        emoji_price=emoji_price,
+        emoji_key_points=emoji_key_points,
+        emoji_analysis=emoji_analysis,
+        emoji_outlook=emoji_outlook,
+        outlook_emoji=outlook_emoji,
+        emoji_date=emoji_date,
+        emoji_source=emoji_source,
+        support_1=levels["support_1"],
+        support_2=levels["support_2"],
+        resistance_1=levels["resistance_1"],
+        resistance_2=levels["resistance_2"]
+    )
+    
+    logger.info("Bitcoin report HTML generated successfully")
+    return html
+
+def save_report(html, post_slug):
+    """Save the report HTML to a file."""
+    # Create the blog post directory
+    blog_dir = Path(f"blog/{post_slug}")
+    blog_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Save the HTML to index.html
+    file_path = blog_dir / "index.html"
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    
+    logger.info(f"Bitcoin report saved to {file_path}")
+    return file_path
+
+def generate_placeholder_image(post_slug):
+    """Generate a placeholder image for the report."""
+    try:
+        # This is handled in the GitHub workflow now, so just checking if needed
+        img_dir = Path("img/blog")
+        img_path = img_dir / f"{post_slug}.jpg"
+        
+        if img_path.exists():
+            logger.info(f"Image already exists: {img_path}")
+            return img_path
+        
+        # Ensure directory exists
+        img_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Try to use PIL to generate a simple placeholder
+        try:
+            from PIL import Image, ImageDraw, ImageFont
+            
+            # Create a simple colored rectangle
+            img = Image.new('RGB', (1200, 630), color=(247, 147, 26))  # Bitcoin orange
+            draw = ImageDraw.Draw(img)
+            
+            # Add text - basic version
+            text = f"Bitcoin Report - {datetime.now().strftime('%B %d, %Y')}"
+            font_path = '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf'
+            try:
+                font = ImageFont.truetype(font_path, size=60)
+            except (OSError, IOError):
+                # Fallback to default font
+                font = ImageFont.load_default()
+            
+            # Try to center the text
+            try:
+                text_width = draw.textlength(text, font=font)
+            except (AttributeError, TypeError):
+                # For older PIL versions
+                text_width = font.getsize(text)[0]
+            
+            position = ((1200 - text_width) // 2, 300)
+            draw.text(position, text, fill=(255, 255, 255), font=font)
+            
+            # Save the image
+            img.save(img_path)
+            logger.info(f"Generated placeholder image: {img_path}")
+            
+        except ImportError as e:
+            logger.warning(f"PIL not available to generate image: {e}")
+            # Just create an empty file as placeholder
+            with open(img_path, 'wb') as f:
+                f.write(b'')
+            logger.warning(f"Created empty placeholder file: {img_path}")
+        
+        return img_path
+        
     except Exception as e:
-        print(f"Warning: Failed to set GitHub environment variables: {str(e)}")
-        print("This won't affect report generation but might impact subsequent workflow steps")
+        logger.error(f"Error generating placeholder image: {e}")
+        return None
+
+def validate_data(data):
+    """Validate the report data for required fields."""
+    required_fields = ['price', 'price_change_24h', 'key_points', 'analysis', 'outlook']
+    missing = [field for field in required_fields if field not in data]
+    
+    if missing:
+        logger.error(f"Missing required fields in report data: {', '.join(missing)}")
+        return False
+    
+    # Check if key points and analysis are non-empty lists
+    if not data.get('key_points', []):
+        logger.error("Key points list is empty")
+        return False
+    
+    if not data.get('analysis', []):
+        logger.error("Analysis list is empty")
+        return False
     
     return True
 
-if __name__ == "__main__":
-    if not os.environ.get("OPENAI_API_KEY"):
-        print("Error: OPENAI_API_KEY environment variable is required.")
-        sys.exit(1)
+def main():
+    """Main function to generate Bitcoin report."""
+    parser = argparse.ArgumentParser(description='Generate Bitcoin Market Report')
+    parser.add_argument('--debug', action='store_true', help='Enable debug mode')
+    parser.add_argument('--data-file', type=str, help='Path to JSON data file')
+    args = parser.parse_args()
     
-    generate_content() 
+    # Set debug mode if requested
+    if args.debug or DEBUG_MODE:
+        global DEBUG_MODE
+        DEBUG_MODE = True
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Debug mode enabled")
+    
+    try:
+        # Load report data
+        data = load_report_data(args.data_file)
+        
+        # Validate data
+        if not validate_data(data):
+            logger.error("Data validation failed")
+            sys.exit(1)
+        
+        # Get or generate post slug
+        today = datetime.now().strftime("%Y-%m-%d")
+        post_slug = os.environ.get("POST_SLUG")
+        if not post_slug:
+            post_slug = f"bitcoin-market-report-{today}"
+            logger.info(f"Generated post slug: {post_slug}")
+        
+        # Generate report HTML
+        html = generate_report_html(data, post_slug)
+        
+        # Save report to file
+        report_path = save_report(html, post_slug)
+        
+        # Generate placeholder image if needed
+        img_path = generate_placeholder_image(post_slug)
+        
+        logger.info("Bitcoin report generation completed successfully")
+        logger.info(f"Report saved to: {report_path}")
+        if img_path:
+            logger.info(f"Image saved to: {img_path}")
+        
+        return 0
+    
+    except Exception as e:
+        logger.error(f"Error generating Bitcoin report: {e}", exc_info=True)
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main()) 

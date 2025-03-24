@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
   updateCopyrightYear();
   initFAQToggles();
   initNewsletterForm();
+  initBitcoinReport();
+  initAIReportCharts();
 });
 
 /**
@@ -449,4 +451,270 @@ function showFormMessage(form, message, type) {
       setTimeout(() => messageElement.remove(), 500);
     }, 5000);
   }
+}
+
+/**
+ * Initialize Bitcoin Report - Fetch and display real-time Bitcoin data
+ */
+function initBitcoinReport() {
+  const bitcoinReport = document.getElementById('bitcoin-report');
+  if (!bitcoinReport) return;
+  
+  // Elements to update
+  const priceElement = document.getElementById('bitcoin-price');
+  const changeElement = document.getElementById('bitcoin-change');
+  const updateTimeElement = document.getElementById('bitcoin-update-time');
+  const marketCapElement = document.getElementById('bitcoin-market-cap');
+  const volumeElement = document.getElementById('bitcoin-volume');
+  const dominanceElement = document.getElementById('bitcoin-dominance');
+  const trendElement = document.getElementById('bitcoin-trend');
+  const insightsList = document.getElementById('bitcoin-insights-list');
+  
+  // Function to fetch Bitcoin data
+  async function fetchBitcoinData() {
+    try {
+      const response = await fetch('https://michaelditter.com/bitcoin-research-api/api/bitcoin-data');
+      
+      if (!response.ok) {
+        throw new Error(`Error fetching Bitcoin data: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Update UI with the data
+      if (priceElement) priceElement.textContent = data.bitcoinPrice.current;
+      if (changeElement) {
+        changeElement.textContent = data.bitcoinPrice.weeklyChange;
+        // Add appropriate class based on trend
+        changeElement.className = 'btc-change ' + (data.bitcoinPrice.weeklyTrend === 'up' ? 'positive' : 'negative');
+      }
+      
+      if (marketCapElement) marketCapElement.textContent = data.marketSummary.marketCap;
+      if (volumeElement) volumeElement.textContent = data.marketSummary.volume24h;
+      if (dominanceElement) dominanceElement.textContent = data.marketSummary.dominance;
+      if (trendElement) {
+        trendElement.textContent = data.bitcoinPrice.weeklyTrend === 'up' ? 'Bullish' : 'Bearish';
+        trendElement.className = 'detail-value ' + (data.bitcoinPrice.weeklyTrend === 'up' ? 'positive' : 'negative');
+      }
+      
+      // Update insights list
+      if (insightsList) {
+        insightsList.innerHTML = '';
+        data.keyInsights.forEach(insight => {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${insight.title}</strong>: ${insight.content.substring(0, 100)}...`;
+          insightsList.appendChild(li);
+        });
+      }
+      
+      // Update the time
+      if (updateTimeElement) {
+        const now = new Date();
+        updateTimeElement.textContent = `Updated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+      }
+      
+    } catch (error) {
+      console.error('Error fetching Bitcoin data:', error);
+      
+      // Display fallback data if fetch fails
+      if (priceElement) priceElement.textContent = '$84,570';
+      if (changeElement) {
+        changeElement.textContent = '(+3.60%)';
+        changeElement.className = 'btc-change positive';
+      }
+      if (updateTimeElement) updateTimeElement.textContent = 'Last updated: Today';
+      if (marketCapElement) marketCapElement.textContent = '$1.65 trillion';
+      if (volumeElement) volumeElement.textContent = '$48 billion';
+      if (dominanceElement) dominanceElement.textContent = '52.1%';
+      if (trendElement) {
+        trendElement.textContent = 'Bullish';
+        trendElement.className = 'detail-value positive';
+      }
+      
+      // Fallback insights
+      if (insightsList) {
+        insightsList.innerHTML = `
+          <li><strong>Institutional Adoption</strong>: Major financial institutions increasing their Bitcoin holdings...</li>
+          <li><strong>ETF Decision Pending</strong>: The SEC is expected to announce decisions on several Bitcoin ETF applications...</li>
+        `;
+      }
+    }
+  }
+  
+  // Initial fetch
+  fetchBitcoinData();
+  
+  // Refresh every 5 minutes
+  setInterval(fetchBitcoinData, 5 * 60 * 1000);
+}
+
+/**
+ * Initialize AI Report Charts - Create Chart.js charts for the AI report
+ */
+function initAIReportCharts() {
+  const aiReport = document.getElementById('ai-report');
+  if (!aiReport) return;
+  
+  // Canvas elements
+  const webVisitsCanvas = document.getElementById('webVisitsChart');
+  const mobileUsersCanvas = document.getElementById('mobileUsersChart');
+  
+  if (!webVisitsCanvas || !mobileUsersCanvas) return;
+  
+  // Chart data based on the image
+  const months = ['Jan 2024', 'Apr 2024', 'Jul 2024', 'Oct 2024', 'Jan 2025'];
+  
+  // Web visits data - ChatGPT dominates with steep growth
+  const webVisitsChart = new Chart(webVisitsCanvas, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'ChatGPT',
+          data: [0.2, 3, 6, 9, 13],
+          borderColor: '#FF5A87',
+          backgroundColor: 'rgba(255, 90, 135, 0.1)',
+          tension: 0.3,
+          borderWidth: 3
+        },
+        {
+          label: 'Gemini',
+          data: [0, 0.1, 0.2, 0.5, 0.8],
+          borderColor: '#3B82F6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        },
+        {
+          label: 'Deepseek',
+          data: [0, 0, 0.1, 0.4, 0.7],
+          borderColor: '#8B5CF6',
+          backgroundColor: 'rgba(139, 92, 246, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        },
+        {
+          label: 'Perplexity',
+          data: [0, 0, 0.1, 0.3, 0.6],
+          borderColor: '#EC4899',
+          backgroundColor: 'rgba(236, 72, 153, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        },
+        {
+          label: 'Claude',
+          data: [0, 0, 0.1, 0.2, 0.4],
+          borderColor: '#10B981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        },
+        {
+          label: 'Copilot',
+          data: [0, 0, 0.1, 0.2, 0.3],
+          borderColor: '#F59E0B',
+          backgroundColor: 'rgba(245, 158, 11, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 14,
+          title: {
+            display: true,
+            text: 'Millions'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+  
+  // Mobile users data - ChatGPT still leads but with less dominance
+  const mobileUsersChart = new Chart(mobileUsersCanvas, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'ChatGPT',
+          data: [0, 1, 2, 3, 5],
+          borderColor: '#FF5A87',
+          backgroundColor: 'rgba(255, 90, 135, 0.1)',
+          tension: 0.3,
+          borderWidth: 3
+        },
+        {
+          label: 'Deepseek',
+          data: [0, 0.2, 0.4, 0.6, 1],
+          borderColor: '#8B5CF6',
+          backgroundColor: 'rgba(139, 92, 246, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        },
+        {
+          label: 'Perplexity',
+          data: [0, 0.1, 0.2, 0.5, 0.9],
+          borderColor: '#EC4899',
+          backgroundColor: 'rgba(236, 72, 153, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        },
+        {
+          label: 'Copilot',
+          data: [0, 0.1, 0.2, 0.4, 0.8],
+          borderColor: '#F59E0B',
+          backgroundColor: 'rgba(245, 158, 11, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        },
+        {
+          label: 'Gemini',
+          data: [0, 0.1, 0.2, 0.4, 0.7],
+          borderColor: '#3B82F6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        },
+        {
+          label: 'Claude',
+          data: [0, 0.1, 0.2, 0.3, 0.6],
+          borderColor: '#10B981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          tension: 0.3,
+          borderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 14,
+          title: {
+            display: true,
+            text: 'Millions'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
 } 
