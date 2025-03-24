@@ -53,9 +53,6 @@
     <!-- Shadcn UI Styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shadcn/ui@0.7.0/dist/shadcn-ui.min.css">
     
-    <!-- Chart.js for AI Report Chart -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    
     <!-- Schema.org structured data for Person -->
     <script type="application/ld+json">
     {
@@ -247,6 +244,9 @@
             </div>
             <div class="shadcn-card">
                 <div class="ai-dashboard">
+                    <div class="ai-report-hero">
+                        <img src="https://i.imgur.com/nWmZa67.jpg" alt="ChatGPT dominance chart showing 14 million daily web visits and mobile users" class="report-hero-image">
+                    </div>
                     <div class="ai-report-metrics">
                         <div class="ai-metric-card">
                             <h3>14 million</h3>
@@ -257,17 +257,8 @@
                             <p>Daily mobile users</p>
                         </div>
                     </div>
-                    <div class="chart-container">
-                        <div class="chart-row">
-                            <div class="chart-column">
-                                <h4>Daily web visits (millions)</h4>
-                                <canvas id="webVisitsChart" width="400" height="300"></canvas>
-                            </div>
-                            <div class="chart-column">
-                                <h4>Daily mobile users (millions)</h4>
-                                <canvas id="mobileUsersChart" width="400" height="300"></canvas>
-                            </div>
-                        </div>
+                    <div class="report-static-image">
+                        <img src="https://i.imgur.com/JBIwsRz.jpg" alt="Graph showing ChatGPT dominance in India compared to other AI chatbots" class="full-width-image">
                         <p class="chart-source">Source: Similarweb</p>
                     </div>
                 </div>

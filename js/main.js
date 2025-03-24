@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initFAQToggles();
   initNewsletterForm();
   initBitcoinReport();
-  initAIReportCharts();
+  initAIReportSection();
 });
 
 /**
@@ -549,172 +549,14 @@ function initBitcoinReport() {
 }
 
 /**
- * Initialize AI Report Charts - Create Chart.js charts for the AI report
+ * Initialize AI Report Section - Simple static display
  */
-function initAIReportCharts() {
+function initAIReportSection() {
   const aiReport = document.getElementById('ai-report');
   if (!aiReport) return;
   
-  // Canvas elements
-  const webVisitsCanvas = document.getElementById('webVisitsChart');
-  const mobileUsersCanvas = document.getElementById('mobileUsersChart');
+  console.log('AI Report section initialized with static image');
   
-  if (!webVisitsCanvas || !mobileUsersCanvas) return;
-  
-  // Chart data based on the image
-  const months = ['Jan 2024', 'Apr 2024', 'Jul 2024', 'Oct 2024', 'Jan 2025'];
-  
-  // Web visits data - ChatGPT dominates with steep growth
-  const webVisitsChart = new Chart(webVisitsCanvas, {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [
-        {
-          label: 'ChatGPT',
-          data: [0.2, 3, 6, 9, 13],
-          borderColor: '#FF5A87',
-          backgroundColor: 'rgba(255, 90, 135, 0.1)',
-          tension: 0.3,
-          borderWidth: 3
-        },
-        {
-          label: 'Gemini',
-          data: [0, 0.1, 0.2, 0.5, 0.8],
-          borderColor: '#3B82F6',
-          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        },
-        {
-          label: 'Deepseek',
-          data: [0, 0, 0.1, 0.4, 0.7],
-          borderColor: '#8B5CF6',
-          backgroundColor: 'rgba(139, 92, 246, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        },
-        {
-          label: 'Perplexity',
-          data: [0, 0, 0.1, 0.3, 0.6],
-          borderColor: '#EC4899',
-          backgroundColor: 'rgba(236, 72, 153, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        },
-        {
-          label: 'Claude',
-          data: [0, 0, 0.1, 0.2, 0.4],
-          borderColor: '#10B981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        },
-        {
-          label: 'Copilot',
-          data: [0, 0, 0.1, 0.2, 0.3],
-          borderColor: '#F59E0B',
-          backgroundColor: 'rgba(245, 158, 11, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 14,
-          title: {
-            display: true,
-            text: 'Millions'
-          }
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }
-  });
-  
-  // Mobile users data - ChatGPT still leads but with less dominance
-  const mobileUsersChart = new Chart(mobileUsersCanvas, {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [
-        {
-          label: 'ChatGPT',
-          data: [0, 1, 2, 3, 5],
-          borderColor: '#FF5A87',
-          backgroundColor: 'rgba(255, 90, 135, 0.1)',
-          tension: 0.3,
-          borderWidth: 3
-        },
-        {
-          label: 'Deepseek',
-          data: [0, 0.2, 0.4, 0.6, 1],
-          borderColor: '#8B5CF6',
-          backgroundColor: 'rgba(139, 92, 246, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        },
-        {
-          label: 'Perplexity',
-          data: [0, 0.1, 0.2, 0.5, 0.9],
-          borderColor: '#EC4899',
-          backgroundColor: 'rgba(236, 72, 153, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        },
-        {
-          label: 'Copilot',
-          data: [0, 0.1, 0.2, 0.4, 0.8],
-          borderColor: '#F59E0B',
-          backgroundColor: 'rgba(245, 158, 11, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        },
-        {
-          label: 'Gemini',
-          data: [0, 0.1, 0.2, 0.4, 0.7],
-          borderColor: '#3B82F6',
-          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        },
-        {
-          label: 'Claude',
-          data: [0, 0.1, 0.2, 0.3, 0.6],
-          borderColor: '#10B981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-          tension: 0.3,
-          borderWidth: 2
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 14,
-          title: {
-            display: true,
-            text: 'Millions'
-          }
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }
-  });
+  // Add any additional initialization if needed later
+  // But for now, we're using static images instead of Chart.js
 } 
